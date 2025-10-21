@@ -9,11 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -21,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.immunify.R
+import com.example.immunify.ui.theme.*
 
 private val bottomItems = listOf(
     BottomNavItem(Routes.HOME, "Home", R.drawable.ic_home),
@@ -29,14 +28,13 @@ private val bottomItems = listOf(
     BottomNavItem(Routes.PROFILE, "Profile", R.drawable.ic_profile)
 )
 
-
 @Composable
 fun BottomNavBar(navController: NavHostController) {
     val backStack by navController.currentBackStackEntryAsState()
     val dest = backStack?.destination
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = White10,
         tonalElevation = 0.dp,
         modifier = Modifier.height(100.dp)
     ) {
@@ -55,15 +53,15 @@ fun BottomNavBar(navController: NavHostController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.label,
-                        tint = if (selected) Color(0xFF008B8B) else Color(0xFFC2C2C2),
+                        tint = if (selected) PrimaryMain else Grey50,
                         modifier = Modifier.size(32.dp)
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
-                        fontSize = 14.sp,
-                        color = if (selected) Color(0xFF757575) else Color(0xFFC2C2C2)
+                        style = Typography.bodyMedium,
+                        color = if (selected) PrimaryMain else Grey50
                     )
                 },
                 alwaysShowLabel = true

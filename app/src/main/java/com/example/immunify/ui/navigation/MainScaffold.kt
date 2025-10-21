@@ -6,8 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 
-
-
 @Composable
 fun MainScaffold() {
     val navController = rememberNavController()
