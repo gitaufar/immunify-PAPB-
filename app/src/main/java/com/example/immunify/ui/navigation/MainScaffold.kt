@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
+import com.example.immunify.ui.home.HomeScreen
 
 @Composable
 fun MainScaffold() {
@@ -18,7 +19,7 @@ fun MainScaffold() {
             startDestination = Routes.HOME,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Routes.HOME) { /* HomeScreen() */ }
+            composable(Routes.HOME) { HomeScreen() }
             composable(Routes.CLINICS) { /* ClinicsScreen() */ }
             composable(Routes.TRACKER) { /* TrackerScreen() */ }
             composable(Routes.PROFILE) { /* ProfileScreen() */ }
