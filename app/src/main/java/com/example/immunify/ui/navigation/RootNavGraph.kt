@@ -10,6 +10,7 @@ import com.example.immunify.ui.Onboarding2Screen
 import com.example.immunify.ui.Onboarding3Screen
 import com.example.immunify.ui.RegisterScreen
 import com.example.immunify.ui.SplashScreen
+import com.example.immunify.ui.insight.InsightScreen
 
 @Composable
 fun RootNavGraph(navController: NavHostController) {
@@ -116,6 +117,10 @@ fun RootNavGraph(navController: NavHostController) {
         // Main Application (setelah login)
         composable(Routes.MAIN_GRAPH) {
             MainScaffold()
+        }
+
+        composable(Routes.INSIGHTS) {
+            InsightScreen()
         }
     }
 }
