@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.immunify.ui.LoginScreen
 import com.example.immunify.ui.Onboarding1Screen
 import com.example.immunify.ui.Onboarding2Screen
 import com.example.immunify.ui.Onboarding3Screen
+import com.example.immunify.ui.RegisterScreen
 import com.example.immunify.ui.SplashScreen
 
 @Composable
@@ -15,7 +17,7 @@ fun RootNavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Routes.SPLASH
     ) {
-        // Splash screen
+        // Splash Screen
         composable(Routes.SPLASH) {
             SplashScreen(
                 onFinished = {
@@ -75,7 +77,43 @@ fun RootNavGraph(navController: NavHostController) {
             )
         }
 
-        // Main application (setelah onboarding)
+        // Register Screen
+        composable(Routes.REGISTER) {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.REGISTER) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onLoginClick = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.REGISTER) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        // Login Screen
+        composable(Routes.LOGIN) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Routes.MAIN_GRAPH) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate(Routes.REGISTER) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        // Main Application (setelah login)
         composable(Routes.MAIN_GRAPH) {
             MainScaffold()
         }
