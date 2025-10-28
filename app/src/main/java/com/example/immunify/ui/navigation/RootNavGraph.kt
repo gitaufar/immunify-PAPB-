@@ -2,14 +2,17 @@ package com.example.immunify.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.immunify.ui.LoginScreen
 import com.example.immunify.ui.Onboarding1Screen
 import com.example.immunify.ui.Onboarding2Screen
 import com.example.immunify.ui.Onboarding3Screen
 import com.example.immunify.ui.RegisterScreen
 import com.example.immunify.ui.SplashScreen
+import com.example.immunify.ui.insight.InsightDetail
 import com.example.immunify.ui.insight.InsightScreen
 
 @Composable
@@ -122,5 +125,20 @@ fun RootNavGraph(navController: NavHostController) {
         composable(Routes.INSIGHTS) {
             InsightScreen()
         }
+
+        composable(
+            route = Routes.INSIGHT_DETAIL,
+            arguments = listOf(
+                navArgument("insightId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val insightId = backStackEntry.arguments?.getString("insightId")
+            InsightDetail(
+                navController = navController,
+                insightId = insightId ?: ""
+            )
+        }
+
+
     }
 }

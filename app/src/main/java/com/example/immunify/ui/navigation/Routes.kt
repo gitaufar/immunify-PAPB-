@@ -20,7 +20,7 @@ object Routes {
     const val TRACKER = "tracker"
 
     const val INSIGHTS = "insights"
-    const val INSIGHT_DETAIL = "insight_detail"
+    const val INSIGHT_DETAIL = "insight_detail/{insightId}"
 
     const val PROFILE = "profile"
     const val NOTIFICATION = "notification"

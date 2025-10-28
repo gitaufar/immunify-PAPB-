@@ -19,7 +19,7 @@ fun MainScaffold() {
             startDestination = Routes.HOME,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Routes.HOME) { HomeScreen() }
+            composable(Routes.HOME) { HomeScreen(navController = navController) }
             composable(Routes.CLINICS) { /* ClinicsScreen() */ }
             composable(Routes.TRACKER) { /* TrackerScreen() */ }
             composable(Routes.PROFILE) { /* ProfileScreen() */ }
