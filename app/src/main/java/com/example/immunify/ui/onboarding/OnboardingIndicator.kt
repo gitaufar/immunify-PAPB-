@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

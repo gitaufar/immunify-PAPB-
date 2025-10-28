@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

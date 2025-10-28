@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,14 +13,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.immunify.R
-import com.example.immunify.ui.OnboardingIndicator
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Grey40
 import com.example.immunify.ui.theme.PrimaryMain
 import com.example.immunify.ui.theme.White10
 
 @Composable
-fun Onboarding1Screen(
+fun Onboarding2Screen(
     onNext: () -> Unit,
     onSkip: (() -> Unit)? = null
 ) {
@@ -44,14 +43,14 @@ fun Onboarding1Screen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.onboarding_1),
-                    contentDescription = "Onboarding 1 Illustration",
+                    painter = painterResource(id = R.drawable.onboarding_2),
+                    contentDescription = "Onboarding 2 Illustration",
                     modifier = Modifier.size(320.dp)
                         .padding(bottom = 12.dp)
                 )
 
                 Text(
-                    text = "Immunization made easy",
+                    text = "Expert vaccine care",
                     style = MaterialTheme.typography.titleLarge,
                     color = PrimaryMain,
                     textAlign = TextAlign.Center
@@ -60,11 +59,11 @@ fun Onboarding1Screen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Never miss an appointment again while eliminating the hassle of paper records.",
+                    text = "Expert care for necessary immunizations and disease protection, all-in-one app",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Black100,
                     textAlign = TextAlign.Center,
-                    )
+                )
             }
 
             // Indikator Halaman
@@ -74,7 +73,7 @@ fun Onboarding1Screen(
             ) {
                 OnboardingIndicator(
                     totalPages = 3,
-                    currentPage = 0 // karena ini halaman pertama
+                    currentPage = 1
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
@@ -98,7 +97,7 @@ fun Onboarding1Screen(
                 ) {
                     Text(
                         text = "Next",
-                        fontSize = 14.sp
+                        fontSize = 16.sp
                     )
                 }
 

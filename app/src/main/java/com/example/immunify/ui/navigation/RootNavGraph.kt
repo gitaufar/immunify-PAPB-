@@ -6,12 +6,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.immunify.ui.LoginScreen
-import com.example.immunify.ui.Onboarding1Screen
-import com.example.immunify.ui.Onboarding2Screen
-import com.example.immunify.ui.Onboarding3Screen
-import com.example.immunify.ui.RegisterScreen
-import com.example.immunify.ui.SplashScreen
+import com.example.immunify.ui.auth.LoginScreen
+import com.example.immunify.ui.onboarding.Onboarding1Screen
+import com.example.immunify.ui.onboarding.Onboarding2Screen
+import com.example.immunify.ui.onboarding.Onboarding3Screen
+import com.example.immunify.ui.auth.RegisterScreen
+import com.example.immunify.ui.splash.SplashScreen
 import com.example.immunify.ui.insight.InsightDetail
 import com.example.immunify.ui.insight.InsightScreen
 

@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,14 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.immunify.R
 import com.example.immunify.ui.theme.Black100
-import com.example.immunify.ui.theme.Grey40
 import com.example.immunify.ui.theme.PrimaryMain
 import com.example.immunify.ui.theme.White10
 
 @Composable
-fun Onboarding2Screen(
-    onNext: () -> Unit,
-    onSkip: (() -> Unit)? = null
+fun Onboarding3Screen(
+    getStarted: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -43,14 +41,14 @@ fun Onboarding2Screen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.onboarding_2),
-                    contentDescription = "Onboarding 2 Illustration",
+                    painter = painterResource(id = R.drawable.onboarding_3),
+                    contentDescription = "Onboarding 3 Illustration",
                     modifier = Modifier.size(320.dp)
                         .padding(bottom = 12.dp)
                 )
 
                 Text(
-                    text = "Expert vaccine care",
+                    text = "Invest in your child's health",
                     style = MaterialTheme.typography.titleLarge,
                     color = PrimaryMain,
                     textAlign = TextAlign.Center
@@ -59,7 +57,7 @@ fun Onboarding2Screen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Expert care for necessary immunizations and disease protection, all-in-one app",
+                    text = "Secure your child's future with the gift of good health",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Black100,
                     textAlign = TextAlign.Center,
@@ -73,19 +71,20 @@ fun Onboarding2Screen(
             ) {
                 OnboardingIndicator(
                     totalPages = 3,
-                    currentPage = 1
+                    currentPage = 2
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Tombol Next & Skip
+
+            // Tombol Get Started
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 24.dp)
             ) {
                 Button(
-                    onClick = { onNext() },
+                    onClick = { getStarted() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PrimaryMain,
                         contentColor = White10
@@ -96,21 +95,11 @@ fun Onboarding2Screen(
                         .height(45.dp)
                 ) {
                     Text(
-                        text = "Next",
+                        text = "Get Started",
                         fontSize = 16.sp
                     )
                 }
-
-                TextButton(
-                    onClick = { onSkip?.invoke() },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = "Skip",
-                        color = Grey40,
-                        fontSize = 14.sp
-                    )
-                }
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

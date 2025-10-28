@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,12 +14,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.immunify.R
 import com.example.immunify.ui.theme.Black100
+import com.example.immunify.ui.theme.Grey40
 import com.example.immunify.ui.theme.PrimaryMain
 import com.example.immunify.ui.theme.White10
 
 @Composable
-fun Onboarding3Screen(
-    getStarted: () -> Unit,
+fun Onboarding1Screen(
+    onNext: () -> Unit,
+    onSkip: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -41,14 +43,14 @@ fun Onboarding3Screen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.onboarding_3),
-                    contentDescription = "Onboarding 3 Illustration",
+                    painter = painterResource(id = R.drawable.onboarding_1),
+                    contentDescription = "Onboarding 1 Illustration",
                     modifier = Modifier.size(320.dp)
                         .padding(bottom = 12.dp)
                 )
 
                 Text(
-                    text = "Invest in your child's health",
+                    text = "Immunization made easy",
                     style = MaterialTheme.typography.titleLarge,
                     color = PrimaryMain,
                     textAlign = TextAlign.Center
@@ -57,11 +59,11 @@ fun Onboarding3Screen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Secure your child's future with the gift of good health",
+                    text = "Never miss an appointment again while eliminating the hassle of paper records.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Black100,
                     textAlign = TextAlign.Center,
-                )
+                    )
             }
 
             // Indikator Halaman
@@ -71,20 +73,19 @@ fun Onboarding3Screen(
             ) {
                 OnboardingIndicator(
                     totalPages = 3,
-                    currentPage = 2
+                    currentPage = 0 // karena ini halaman pertama
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
 
-
-            // Tombol Get Started
+            // Tombol Next & Skip
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 24.dp)
             ) {
                 Button(
-                    onClick = { getStarted() },
+                    onClick = { onNext() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PrimaryMain,
                         contentColor = White10
@@ -95,11 +96,21 @@ fun Onboarding3Screen(
                         .height(45.dp)
                 ) {
                     Text(
-                        text = "Get Started",
-                        fontSize = 16.sp
+                        text = "Next",
+                        fontSize = 14.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(40.dp))
+
+                TextButton(
+                    onClick = { onSkip?.invoke() },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Skip",
+                        color = Grey40,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }

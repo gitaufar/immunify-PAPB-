@@ -1,4 +1,4 @@
-package com.example.immunify.ui
+package com.example.immunify.ui.auth
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
