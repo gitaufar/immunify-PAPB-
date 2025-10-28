@@ -12,12 +12,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.immunify.R
 import com.example.immunify.ui.component.*
+import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.*
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavController
+) {
     val scrollState = rememberScrollState()
 
     Column(
@@ -116,7 +120,8 @@ fun HomeScreen() {
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             SectionHeader(
                 title = "Prevention Starts with Knowledge",
-                subtitle = "Get insights about vaccination"
+                subtitle = "Get insights about vaccination",
+                onClickViewAll = {navController.navigate(Routes.INSIGHTS)}
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -156,7 +161,7 @@ fun HomeScreen() {
 
 // Komponen untuk judul section
 @Composable
-fun SectionHeader(title: String, subtitle: String) {
+fun SectionHeader(title: String, subtitle: String, onClickViewAll: () -> Unit = {}) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -192,10 +197,10 @@ fun SectionHeader(title: String, subtitle: String) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewHomeScreen() {
-    ImmunifyTheme {
-        HomeScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewHomeScreen() {
+//    ImmunifyTheme {
+//        HomeScreen()
+//    }
+//}
