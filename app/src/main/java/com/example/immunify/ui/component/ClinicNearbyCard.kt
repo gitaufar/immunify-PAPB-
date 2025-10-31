@@ -19,7 +19,7 @@ import com.example.immunify.R
 import com.example.immunify.ui.theme.*
 
 @Composable
-fun ClinicsHomeCard(
+fun ClinicNearbyCard(
     modifier: Modifier = Modifier,
     hospitalName: String,
     address: String,
@@ -27,31 +27,38 @@ fun ClinicsHomeCard(
     rating: Double,
     imageRes: Int
 ) {
-    val shape = RoundedCornerShape(8.dp)
+    val shape = RoundedCornerShape(10.dp)
 
     Card(
         modifier = modifier
-            .width(250.dp)
+            .fillMaxWidth()
+            .height(100.dp)
             .border(1.dp, Grey30, shape),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = White10),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
-        Column {
-            // Gambar rumah sakit
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Gambar di kiri
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = hospitalName,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
 
-            // Informasi teks
+            // Teks di kanan
             Column(
-                modifier = Modifier.padding(12.dp), Arrangement.spacedBy(6.dp)
+                modifier = Modifier
+                    .padding(12.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
                     text = hospitalName,
@@ -67,15 +74,13 @@ fun ClinicsHomeCard(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Baris bawah (ikon mobil, jarak, titik, bintang, rating)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                // Baris bawah
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_distance),
                         contentDescription = null,
                         tint = Grey70,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -83,7 +88,6 @@ fun ClinicsHomeCard(
                         style = MaterialTheme.typography.bodySmall.copy(color = Grey90)
                     )
 
-                    // Titik pemisah kecil
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
@@ -96,7 +100,7 @@ fun ClinicsHomeCard(
                         painter = painterResource(id = R.drawable.ic_rating),
                         contentDescription = null,
                         tint = Yellow,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -111,9 +115,9 @@ fun ClinicsHomeCard(
 
 @Preview(showBackground = false)
 @Composable
-fun PreviewClinicsHomeCard() {
+fun PreviewClinicNearbyCard() {
     ImmunifyTheme {
-        ClinicsHomeCard(
+        ClinicNearbyCard(
             hospitalName = "RS EMC Pulomas",
             address = "Jl. Pulo Mas Bar. VI No.20, Kec. Pulo Gadung",
             distance = "2 km",

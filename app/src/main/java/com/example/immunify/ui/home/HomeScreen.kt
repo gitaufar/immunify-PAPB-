@@ -104,7 +104,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
             items(3) {
-                ClinicsHomeCard(
+                ClinicHomeCard(
                     hospitalName = "RS EMC Pulomas",
                     address = "Jl. Pulo Mas Bar. VI No.20, Kec. Pulo Gadung",
                     distance = "2 km",

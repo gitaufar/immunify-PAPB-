@@ -43,7 +43,7 @@ fun RootNavGraph(navController: NavHostController) {
                     }
                 },
                 onSkip = {
-                    navController.navigate(Routes.REGISTER) {
+                    navController.navigate(Routes.MAIN_GRAPH) {
                         popUpTo(Routes.ONBOARDING1) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -61,7 +61,7 @@ fun RootNavGraph(navController: NavHostController) {
                     }
                 },
                 onSkip = {
-                    navController.navigate(Routes.REGISTER) {
+                    navController.navigate(Routes.MAIN_GRAPH) {
                         popUpTo(Routes.ONBOARDING2) { inclusive = true }
                         launchSingleTop = true
                     }
