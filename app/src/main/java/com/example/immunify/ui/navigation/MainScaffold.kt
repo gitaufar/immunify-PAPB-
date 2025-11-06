@@ -5,10 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
+import com.example.immunify.ui.clinics.ClinicsScreen
 import com.example.immunify.ui.home.HomeScreen
 
 @Composable
-fun MainScaffold() {
+fun MainScaffold(onMapClick: () -> Unit = {}) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -20,7 +21,11 @@ fun MainScaffold() {
             modifier = Modifier.padding(padding)
         ) {
             composable(Routes.HOME) { HomeScreen(navController) }
-            composable(Routes.CLINICS) { /* ClinicsScreen() */ }
+            composable(Routes.CLINICS) {
+                ClinicsScreen(onMapClick = {
+                    onMapClick()
+                })
+            }
             composable(Routes.TRACKER) { /* TrackerScreen() */ }
             composable(Routes.PROFILE) { /* ProfileScreen() */ }
         }

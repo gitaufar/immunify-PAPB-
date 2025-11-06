@@ -11,6 +11,8 @@ import com.example.immunify.ui.onboarding.Onboarding1Screen
 import com.example.immunify.ui.onboarding.Onboarding2Screen
 import com.example.immunify.ui.onboarding.Onboarding3Screen
 import com.example.immunify.ui.auth.RegisterScreen
+import com.example.immunify.ui.clinics.ClinicMapScreen
+import com.example.immunify.ui.clinics.ClinicsScreen
 import com.example.immunify.ui.splash.SplashScreen
 import com.example.immunify.ui.insight.InsightDetail
 import com.example.immunify.ui.insight.InsightScreen
@@ -19,7 +21,10 @@ import com.example.immunify.ui.insight.InsightScreen
 fun RootNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Routes.SPLASH
+        // buat deploy
+//        startDestination = Routes.SPLASH
+        // buat testing
+        startDestination = Routes.MAIN_GRAPH
     ) {
         // Splash Screen
         composable(Routes.SPLASH) {
@@ -43,7 +48,7 @@ fun RootNavGraph(navController: NavHostController) {
                     }
                 },
                 onSkip = {
-                    navController.navigate(Routes.MAIN_GRAPH) {
+                    navController.navigate(Routes.REGISTER) {
                         popUpTo(Routes.ONBOARDING1) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -61,7 +66,7 @@ fun RootNavGraph(navController: NavHostController) {
                     }
                 },
                 onSkip = {
-                    navController.navigate(Routes.MAIN_GRAPH) {
+                    navController.navigate(Routes.REGISTER) {
                         popUpTo(Routes.ONBOARDING2) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -108,6 +113,9 @@ fun RootNavGraph(navController: NavHostController) {
                         launchSingleTop = true
                     }
                 },
+                onForgotPasswordClick = {
+                    // TODO: tambahkan rute lupa password di sini
+                },
                 onRegisterClick = {
                     navController.navigate(Routes.REGISTER) {
                         popUpTo(Routes.LOGIN) { inclusive = true }
@@ -119,7 +127,24 @@ fun RootNavGraph(navController: NavHostController) {
 
         // Main Application (setelah login)
         composable(Routes.MAIN_GRAPH) {
-            MainScaffold()
+            MainScaffold(
+                onMapClick = { navController.navigate(Routes.CLINIC_MAP) }
+            )
+        }
+
+
+        composable(Routes.CLINICS) {
+            ClinicsScreen(
+                onMapClick = {
+                    navController.navigate(Routes.CLINIC_MAP)
+                }
+            )
+        }
+
+        composable(Routes.CLINIC_MAP) {
+            ClinicMapScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.INSIGHTS) {
@@ -138,7 +163,5 @@ fun RootNavGraph(navController: NavHostController) {
                 insightId = insightId ?: ""
             )
         }
-
-
     }
 }

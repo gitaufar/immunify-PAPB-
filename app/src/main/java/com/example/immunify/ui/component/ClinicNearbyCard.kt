@@ -32,8 +32,7 @@ fun ClinicNearbyCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .border(1.dp, Grey30, shape),
+            .height(90.dp),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = White10),
         elevation = CardDefaults.cardElevation(0.dp)
@@ -49,7 +48,7 @@ fun ClinicNearbyCard(
                 contentDescription = hospitalName,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(90.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
 
@@ -62,7 +61,7 @@ fun ClinicNearbyCard(
             ) {
                 Text(
                     text = hospitalName,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Black100),
+                    style = MaterialTheme.typography.labelMedium.copy(color = Black100),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

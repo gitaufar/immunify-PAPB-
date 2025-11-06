@@ -41,7 +41,13 @@ fun AppBar(
             titleContentColor = MaterialTheme.colorScheme.onBackground,
             navigationIconContentColor = MaterialTheme.colorScheme.onTertiary
         ),
-        windowInsets = WindowInsets(0.dp)
+        windowInsets = WindowInsets(0.dp),
+        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+    )
+
+    Divider(
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+        thickness = 0.5.dp
     )
 }
 

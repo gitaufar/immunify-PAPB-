@@ -47,7 +47,7 @@ fun UpcomingVaccineCard(
             // Judul vaksin
             Text(
                 text = vaccineName,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
                 color = Black100
             )
 

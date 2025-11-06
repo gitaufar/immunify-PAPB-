@@ -1,6 +1,7 @@
 package com.example.immunify.ui.navigation
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,7 +39,9 @@ fun BottomNavBar(navController: NavHostController) {
     NavigationBar(
         containerColor = White10,
         tonalElevation = 0.dp,
-        modifier = Modifier.height(100.dp)
+        modifier = Modifier
+            .height(90.dp)
+            .padding(horizontal = 8.dp)
     ) {
         bottomItems.forEach { item ->
             val selected = isSelected(dest, item.route)
@@ -56,13 +59,13 @@ fun BottomNavBar(navController: NavHostController) {
                         painter = painterResource(id = item.icon),
                         contentDescription = item.label,
                         tint = if (selected) PrimaryMain else Grey50,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
-                        style = Typography.bodyMedium,
+                        style = Typography.bodySmall,
                         color = if (selected) PrimaryMain else Grey50
                     )
                 },

@@ -55,7 +55,7 @@ fun ClinicHomeCard(
             ) {
                 Text(
                     text = hospitalName,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Black100),
+                    style = MaterialTheme.typography.labelMedium.copy(color = Black100),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
