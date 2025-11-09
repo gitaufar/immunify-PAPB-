@@ -1,24 +1,27 @@
 package com.example.immunify.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.immunify.ui.auth.LoginScreen
-import com.example.immunify.ui.onboarding.Onboarding1Screen
-import com.example.immunify.ui.onboarding.Onboarding2Screen
-import com.example.immunify.ui.onboarding.Onboarding3Screen
-import com.example.immunify.ui.auth.RegisterScreen
-import com.example.immunify.ui.clinics.ClinicMapScreen
-import com.example.immunify.ui.clinics.ClinicsScreen
+import com.example.immunify.ui.auth.*
+import com.example.immunify.ui.clinics.*
+import com.example.immunify.ui.insight.*
+import com.example.immunify.ui.onboarding.*
 import com.example.immunify.ui.splash.SplashScreen
-import com.example.immunify.ui.insight.InsightDetail
-import com.example.immunify.ui.insight.InsightScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RootNavGraph(navController: NavHostController) {
+fun RootNavGraph(
+    navController: NavHostController = rememberNavController(),
+    userLatitude: Double,
+    userLongitude: Double
+) {
     NavHost(
         navController = navController,
         // buat deploy
@@ -26,7 +29,6 @@ fun RootNavGraph(navController: NavHostController) {
         // buat testing
         startDestination = Routes.MAIN_GRAPH
     ) {
-        // Splash Screen
         composable(Routes.SPLASH) {
             SplashScreen(
                 onFinished = {
@@ -38,111 +40,63 @@ fun RootNavGraph(navController: NavHostController) {
             )
         }
 
-        // Onboarding 1
         composable(Routes.ONBOARDING1) {
             Onboarding1Screen(
-                onNext = {
-                    navController.navigate(Routes.ONBOARDING2) {
-                        popUpTo(Routes.ONBOARDING1) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onSkip = {
-                    navController.navigate(Routes.REGISTER) {
-                        popUpTo(Routes.ONBOARDING1) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onNext = { navController.navigate(Routes.ONBOARDING2) },
+                onSkip = { navController.navigate(Routes.REGISTER) }
             )
         }
 
-        // Onboarding 2
         composable(Routes.ONBOARDING2) {
             Onboarding2Screen(
-                onNext = {
-                    navController.navigate(Routes.ONBOARDING3) {
-                        popUpTo(Routes.ONBOARDING2) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onSkip = {
-                    navController.navigate(Routes.REGISTER) {
-                        popUpTo(Routes.ONBOARDING2) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onNext = { navController.navigate(Routes.ONBOARDING3) },
+                onSkip = { navController.navigate(Routes.REGISTER) }
             )
         }
 
-        // Onboarding 3
         composable(Routes.ONBOARDING3) {
             Onboarding3Screen(
                 getStarted = {
-                    navController.navigate(Routes.REGISTER) {
-                        popUpTo(Routes.ONBOARDING3) { inclusive = true }
-                        launchSingleTop = true
-                    }
+                    navController.navigate(Routes.REGISTER)
                 }
             )
         }
 
-        // Register Screen
         composable(Routes.REGISTER) {
             RegisterScreen(
-                onRegisterSuccess = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.REGISTER) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onLoginClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.REGISTER) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onRegisterSuccess = { navController.navigate(Routes.LOGIN) },
+                onLoginClick = { navController.navigate(Routes.LOGIN) }
             )
         }
 
-        // Login Screen
         composable(Routes.LOGIN) {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(Routes.MAIN_GRAPH) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onForgotPasswordClick = {
-                    // TODO: tambahkan rute lupa password di sini
-                },
-                onRegisterClick = {
-                    navController.navigate(Routes.REGISTER) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onLoginSuccess = { navController.navigate(Routes.MAIN_GRAPH) },
+                onForgotPasswordClick = {},
+                onRegisterClick = { navController.navigate(Routes.REGISTER) }
             )
         }
 
-        // Main Application (setelah login)
         composable(Routes.MAIN_GRAPH) {
             MainScaffold(
-                onMapClick = { navController.navigate(Routes.CLINIC_MAP) }
+                onMapClick = { navController.navigate(Routes.CLINIC_MAP) },
+                userLatitude = userLatitude,
+                userLongitude = userLongitude
             )
         }
-
 
         composable(Routes.CLINICS) {
             ClinicsScreen(
-                onMapClick = {
-                    navController.navigate(Routes.CLINIC_MAP)
-                }
+                userLatitude = userLatitude,
+                userLongitude = userLongitude,
+                onMapClick = { navController.navigate(Routes.CLINIC_MAP) }
             )
         }
 
         composable(Routes.CLINIC_MAP) {
             ClinicMapScreen(
+                userLatitude = userLatitude,
+                userLongitude = userLongitude,
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -153,15 +107,10 @@ fun RootNavGraph(navController: NavHostController) {
 
         composable(
             route = Routes.INSIGHT_DETAIL,
-            arguments = listOf(
-                navArgument("insightId") { type = NavType.StringType }
-            )
+            arguments = listOf(navArgument("insightId") { type = NavType.StringType })
         ) { backStackEntry ->
             val insightId = backStackEntry.arguments?.getString("insightId")
-            InsightDetail(
-                navController = navController,
-                insightId = insightId ?: ""
-            )
+            InsightDetail(navController = navController, insightId = insightId ?: "")
         }
     }
 }

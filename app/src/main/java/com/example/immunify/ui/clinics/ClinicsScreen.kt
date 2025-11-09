@@ -13,29 +13,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
+import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
-import com.example.immunify.ui.theme.ImmunifyTheme
+import com.example.immunify.ui.component.calculateDistanceKm
 import com.example.immunify.ui.theme.Typography
 
 @Composable
 fun ClinicsScreen(
     modifier: Modifier = Modifier,
+    userLatitude: Double,
+    userLongitude: Double,
     onMapClick: () -> Unit = {}
 ) {
-    val clinics = listOf(
-        ClinicItem("RS EMC Pulomas", "Jl. Pulo Mas Bar. VI No.20, Kec. Pulo Gadung", "2 km", 4.9, R.drawable.image_hospital),
-        ClinicItem("Columbia Asia Hospital", "Jl. Kayu Putih Raya No.1, RW.16, Kayu Putih", "3 km", 4.9, R.drawable.image_hospital),
-        ClinicItem("RSUP Persahabatan", "Jl. Persahabatan Raya No.1, Rawamangun", "2 km", 4.9, R.drawable.image_hospital),
-        ClinicItem("Mediros Hospital", "Jl. Perintis Kemerdekaan Kav. 149, Pulo Gadung", "3 km", 3.6, R.drawable.image_hospital),
-        ClinicItem("Pertamina Jaya Hospital", "Jl. Jend. Ahmad Yani No.2, RT.2/RW.7, Cempaka Putih", "2 km", 4.0, R.drawable.image_hospital),
-        ClinicItem("Mayapada Hospital", "Jl. Mayapada No. 88, Jakarta Timur", "4 km", 4.8, R.drawable.image_hospital)
-    )
-
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    // mengurutkan berdasarkan jarak
+    val sortedClinics = ClinicSamples.sortedBy { clinic ->
+        calculateDistanceKm(
+            userLatitude,
+            userLongitude,
+            clinic.latitude,
+            clinic.longitude
+        )
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -55,7 +58,8 @@ fun ClinicsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             item {
                 Image(
@@ -78,31 +82,22 @@ fun ClinicsScreen(
                 )
             }
 
-            items(clinics) { clinic ->
+            // ganti fetch data dari Supabase
+            items(sortedClinics) { clinic ->
                 ClinicNearbyCard(
-                    imageRes = clinic.imageRes,
-                    hospitalName = clinic.name,
-                    address = clinic.address,
-                    distance = clinic.distance,
-                    rating = clinic.rating
+                    clinic = clinic,
+                    userLatitude = userLatitude,
+                    userLongitude = userLongitude
                 )
             }
         }
     }
 }
 
-data class ClinicItem(
-    val name: String,
-    val address: String,
-    val distance: String,
-    val rating: Double,
-    val imageRes: Int
-)
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewClinicsScreen() {
-    ImmunifyTheme {
-        ClinicsScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewClinicsScreen() {
+//    ImmunifyTheme {
+//        ClinicsScreen()
+//    }
+//}

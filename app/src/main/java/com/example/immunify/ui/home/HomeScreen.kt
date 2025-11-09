@@ -1,7 +1,10 @@
 package com.example.immunify.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -9,20 +12,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.immunify.R
+import com.example.immunify.data.local.ClinicSamples
+import com.example.immunify.data.local.DiseaseSamples
+import com.example.immunify.data.local.VaccineSamples
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    userLatitude: Double,
+    userLongitude: Double
 ) {
     val scrollState = rememberScrollState()
+
+    // mengurutkan berdasarkan jarak
+    val sortedClinics = ClinicSamples.sortedBy { clinic ->
+        calculateDistanceKm(
+            userLatitude,
+            userLongitude,
+            clinic.latitude,
+            clinic.longitude
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -30,9 +47,8 @@ fun HomeScreen(
             .verticalScroll(scrollState)
             .padding(vertical = 8.dp)
     ) {
-        // Header dibungkus padding horizontal
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            // HEADER: Greeting dan Notifikasi
+            // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -68,7 +84,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // SECTION 1: Upcoming Vaccine
+            // Upcoming Vaccine Section
             SectionHeader(
                 title = "Upcoming Vaccine",
                 subtitle = "Don't forget to schedule your upcoming vaccine"
@@ -77,19 +93,14 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                UpcomingVaccineCard(modifier = Modifier, "HPV", "3 days", isWarning = true)
-                UpcomingVaccineCard(modifier = Modifier, "Influenza", "5 days", isWarning = true)
-                UpcomingVaccineCard(
-                    modifier = Modifier,
-                    "Varicella (Chicken Pox)",
-                    "6 months",
-                    isWarning = false
-                )
+                VaccineSamples.forEach { vaccine ->
+                    UpcomingVaccineCard(vaccine = vaccine)
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // SECTION 2 HEADER: Clinics Nearby
+            // Clinics Nearby Section
             SectionHeader(
                 title = "Clinics Nearby",
                 subtitle = "Find the closest clinic to your location"
@@ -98,30 +109,27 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // LazyRow keluar dari padding horizontal utama
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
-            items(3) {
+            items(sortedClinics) { clinic ->
                 ClinicHomeCard(
-                    hospitalName = "RS EMC Pulomas",
-                    address = "Jl. Pulo Mas Bar. VI No.20, Kec. Pulo Gadung",
-                    distance = "2 km",
-                    rating = 4.9,
-                    imageRes = R.drawable.image_hospital
+                    clinic = clinic,
+                    userLatitude = userLatitude,
+                    userLongitude = userLongitude
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // SECTION 3 HEADER: Disease Knowledge
+        // Disease Knowledge Section
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             SectionHeader(
                 title = "Prevention Starts with Knowledge",
                 subtitle = "Get insights about vaccination",
-                onClickViewAll = {navController.navigate(Routes.INSIGHTS)}
+                onClickViewAll = { navController.navigate(Routes.INSIGHTS) }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -131,76 +139,9 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
-            item {
-                DiseaseCard(
-                    imageRes = R.drawable.image_hpv,
-                    diseaseName = "HPV"
-                )
-            }
-            item {
-                DiseaseCard(
-                    imageRes = R.drawable.image_polio,
-                    diseaseName = "Poliovirus"
-                )
-            }
-            item {
-                DiseaseCard(
-                    imageRes = R.drawable.image_typhoid,
-                    diseaseName = "Typhoid"
-                )
-            }
-            item {
-                DiseaseCard(
-                    imageRes = R.drawable.image_covid,
-                    diseaseName = "Covid"
-                )
+            items(DiseaseSamples) { disease ->
+                DiseaseCard(disease = disease)
             }
         }
     }
 }
-
-// Komponen untuk judul section
-@Composable
-fun SectionHeader(title: String, subtitle: String, onClickViewAll: () -> Unit = {}) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 8.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall.copy(color = Grey70),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-
-        Text(
-            text = "View All",
-            style = MaterialTheme.typography.bodySmall.copy(color = Grey60),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewHomeScreen() {
-//    ImmunifyTheme {
-//        HomeScreen()
-//    }
-//}

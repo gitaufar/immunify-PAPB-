@@ -3,6 +3,7 @@ package com.example.immunify.ui.insight
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,6 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
+import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.DiseaseCard
 import com.example.immunify.ui.component.InsightCard
@@ -33,7 +35,7 @@ fun InsightScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 🔍 Search Bar
+            // Search Bar
             item {
                 OutlinedTextField(
                     value = searchQuery,
@@ -47,7 +49,7 @@ fun InsightScreen(
                 )
             }
 
-            // 📰 Latest Updates
+            // Latest Updates
             item {
                 SectionTitle("Latest Updates")
                 Spacer(modifier = Modifier.height(8.dp))
@@ -73,20 +75,23 @@ fun InsightScreen(
                 }
             }
 
-            // 🧬 Know the Disease!
+            // Know the Disease!
             item {
                 SectionTitle("Know the Disease!")
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    item { DiseaseCard(imageRes = R.drawable.image_hpv, diseaseName = "HPV") }
-                    item { DiseaseCard(imageRes = R.drawable.image_typhoid, diseaseName = "Typhoid") }
-                    item { DiseaseCard(imageRes = R.drawable.image_polio, diseaseName = "Polio") }
+                    // ganti fetch data dari Supabase
+                    items(DiseaseSamples) { disease ->
+                        DiseaseCard(
+                            disease = disease
+                        )
+                    }
                 }
             }
 
-            // 🍎 Live Healthy
+            // Live Healthy
             item {
                 SectionTitle("Live Healthy")
                 Spacer(modifier = Modifier.height(8.dp))

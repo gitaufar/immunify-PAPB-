@@ -18,13 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
+import com.example.immunify.data.model.DiseaseData
 import com.example.immunify.ui.theme.*
 
 @Composable
 fun DiseaseCard(
-    modifier: Modifier = Modifier,
-    imageRes: Int,
-    diseaseName: String
+    disease: DiseaseData,
+    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(6.dp)
 
@@ -40,15 +40,13 @@ fun DiseaseCard(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Gambar penyakit
             Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = diseaseName,
+                painter = painterResource(id = disease.imageRes),
+                contentDescription = disease.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Gradasi dari bawah ke atas
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,14 +62,13 @@ fun DiseaseCard(
                     )
             )
 
-            // Teks nama penyakit
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(12.dp)
             ) {
                 Text(
-                    text = diseaseName,
+                    text = disease.name,
                     style = MaterialTheme.typography.bodyMedium.copy(color = White10)
                 )
             }
@@ -84,8 +81,15 @@ fun DiseaseCard(
 fun PreviewDiseaseCard() {
     ImmunifyTheme {
         DiseaseCard(
-            imageRes = R.drawable.image_hpv,
-            diseaseName = "HPV"
+            disease = DiseaseData(
+                id = "hpv",
+                name = "HPV",
+                imageRes = R.drawable.image_hpv,
+                keyFacts = emptyList(),
+                overview = "",
+                symptoms = emptyList(),
+                treatments = emptyList()
+            )
         )
     }
 }
