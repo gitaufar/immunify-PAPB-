@@ -19,6 +19,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.immunify.R
 import com.example.immunify.ui.component.AuthTextField
 import com.example.immunify.ui.component.GoogleButton
@@ -30,11 +31,21 @@ import com.example.immunify.ui.theme.*
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onLoginClick: () -> Unit,
-    onGoogleClick: () -> Unit = {}
+    onGoogleClick: () -> Unit = {},
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val whiteHeight = screenHeight * 0.85f
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isSuccess by viewModel.isLoginSuccess.collectAsState()
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            onRegisterSuccess()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -119,7 +130,10 @@ fun RegisterScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(text = "Parent Full Name", style = MaterialTheme.typography.labelMedium.copy(color = Black100))
+                    Text(
+                        text = "Parent Full Name",
+                        style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                    )
                     AuthTextField(
                         value = name,
                         onValueChange = { name = it },
@@ -127,7 +141,10 @@ fun RegisterScreen(
                         leadingIcon = R.drawable.ic_fullname
                     )
 
-                    Text(text = "Email", style = MaterialTheme.typography.labelMedium.copy(color = Black100))
+                    Text(
+                        text = "Email",
+                        style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                    )
                     AuthTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -135,7 +152,10 @@ fun RegisterScreen(
                         leadingIcon = R.drawable.ic_email
                     )
 
-                    Text(text = "Password", style = MaterialTheme.typography.labelMedium.copy(color = Black100))
+                    Text(
+                        text = "Password",
+                        style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                    )
                     AuthTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -174,9 +194,18 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                if (errorMessage != null) {
+                    Text(text = errorMessage ?: "", color = Color.Red)
+                }
+
                 MainButton(
                     text = "Sign Up",
-                    onClick = { onRegisterSuccess() }
+                    onClick = {
+                        viewModel.register(
+                            email.text.trim(),
+                            password.text.trim()
+                        )
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

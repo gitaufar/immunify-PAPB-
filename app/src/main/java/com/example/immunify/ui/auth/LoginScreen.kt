@@ -23,10 +23,12 @@ import com.example.immunify.ui.component.AuthTextField
 import com.example.immunify.ui.component.GoogleButton
 import com.example.immunify.ui.component.MainButton
 import com.example.immunify.ui.theme.*
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun LoginScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onRegisterClick: () -> Unit,
@@ -35,6 +37,13 @@ fun LoginScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val whiteHeight = screenHeight * 0.85f
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoginSuccess by viewModel.isLoginSuccess.collectAsState()
+
+    if (isLoginSuccess) {
+        onLoginSuccess()
+    }
 
     Box(
         modifier = Modifier
@@ -155,8 +164,12 @@ fun LoginScreen(
 
                 MainButton(
                     text = "Sign In",
-                    onClick = { onLoginSuccess() }
+                    onClick = { viewModel.login(email.text, password.text) }
                 )
+
+                errorMessage?.let {
+                    Text(text = it, color = Color.Red)
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
