@@ -1,148 +1,147 @@
 package com.example.immunify.data.local
 
 import com.example.immunify.data.model.ClinicData
-import com.example.immunify.ui.component.calculateDistanceKm
 
 val ClinicSamples = listOf(
     ClinicData(
         id = "rssa",
         name = "RSUD Dr. Saiful Anwar (RSSA)",
         imageUrl = "https://rsusaifulanwar.jatimprov.go.id/wp-content/uploads/2020/03/rs-saiful-anwar.jpeg",
-        address = "Jl. Jaksa Agung Suprapto No. 2, Klojen, Kota Malang, Jawa Timur 65111",
-        district = "Klojen",
-        city = "Malang",
+        address = "Jl. Jaksa Agung Suprapto No. 2",
+        district = "Kec. Klojen",
+        city = "Kota Malang",
         latitude = -7.972247,
         longitude = 112.636101,
         rating = 4.6,
         website = "https://rsusaifulanwar.jatimprov.go.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "soepraoen",
         name = "RS Tk. II Dr. Soepraoen",
         imageUrl = "https://www.rssoepraoen.co.id/assets/images/rs-soepraoen.jpg",
-        address = "Jl. S. Supriadi No.22, Sukun, Kota Malang, Jawa Timur 65112",
-        district = "Sukun",
-        city = "Malang",
+        address = "Jl. S. Supriadi No. 22",
+        district = "Kec. Sukun",
+        city = "Kota Malang",
         latitude = -7.967900,
         longitude = 112.617400,
         rating = 4.4,
         website = "https://www.rssoepraoen.co.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "rsud_kota_malang",
         name = "RSUD Kota Malang",
         imageUrl = "https://rsud.malangkota.go.id/assets/images/rsud.jpg",
-        address = "Jl. Rajasa No. 27, Kel. Bumiayu, Kec. Kedungkandang, Kota Malang, Jawa Timur 65116",
-        district = "Kedungkandang",
-        city = "Malang",
+        address = "Jl. Rajasa No. 27",
+        district = "Kec. Kedungkandang",
+        city = "Kota Malang",
         latitude = -7.958500,
         longitude = 112.627300,
         rating = 4.2,
         website = "https://rsud.malangkota.go.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "lavalette",
         name = "RS Lavalette",
         imageUrl = "https://rslavalette.ihc.id/assets/images/rslavalette.jpg",
-        address = "Jl. W.R. Supratman No. 10, Rampal Celaket, Kec. Klojen, Kota Malang, Jawa Timur 65111",
-        district = "Klojen",
-        city = "Malang",
+        address = "Jl. W.R. Supratman No. 10",
+        district = "Kec. Klojen",
+        city = "Kota Malang",
         latitude = -7.975800,
         longitude = 112.629200,
         rating = 4.3,
         website = "https://rslavalette.ihc.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "persada",
         name = "Persada Hospital (Araya)",
         imageUrl = "https://persadahospital.co.id/wp-content/uploads/2024/07/persada-exterior.jpg",
-        address = "Kompleks Araya Business Center, Jl. Raden Panji Suroso Kav. II-IV, Kel. Purwodadi, Kec. Blimbing, Kota Malang, Jawa Timur 65126",
-        district = "Blimbing",
-        city = "Malang",
+        address = "Jl. Raden Panji Suroso Kav. II-IV",
+        district = "Kec. Blimbing",
+        city = "Kota Malang",
         latitude = -7.934984472,
         longitude = 112.6502085,
         rating = 4.5,
         website = "https://persadahospital.co.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "panti_nirmala",
         name = "RS Panti Nirmala",
         imageUrl = "https://rspantinirmala.com/assets/images/header.jpg",
-        address = "Jl. Kebalen Wetan No. 2-8, Kel. Kotalama, Kec. Kedungkandang, Kota Malang 65134",
-        district = "Kedungkandang",
-        city = "Malang",
+        address = "Jl. Kebalen Wetan No. 2-8",
+        district = "Kec. Kedungkandang",
+        city = "Kota Malang",
         latitude = -7.960200,
         longitude = 112.623400,
         rating = 4.1,
         website = "http://www.rspantinirmala.com",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "panti_waluya",
         name = "RS Panti Waluya Sawahan",
         imageUrl = "https://www.pantiwaluya.or.id/wp-content/uploads/2023/01/rs-panti-waluya.jpg",
-        address = "Jl. Nusakambangan No. 56, Sawahan / Klojen, Kota Malang, Jawa Timur 65117",
-        district = "Klojen",
-        city = "Malang",
+        address = "Jl. Nusakambangan No. 56",
+        district = "Kec. Klojen",
+        city = "Kota Malang",
         latitude = -7.987127552,
         longitude = 112.6246355,
         rating = 4.0,
         website = "https://www.pantiwaluya.or.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "rsi_aisyiyah",
         name = "RSI Aisyiyah Malang",
         imageUrl = "https://rsiaisyiyah-malang.or.id/assets/images/header.jpg",
-        address = "Jl. Sulawesi No. 16, Kasin, Klojen, Kota Malang, Jawa Timur 65117",
-        district = "Klojen",
-        city = "Malang",
+        address = "Jl. Sulawesi No. 16",
+        district = "Kec. Klojen",
+        city = "Kota Malang",
         latitude = -7.979900,
         longitude = 112.624000,
         rating = 4.2,
         website = "https://rsiaisyiyah-malang.or.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "hermina_tangkuban",
         name = "RS Hermina Tangkuban Perahu",
         imageUrl = "https://herminahospitals.com/id/wp-content/uploads/2022/05/hermina-tangkuban.jpg",
-        address = "Jl. Tangkuban Perahu No. 31-33, Kauman, Kec. Klojen, Kota Malang, Jawa Timur 65119",
-        district = "Klojen",
-        city = "Malang",
+        address = "Jl. Tangkuban Perahu No. 31-33",
+        district = "Kec. Klojen",
+        city = "Kota Malang",
         latitude = -7.9780058,
         longitude = 112.624481,
         rating = 4.1,
         website = "https://herminahospitals.com/id/branch/hermina-tangkuban-perahu",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     ),
     ClinicData(
         id = "rs_unibraw",
         name = "RS Universitas Brawijaya",
         imageUrl = "https://rumahsakit.ub.ac.id/wp-content/uploads/2023/01/rsub-building.jpg",
-        address = "Jl. Soekarno Hatta, Kel. Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur",
-        district = "Lowokwaru",
-        city = "Malang",
+        address = "Jl. Soekarno Hatta",
+        district = "Kec. Lowokwaru",
+        city = "Kota Malang",
         latitude = -7.966000,
         longitude = 112.610000,
         rating = 4.4,
         website = "https://rumahsakit.ub.ac.id",
         openingHours = "24 Hours",
-        availableVaccines = emptyList()
+        availableVaccines = ClinicVaccineSamples
     )
 )
 

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.auth.*
 import com.example.immunify.ui.clinics.*
 import com.example.immunify.ui.insight.*
@@ -51,8 +52,6 @@ fun RootNavGraph(
                 })
         }
 
-
-
         composable(Routes.ONBOARDING1) {
             Onboarding1Screen(
                 onNext = { navController.navigate(Routes.ONBOARDING2) },
@@ -87,14 +86,17 @@ fun RootNavGraph(
 
         composable(Routes.MAIN_GRAPH) {
             MainScaffold(
+                rootNavController = navController,
                 onMapClick = { navController.navigate(Routes.CLINIC_MAP) },
                 userLatitude = userLatitude,
                 userLongitude = userLongitude
             )
         }
 
+
         composable(Routes.CLINICS) {
             ClinicsScreen(
+                navController = navController,
                 userLatitude = userLatitude,
                 userLongitude = userLongitude,
                 onMapClick = { navController.navigate(Routes.CLINIC_MAP) })
@@ -105,6 +107,22 @@ fun RootNavGraph(
                 userLatitude = userLatitude,
                 userLongitude = userLongitude,
                 onBackClick = { navController.popBackStack() })
+        }
+
+        composable(
+            route = Routes.CLINIC_DETAIL,
+            arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
+            val clinic = ClinicSamples.find { it.id == clinicId }
+            clinic?.let {
+                ClinicDetailScreen(
+                    clinic = it,
+                    userLatitude = userLatitude,
+                    userLongitude = userLongitude,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
 
         composable(Routes.INSIGHTS) {

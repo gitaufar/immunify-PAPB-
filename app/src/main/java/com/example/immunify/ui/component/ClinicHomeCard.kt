@@ -3,6 +3,7 @@ package com.example.immunify.ui.component
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -26,7 +27,8 @@ fun ClinicHomeCard(
     modifier: Modifier = Modifier,
     clinic: ClinicData,
     userLatitude: Double,
-    userLongitude: Double
+    userLongitude: Double,
+    onClick: () -> Unit = {}
 ) {
     val shape = RoundedCornerShape(8.dp)
 
@@ -42,7 +44,8 @@ fun ClinicHomeCard(
     Card(
         modifier = modifier
             .width(250.dp)
-            .border(1.dp, Grey30, shape),
+            .border(1.dp, Grey30, shape)
+            .clickable(onClick = onClick),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = White10),
         elevation = CardDefaults.cardElevation(0.dp)
@@ -98,7 +101,7 @@ fun ClinicHomeCard(
                             .padding(horizontal = 8.dp)
                             .size(4.dp)
                             .clip(RoundedCornerShape(50))
-                            .background(Grey70)
+                            .background(Grey60)
                     )
 
                     Icon(
@@ -117,7 +120,6 @@ fun ClinicHomeCard(
         }
     }
 }
-
 
 fun calculateDistanceKm(
     lat1: Double,

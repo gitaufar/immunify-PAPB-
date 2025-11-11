@@ -14,16 +14,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.immunify.R
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
 import com.example.immunify.ui.component.calculateDistanceKm
+import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.Typography
 
 @Composable
 fun ClinicsScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     userLatitude: Double,
     userLongitude: Double,
     onMapClick: () -> Unit = {}
@@ -87,7 +90,10 @@ fun ClinicsScreen(
                 ClinicNearbyCard(
                     clinic = clinic,
                     userLatitude = userLatitude,
-                    userLongitude = userLongitude
+                    userLongitude = userLongitude,
+                    onClick = {
+                        navController.navigate(Routes.clinicDetailRoute(clinic.id))
+                    }
                 )
             }
         }

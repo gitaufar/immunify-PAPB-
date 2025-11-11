@@ -12,7 +12,7 @@ object Routes {
     const val HOME = "home"
     const val CLINICS = "clinics"
     const val CLINIC_MAP = "clinic_map"
-    const val CLINIC_DETAIL = "clinic_detail"
+    const val CLINIC_DETAIL = "clinic_detail/{clinicId}"
     const val SET_APPOINTMENT = "set_appointment"
     const val APPOINTMENT_SUMMARY = "appointment_summary"
     const val BOOKING_SUCCESS = "booking_success"
@@ -26,4 +26,6 @@ object Routes {
     const val NOTIFICATION = "notification"
 
     const val MAIN_GRAPH = "main_graph"
+
+    fun clinicDetailRoute(clinicId: String): String = "clinic_detail/$clinicId"
 }

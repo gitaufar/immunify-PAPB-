@@ -117,7 +117,10 @@ fun HomeScreen(
                 ClinicHomeCard(
                     clinic = clinic,
                     userLatitude = userLatitude,
-                    userLongitude = userLongitude
+                    userLongitude = userLongitude,
+                    onClick = {
+                        navController.navigate(Routes.clinicDetailRoute(clinic.id))
+                    }
                 )
             }
         }
