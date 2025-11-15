@@ -1,4 +1,4 @@
-package com.example.immunify.ui.navigation
+package com.example.immunify.data.model
 
 data class BottomNavItem(
     val route: String,

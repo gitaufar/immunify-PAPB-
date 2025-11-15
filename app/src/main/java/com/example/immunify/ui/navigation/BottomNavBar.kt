@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.immunify.R
+import com.example.immunify.data.model.BottomNavItem
 import com.example.immunify.ui.theme.*
 
 private val bottomItems = listOf(
@@ -33,55 +35,66 @@ private val bottomItems = listOf(
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
-    val backStack by navController.currentBackStackEntryAsState()
-    val dest = backStack?.destination
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = backStackEntry?.destination
 
-    NavigationBar(
-        containerColor = White10,
-        tonalElevation = 0.dp,
-        modifier = Modifier
-            .height(90.dp)
-            .padding(horizontal = 8.dp)
+    Surface(
+        color = White10,
+        tonalElevation = 8.dp,
+        shadowElevation = 8.dp
     ) {
-        bottomItems.forEach { item ->
-            val selected = isSelected(dest, item.route)
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = item.label,
-                        tint = if (selected) PrimaryMain else Grey50,
-                        modifier = Modifier.size(28.dp)
+        NavigationBar(
+            containerColor = White10,
+            tonalElevation = 0.dp,
+            modifier = Modifier
+                .height(90.dp)
+                .padding(horizontal = 8.dp)
+        ) {
+            bottomItems.forEach { item ->
+                val selected = isSelected(currentDestination, item.route)
+
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = {
+                        // Hindari reload jika sedang di tab yang sama
+                        if (!selected) {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = item.icon),
+                            contentDescription = item.label,
+                            tint = if (selected) PrimaryMain else Grey50,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = item.label,
+                            style = Typography.bodySmall,
+                            color = if (selected) PrimaryMain else Grey50
+                        )
+                    },
+                    alwaysShowLabel = true,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = PrimaryMain,
+                        unselectedIconColor = Grey50,
+                        selectedTextColor = PrimaryMain,
+                        unselectedTextColor = Grey50,
+                        indicatorColor = Color.Transparent
                     )
-                },
-                label = {
-                    Text(
-                        text = item.label,
-                        style = Typography.bodySmall,
-                        color = if (selected) PrimaryMain else Grey50
-                    )
-                },
-                alwaysShowLabel = true,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = PrimaryMain,
-                    unselectedIconColor = Grey50,
-                    selectedTextColor = PrimaryMain,
-                    unselectedTextColor = Grey50,
-                    indicatorColor = Color.Transparent
                 )
-            )
+            }
         }
     }
 }
-
 
 private fun isSelected(dest: NavDestination?, route: String): Boolean =
     dest?.hierarchy?.any { it.route == route } == true

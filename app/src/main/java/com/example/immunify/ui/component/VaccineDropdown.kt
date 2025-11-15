@@ -32,7 +32,6 @@ fun VaccineDropdown(clinic: ClinicData) {
             .fillMaxWidth()
             .background(White10, RoundedCornerShape(8.dp))
             .border(width = 1.dp, color = Grey30, shape = RoundedCornerShape(8.dp)),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         clinic.availableVaccines.forEachIndexed { index, vaccine ->
             VaccineDropdownItem(
@@ -49,16 +48,14 @@ private fun VaccineDropdownItem(vaccine: VaccineData, isLast: Boolean) {
     val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "")
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         // Header bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { expanded = !expanded }
-                .padding(vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -86,7 +83,7 @@ private fun VaccineDropdownItem(vaccine: VaccineData, isLast: Boolean) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                    .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(

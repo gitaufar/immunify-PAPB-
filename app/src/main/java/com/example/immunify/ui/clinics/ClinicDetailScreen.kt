@@ -10,25 +10,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
 import com.example.immunify.data.model.ClinicData
-import com.example.immunify.data.model.VaccineData
+import com.example.immunify.data.model.ClinicDetailCardType
+import com.example.immunify.ui.navigation.Routes
 
 @Composable
 fun ClinicDetailScreen(
+    rootNav: NavController,
     clinic: ClinicData,
     userLatitude: Double,
     userLongitude: Double,
-    isBookmarked: Boolean = false,
     onBackClick: () -> Unit = {},
-    onBookmarkClick: () -> Unit = {},
-    onShareClick: () -> Unit = {},
-    onMainClick: () -> Unit = {},
-    onCallClick: () -> Unit = {},
 ) {
+    var isBookmarked by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf(0) }
     val tabTitles = listOf("Information", "Reviews")
 
@@ -36,8 +34,10 @@ fun ClinicDetailScreen(
         bottomBar = {
             BottomAppBar(
                 text = "Set Appointment",
-                onMainClick = onMainClick,
-                onCallClick = onCallClick
+                onMainClick = {
+                    rootNav.navigate(Routes.setAppointmentRoute(clinic.id))
+                },
+                onCallClick = { }
             )
         }
     ) { innerPadding ->
@@ -46,14 +46,13 @@ fun ClinicDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // AppBar di dalam Column (bukan Scaffold)
             AppBar(
                 title = clinic.name,
                 onBackClick = onBackClick,
                 showIcon = true,
                 isBookmarked = isBookmarked,
-                onBookmarkClick = onBookmarkClick,
-                onShareClick = onShareClick
+                onBookmarkClick = { isBookmarked = !isBookmarked },
+                onShareClick = { }
             )
 
             // Konten utama pakai LazyColumn
@@ -138,27 +137,24 @@ fun ClinicInformationTab(clinic: ClinicData) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ClinicDetailCard(
-            type = ClinicDetailType.ADDRESS,
+            type = ClinicDetailCardType.ADDRESS,
             title = clinic.address,
             subtitle = "${clinic.district}, ${clinic.city}"
         )
         ClinicDetailCard(
-            type = ClinicDetailType.TIME,
+            type = ClinicDetailCardType.TIME,
             title = "Open",
             subtitle = clinic.openingHours ?: "24 Hours"
         )
         ClinicDetailCard(
-            type = ClinicDetailType.WEBSITE,
+            type = ClinicDetailCardType.WEBSITE,
             title = clinic.website ?: "-",
             subtitle = null
         )
 
         Spacer(modifier = Modifier.height(2.dp))
 
-        Text(
-            text = "List of Available Vaccines",
-            style = MaterialTheme.typography.titleSmall.copy(color = Black100)
-        )
+        SectionHeader(title = "List of Available Vaccines")
 
         Spacer(modifier = Modifier.height(2.dp))
 
@@ -182,48 +178,48 @@ fun ClinicReviewsTab() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewClinicDetailScreen() {
-    val sampleClinic = ClinicData(
-        id = "1",
-        name = "RS EMC Pulomas",
-        imageUrl = "https://example.com/hospital.jpg",
-        address = "Jl. Pulo Mas Bar. VI No.20",
-        district = "Kec. Pulo Gadung",
-        city = "DKI Jakarta",
-        latitude = -6.188,
-        longitude = 106.88,
-        rating = 4.9,
-        website = "www.emc.id",
-        openingHours = "24 Hours",
-        availableVaccines = listOf(
-            VaccineData(
-                id = "v1",
-                name = "HPV vaccine",
-                description = listOf(
-                    "HPV vaccine protects against the sexually transmitted human papillomavirus.",
-                    "Recommended for both genders, typically at ages 11–12 or as early as 9.",
-                    "Administered in a series of 2–3 doses.",
-                    "Highly effective in preventing certain cancers and genital warts.",
-                    "Generally safe with mild side effects such as pain, redness, or swelling at the injection site."
-                ),
-                brand = listOf("Gardasil", "Cervarix")
-            ),
-            VaccineData(
-                id = "v2",
-                name = "Hepatitis B vaccine",
-                description = listOf("Protects against hepatitis B virus infection."),
-                brand = listOf("Engerix-B")
-            )
-        )
-    )
-
-    ImmunifyTheme {
-        ClinicDetailScreen(
-            clinic = sampleClinic,
-            userLatitude = -6.2,
-            userLongitude = 106.8
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewClinicDetailScreen() {
+//    val sampleClinic = ClinicData(
+//        id = "1",
+//        name = "RS EMC Pulomas",
+//        imageUrl = "https://example.com/hospital.jpg",
+//        address = "Jl. Pulo Mas Bar. VI No.20",
+//        district = "Kec. Pulo Gadung",
+//        city = "DKI Jakarta",
+//        latitude = -6.188,
+//        longitude = 106.88,
+//        rating = 4.9,
+//        website = "www.emc.id",
+//        openingHours = "24 Hours",
+//        availableVaccines = listOf(
+//            VaccineData(
+//                id = "v1",
+//                name = "HPV vaccine",
+//                description = listOf(
+//                    "HPV vaccine protects against the sexually transmitted human papillomavirus.",
+//                    "Recommended for both genders, typically at ages 11–12 or as early as 9.",
+//                    "Administered in a series of 2–3 doses.",
+//                    "Highly effective in preventing certain cancers and genital warts.",
+//                    "Generally safe with mild side effects such as pain, redness, or swelling at the injection site."
+//                ),
+//                brand = listOf("Gardasil", "Cervarix")
+//            ),
+//            VaccineData(
+//                id = "v2",
+//                name = "Hepatitis B vaccine",
+//                description = listOf("Protects against hepatitis B virus infection."),
+//                brand = listOf("Engerix-B")
+//            )
+//        )
+//    )
+//
+//    ImmunifyTheme {
+//        ClinicDetailScreen(
+//            clinic = sampleClinic,
+//            userLatitude = -6.2,
+//            userLongitude = 106.8
+//        )
+//    }
+//}

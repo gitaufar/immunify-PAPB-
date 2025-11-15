@@ -31,14 +31,18 @@ fun MainScaffold(
             startDestination = Routes.HOME,
             modifier = Modifier.padding(padding)
         ) {
+
+            // HOME
             composable(Routes.HOME) {
                 HomeScreen(
-                    navController = rootNavController,
+                    rootNav = rootNavController,
+                    bottomNav = bottomNavController,
                     userLatitude = userLatitude,
                     userLongitude = userLongitude
                 )
             }
 
+            // CLINICS
             composable(Routes.CLINICS) {
                 ClinicsScreen(
                     navController = rootNavController,
@@ -48,9 +52,15 @@ fun MainScaffold(
                 )
             }
 
-            composable(Routes.TRACKER) { /* TrackerScreen() */ }
-            composable(Routes.PROFILE) { /* ProfileScreen() */ }
+            // TRACKER
+            composable(Routes.TRACKER) {
+                // TrackerScreen()
+            }
+
+            // PROFILE
+            composable(Routes.PROFILE) {
+                // ProfileScreen()
+            }
         }
     }
 }
-

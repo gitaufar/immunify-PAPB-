@@ -90,8 +90,8 @@ fun AppBar(
     )
 
     Divider(
-        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
-        thickness = 0.5.dp
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+        thickness = 1.5.dp
     )
 }
 

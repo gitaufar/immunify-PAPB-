@@ -13,7 +13,7 @@ val ClinicSamples = listOf(
         latitude = -7.972247,
         longitude = 112.636101,
         rating = 4.6,
-        website = "https://rsusaifulanwar.jatimprov.go.id",
+        website = "https://rsusaifulanwar.jatimprov.go.id/v2/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -27,7 +27,7 @@ val ClinicSamples = listOf(
         latitude = -7.967900,
         longitude = 112.617400,
         rating = 4.4,
-        website = "https://www.rssoepraoen.co.id",
+        website = "https://www.rssoepraoen.co.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -41,7 +41,7 @@ val ClinicSamples = listOf(
         latitude = -7.958500,
         longitude = 112.627300,
         rating = 4.2,
-        website = "https://rsud.malangkota.go.id",
+        website = "https://rsud.malangkota.go.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -55,7 +55,7 @@ val ClinicSamples = listOf(
         latitude = -7.975800,
         longitude = 112.629200,
         rating = 4.3,
-        website = "https://rslavalette.ihc.id",
+        website = "https://rslavalette.ihc.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -69,7 +69,7 @@ val ClinicSamples = listOf(
         latitude = -7.934984472,
         longitude = 112.6502085,
         rating = 4.5,
-        website = "https://persadahospital.co.id",
+        website = "https://persadahospital.co.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -83,7 +83,7 @@ val ClinicSamples = listOf(
         latitude = -7.960200,
         longitude = 112.623400,
         rating = 4.1,
-        website = "http://www.rspantinirmala.com",
+        website = "https://rspantinirmala.com/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -97,7 +97,7 @@ val ClinicSamples = listOf(
         latitude = -7.987127552,
         longitude = 112.6246355,
         rating = 4.0,
-        website = "https://www.pantiwaluya.or.id",
+        website = "https://www.pantiwaluya.or.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -111,7 +111,7 @@ val ClinicSamples = listOf(
         latitude = -7.979900,
         longitude = 112.624000,
         rating = 4.2,
-        website = "https://rsiaisyiyah-malang.or.id",
+        website = "https://rsiaisyiyah-malang.or.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     ),
@@ -139,7 +139,7 @@ val ClinicSamples = listOf(
         latitude = -7.966000,
         longitude = 112.610000,
         rating = 4.4,
-        website = "https://rumahsakit.ub.ac.id",
+        website = "https://rumahsakit.ub.ac.id/",
         openingHours = "24 Hours",
         availableVaccines = ClinicVaccineSamples
     )

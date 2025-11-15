@@ -54,3 +54,28 @@ val ClinicVaccineSamples = listOf(
         brand = listOf("Varivax", "ProQuad")
     )
 )
+
+val VaccineSample1 = VaccineData(
+    id = "vaccine_001",
+    name = "Varicella (Chickenpox)",
+    description = listOf(
+        "Helps protect against chickenpox.",
+        "Recommended for children aged 12–15 months."
+    ),
+    brand = listOf("Varilrix", "Varivax"),
+    scheduledDates = listOf("2025-12-01"),
+    remainingDoses = 1
+)
+
+val VaccineSample2 = VaccineData(
+    id = "vaccine_002",
+    name = "MMR (Measles, Mumps, Rubella)",
+    description = listOf(
+        "Protects against measles, mumps, and rubella.",
+        "Usually given at 12–15 months."
+    ),
+    brand = listOf("Priorix", "MMR II"),
+    scheduledDates = listOf("2025-12-15"),
+    remainingDoses = 0
+)
+
