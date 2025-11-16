@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.immunify.R
+import com.example.immunify.ui.component.MainButton
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Grey40
 import com.example.immunify.ui.theme.PrimaryMain
@@ -35,9 +36,10 @@ fun Onboarding1Screen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
             Spacer(modifier = Modifier.height(40.dp))
 
-            //  Gambar dan Teks
+            // Image + Text
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(horizontal = 8.dp)
@@ -45,7 +47,8 @@ fun Onboarding1Screen(
                 Image(
                     painter = painterResource(id = R.drawable.onboarding_1),
                     contentDescription = "Onboarding 1 Illustration",
-                    modifier = Modifier.size(320.dp)
+                    modifier = Modifier
+                        .size(320.dp)
                         .padding(bottom = 12.dp)
                 )
 
@@ -62,44 +65,25 @@ fun Onboarding1Screen(
                     text = "Never miss an appointment again while eliminating the hassle of paper records.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Black100,
-                    textAlign = TextAlign.Center,
-                    )
-            }
-
-            // Indikator Halaman
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OnboardingIndicator(
-                    totalPages = 3,
-                    currentPage = 0 // karena ini halaman pertama
+                    textAlign = TextAlign.Justify
                 )
             }
+
+            // Indicator
+            OnboardingIndicator(totalPages = 3, currentPage = 0)
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Tombol Next & Skip
+            // Buttons
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 24.dp)
             ) {
-                Button(
-                    onClick = { onNext() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = PrimaryMain,
-                        contentColor = White10
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(45.dp)
-                ) {
-                    Text(
-                        text = "Next",
-                        fontSize = 14.sp
-                    )
-                }
+
+                MainButton(
+                    text = "Next",
+                    onClick = onNext
+                )
 
                 TextButton(
                     onClick = { onSkip?.invoke() },
@@ -115,4 +99,3 @@ fun Onboarding1Screen(
         }
     }
 }
-

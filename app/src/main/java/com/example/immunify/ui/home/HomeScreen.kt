@@ -25,7 +25,8 @@ import com.example.immunify.ui.theme.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    navController: NavController,
+    rootNav: NavController,
+    bottomNav: NavController,
     userLatitude: Double,
     userLongitude: Double
 ) {
@@ -87,7 +88,8 @@ fun HomeScreen(
             // Upcoming Vaccine Section
             SectionHeader(
                 title = "Upcoming Vaccine",
-                subtitle = "Don't forget to schedule your upcoming vaccine"
+                subtitle = "Don't forget to schedule your upcoming vaccine",
+                onClickViewAll = {}
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -103,7 +105,15 @@ fun HomeScreen(
             // Clinics Nearby Section
             SectionHeader(
                 title = "Clinics Nearby",
-                subtitle = "Find the closest clinic to your location"
+                subtitle = "Find the closest clinic to your location",
+                onClickViewAll = {
+                    bottomNav.navigate(Routes.CLINICS) {
+                        popUpTo(Routes.HOME) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -117,7 +127,10 @@ fun HomeScreen(
                 ClinicHomeCard(
                     clinic = clinic,
                     userLatitude = userLatitude,
-                    userLongitude = userLongitude
+                    userLongitude = userLongitude,
+                    onClick = {
+                        rootNav.navigate(Routes.clinicDetailRoute(clinic.id))
+                    }
                 )
             }
         }
@@ -129,7 +142,7 @@ fun HomeScreen(
             SectionHeader(
                 title = "Prevention Starts with Knowledge",
                 subtitle = "Get insights about vaccination",
-                onClickViewAll = { navController.navigate(Routes.INSIGHTS) }
+                onClickViewAll = { rootNav.navigate(Routes.INSIGHTS) }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
