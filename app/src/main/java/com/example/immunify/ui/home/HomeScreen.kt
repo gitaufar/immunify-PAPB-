@@ -19,7 +19,6 @@ import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.VaccineSamples
 import com.example.immunify.ui.component.*
-import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.*
 
 @RequiresApi(Build.VERSION_CODES.O)

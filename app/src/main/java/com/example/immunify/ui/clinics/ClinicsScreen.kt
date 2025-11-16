@@ -20,7 +20,6 @@ import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
 import com.example.immunify.ui.component.calculateDistanceKm
-import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Typography
 

@@ -1,12 +1,9 @@
 package com.example.immunify.ui.navigation
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,14 +20,15 @@ import com.example.immunify.ui.splash.AppPreferencesViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.immunify.data.local.UserSample
+import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.ui.auth.LoginScreen
 import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
-import com.example.immunify.util.formatFullDate
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -144,53 +142,33 @@ fun RootNavGraph(
         }
 
         composable(
-            route = Routes.SET_APPOINTMENT,
+            route = "${Routes.SET_APPOINTMENT}/{clinicId}",
             arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
         ) { backStackEntry ->
-
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
             val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
-
-            val rawDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-
-            val selectedDate = formatFullDate(rawDate)
 
             SetAppointmentScreen(
                 user = UserSample,
                 clinic = clinic,
-                selectedDate = selectedDate,
+                selectedDate = LocalDate.now(),
                 onBackClick = { navController.popBackStack() },
-                onContinueClick = { time ->
-                    navController.navigate(
-                        "${Routes.APPOINTMENT_SUMMARY}?clinicId=$clinicId&date=$rawDate&time=$time"
-                    )
+                onContinueClick = { appointment ->
+                    val appointmentJson = Uri.encode(Json.encodeToString(appointment))
+                    navController.navigate(Routes.appointmentSummaryRoute(appointmentJson))
                 }
             )
         }
 
         composable(
-            route = Routes.APPOINTMENT_SUMMARY +
-                    "?clinicId={clinicId}&date={date}&time={time}",
-            arguments = listOf(
-                navArgument("clinicId") { type = NavType.StringType },
-                navArgument("date") { type = NavType.StringType },
-                navArgument("time") { type = NavType.StringType }
-            )
+            route = "${Routes.APPOINTMENT_SUMMARY}/{appointment}",
+            arguments = listOf(navArgument("appointment") { type = NavType.StringType })
         ) { entry ->
-
-            val clinicId = entry.arguments?.getString("clinicId") ?: ""
-            val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
-
-            val rawDate = entry.arguments?.getString("date") ?: "-"
-            val formattedDate = formatFullDate(rawDate)
-
-            val time = entry.arguments?.getString("time") ?: "-"
+            val appointmentJson = entry.arguments?.getString("appointment") ?: ""
+            val appointment = Json.decodeFromString<AppointmentData>(appointmentJson)
 
             AppointmentSummaryScreen(
-                user = UserSample,
-                clinic = clinic,
-                selectedDate = formattedDate,
-                selectedTime = time,
+                appointment = appointment,
                 onBackClick = { navController.popBackStack() },
                 onConfirmClick = {
                     navController.navigate(Routes.APPOINTMENT_SUCCESS)

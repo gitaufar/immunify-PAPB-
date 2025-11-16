@@ -16,7 +16,6 @@ import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
 import com.example.immunify.data.model.ClinicData
 import com.example.immunify.data.model.ClinicDetailCardType
-import com.example.immunify.ui.navigation.Routes
 
 @Composable
 fun ClinicDetailScreen(

@@ -15,7 +15,7 @@ val ClinicSamples = listOf(
         rating = 4.6,
         website = "https://rsusaifulanwar.jatimprov.go.id/v2/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = RSSA_Vaccines
     ),
     ClinicData(
         id = "soepraoen",
@@ -29,7 +29,7 @@ val ClinicSamples = listOf(
         rating = 4.4,
         website = "https://www.rssoepraoen.co.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = SOEPRAOEN_Vaccines
     ),
     ClinicData(
         id = "rsud_kota_malang",
@@ -43,7 +43,7 @@ val ClinicSamples = listOf(
         rating = 4.2,
         website = "https://rsud.malangkota.go.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = RSUD_MALANG_Vaccines
     ),
     ClinicData(
         id = "lavalette",
@@ -57,7 +57,7 @@ val ClinicSamples = listOf(
         rating = 4.3,
         website = "https://rslavalette.ihc.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = LAVALETTE_Vaccines
     ),
     ClinicData(
         id = "persada",
@@ -71,7 +71,7 @@ val ClinicSamples = listOf(
         rating = 4.5,
         website = "https://persadahospital.co.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = PERSADA_Vaccines
     ),
     ClinicData(
         id = "panti_nirmala",
@@ -85,7 +85,7 @@ val ClinicSamples = listOf(
         rating = 4.1,
         website = "https://rspantinirmala.com/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = PANTI_NIRMALA_Vaccines
     ),
     ClinicData(
         id = "panti_waluya",
@@ -99,7 +99,7 @@ val ClinicSamples = listOf(
         rating = 4.0,
         website = "https://www.pantiwaluya.or.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = PANTI_WALUYA_Vaccines
     ),
     ClinicData(
         id = "rsi_aisyiyah",
@@ -113,7 +113,7 @@ val ClinicSamples = listOf(
         rating = 4.2,
         website = "https://rsiaisyiyah-malang.or.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = RSI_AISYIYAH_Vaccines
     ),
     ClinicData(
         id = "hermina_tangkuban",
@@ -127,7 +127,7 @@ val ClinicSamples = listOf(
         rating = 4.1,
         website = "https://herminahospitals.com/id/branch/hermina-tangkuban-perahu",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = HERMINA_Vaccines
     ),
     ClinicData(
         id = "rs_unibraw",
@@ -141,94 +141,6 @@ val ClinicSamples = listOf(
         rating = 4.4,
         website = "https://rumahsakit.ub.ac.id/",
         openingHours = "24 Hours",
-        availableVaccines = ClinicVaccineSamples
+        availableVaccines = RS_UB_Vaccines
     )
 )
-
-// rumah sakit jakarta sesuai figma
-//val ClinicSamples = listOf(
-//    ClinicData(
-//        id = "1",
-//        name = "RS EMC Pulomas",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Pulo Mas Bar. VI No.20, Kec. Pulo Gadung",
-//        district = "Pulo Gadung",
-//        city = "Jakarta Timur",
-//        latitude = -6.1825,
-//        longitude = 106.8901,
-//        rating = 4.9,
-//        website = "https://www.emc.id",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    ),
-//    ClinicData(
-//        id = "2",
-//        name = "Columbia Asia Hospital",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Kayu Putih Raya No.1, RW.16, Kayu Putih",
-//        district = "Pulo Gadung",
-//        city = "Jakarta Timur",
-//        latitude = -6.1902,
-//        longitude = 106.8999,
-//        rating = 4.9,
-//        website = "https://columbiaasia.com",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    ),
-//    ClinicData(
-//        id = "3",
-//        name = "RSUP Persahabatan",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Persahabatan Raya No.1, Rawamangun",
-//        district = "Rawamangun",
-//        city = "Jakarta Timur",
-//        latitude = -6.1981,
-//        longitude = 106.8845,
-//        rating = 4.9,
-//        website = "https://rsuppersahabatan.co.id",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    ),
-//    ClinicData(
-//        id = "4",
-//        name = "Mediros Hospital",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Perintis Kemerdekaan Kav. 149, Pulo Gadung",
-//        district = "Pulo Gadung",
-//        city = "Jakarta Timur",
-//        latitude = -6.1907,
-//        longitude = 106.9154,
-//        rating = 3.6,
-//        website = "https://medirossa.id",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    ),
-//    ClinicData(
-//        id = "5",
-//        name = "Pertamina Jaya Hospital",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Jend. Ahmad Yani No.2, RT.2/RW.7, Cempaka Putih",
-//        district = "Cempaka Putih",
-//        city = "Jakarta Pusat",
-//        latitude = -6.1743,
-//        longitude = 106.8661,
-//        rating = 4.0,
-//        website = "https://rspertaminajaya.co.id",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    ),
-//    ClinicData(
-//        id = "6",
-//        name = "Mayapada Hospital",
-//        imageUrl = "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/31/1538696184.jpeg",
-//        address = "Jl. Mayapada No. 88, Jakarta Timur",
-//        district = "Cakung",
-//        city = "Jakarta Timur",
-//        latitude = -6.2149,
-//        longitude = 106.9402,
-//        rating = 4.8,
-//        website = "https://mayapadahospital.com",
-//        openingHours = "24 Hours",
-//        availableVaccines = emptyList()
-//    )
-//)
