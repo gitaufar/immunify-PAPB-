@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.auth.*
 import com.example.immunify.ui.clinics.*
 import com.example.immunify.ui.insight.*
@@ -104,6 +105,7 @@ fun RootNavGraph(
             ClinicMapScreen(
                 userLatitude = userLatitude,
                 userLongitude = userLongitude,
+                clinics = ClinicSamples,
                 onBackClick = { navController.popBackStack() })
         }
 

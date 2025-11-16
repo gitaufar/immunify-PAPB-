@@ -10,38 +10,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.example.immunify.R
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.immunify.data.model.ClinicData
+import com.example.immunify.ui.component.ClinicMarker
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
+import com.example.immunify.ui.component.UserMarker
 import com.example.immunify.ui.theme.White10
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.views.MapView
+import org.osmdroid.util.GeoPoint
+
 
 @Composable
 fun ClinicMapScreen(
     userLatitude: Double,
     userLongitude: Double,
+    clinics: List<ClinicData>,
     onBackClick: () -> Unit = {}
 ) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-
-    val clinic = ClinicData(
-        id = "rssa",
-        name = "RSUD Dr. Saiful Anwar (RSSA)",
-        imageUrl = "https://rsusaifulanwar.jatimprov.go.id/wp-content/uploads/2020/03/rs-saiful-anwar.jpeg",
-        address = "Jl. Jaksa Agung Suprapto No. 2, Klojen, Kota Malang, Jawa Timur 65111",
-        district = "Klojen",
-        city = "Malang",
-        latitude = -7.972247,
-        longitude = 112.636101,
-        rating = 4.6,
-        website = "https://rsusaifulanwar.jatimprov.go.id",
-        openingHours = "24 Hours",
-        availableVaccines = emptyList()
-    )
+    var selectedClinic by remember { mutableStateOf<ClinicData?>(null) }
 
     Scaffold { innerPadding ->
         Box(
@@ -49,18 +40,46 @@ fun ClinicMapScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Background map (full screen)
-            Image(
-                painter = painterResource(id = R.drawable.image_map_full),
-                contentDescription = "Map",
-                contentScale = ContentScale.Crop,
+            AndroidView(
+                factory = { context ->
+                    MapView(context).apply {
+                        setTileSource(TileSourceFactory.MAPNIK)
+                        setMultiTouchControls(true)
+                        zoomController.setVisibility(
+                            org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER
+                        )
+
+                        controller.setZoom(13.0)
+                        controller.setCenter(GeoPoint(userLatitude, userLongitude))
+
+                        // MARKER USER
+                        UserMarker(
+                            map = this,
+                            context = context,
+                            latitude = userLatitude,
+                            longitude = userLongitude
+                        )
+
+                        // MARKER SEMUA KLINIK
+                        clinics.forEach { clinic ->
+                            ClinicMarker(
+                                map = this,
+                                context = context,
+                                clinic = clinic
+                            ) { clicked ->
+                                selectedClinic = clicked
+                                controller.animateTo(
+                                    GeoPoint(clicked.latitude, clicked.longitude)
+                                )
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxSize()
             )
 
-            // SearchAppBar di bagian atas
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 SearchAppBar(
                     value = searchQuery,
@@ -69,30 +88,32 @@ fun ClinicMapScreen(
                     showBackButton = true,
                     onBackClick = onBackClick,
                     showFilterIcon = true,
-                    onFilterClick = { /* buka filter */ }
+                    onFilterClick = {}
                 )
             }
 
-            // Clinic info card di bawah
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(vertical = 40.dp, horizontal = 16.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                shadowElevation = 8.dp,
-                color = White10
-            ) {
-                Box(
+            // Card Klinik di bawah
+            selectedClinic?.let { clinic ->
+                Surface(
                     modifier = Modifier
-                        .background(White10)
-                        .padding(8.dp)
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(vertical = 40.dp, horizontal = 16.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    shadowElevation = 8.dp,
+                    color = White10
                 ) {
-                    ClinicNearbyCard(
-                        clinic = clinic,
-                        userLatitude = userLatitude,
-                        userLongitude = userLongitude
-                    )
+                    Box(
+                        modifier = Modifier
+                            .background(White10)
+                            .padding(8.dp)
+                    ) {
+                        ClinicNearbyCard(
+                            clinic = clinic,
+                            userLatitude = userLatitude,
+                            userLongitude = userLongitude
+                        )
+                    }
                 }
             }
         }
