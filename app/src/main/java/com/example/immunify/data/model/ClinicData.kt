@@ -10,6 +10,7 @@ data class ClinicData(
     val address: String,
     val district: String,
     val city: String,
+    val contact: String?,
     val latitude: Double,
     val longitude: Double,
     val rating: Double,

@@ -39,10 +39,10 @@ fun RootNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.SPLASH
+//        startDestination = Routes.SPLASH
 
         // untuk testing bisa ubah ke Routes.MAIN_GRAPH
-//        startDestination = Routes.MAIN_GRAPH
+        startDestination = Routes.MAIN_GRAPH
     ) {
 
         // SPLASH

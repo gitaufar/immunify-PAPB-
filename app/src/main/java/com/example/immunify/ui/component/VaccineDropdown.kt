@@ -160,7 +160,8 @@ fun VaccineDropdownPreview() {
                 id = "varicella",
                 name = "Varicella vaccine"
             )
-        )
+        ),
+        contact = "08123456890"
     )
 
     ImmunifyTheme {

@@ -138,7 +138,8 @@ fun ClinicDetailHeaderPreview() {
                 rating = 4.9,
                 website = "https://emc.id",
                 openingHours = "24 Hours",
-                availableVaccines = emptyList()
+                availableVaccines = emptyList(),
+                contact = "08123456890"
             ),
             userLatitude = -6.2,
             userLongitude = 106.8
