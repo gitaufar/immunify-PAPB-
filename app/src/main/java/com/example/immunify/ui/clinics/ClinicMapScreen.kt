@@ -99,8 +99,9 @@ fun ClinicMapScreen(
                         .padding(vertical = 40.dp, horizontal = 16.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = {
-                            navController.navigate(Routes.CLINIC_DETAIL.replace("{clinicId}", clinic.id))
-                        }), shadowElevation = 8.dp, color = White10) {
+                            navController.navigate(Routes.clinicDetailRoute(clinic.id))
+                        }), shadowElevation = 8.dp, color = White10
+                ) {
                     Box(
                         modifier = Modifier
                             .background(White10)
@@ -109,7 +110,8 @@ fun ClinicMapScreen(
                         ClinicNearbyCard(
                             clinic = clinic,
                             userLatitude = userLatitude,
-                            userLongitude = userLongitude
+                            userLongitude = userLongitude,
+                            onClick = { navController.navigate(Routes.clinicDetailRoute(clinic.id)) }
                         )
                     }
                 }
