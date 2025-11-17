@@ -27,7 +27,7 @@ fun ClinicDetailScreen(
     onBackClick: () -> Unit = {},
 ) {
     var isBookmarked by remember { mutableStateOf(false) }
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Information", "Reviews")
 
     Scaffold(

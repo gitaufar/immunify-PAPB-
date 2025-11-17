@@ -17,10 +17,7 @@ import com.example.immunify.ui.insight.*
 import com.example.immunify.ui.onboarding.*
 import com.example.immunify.ui.splash.AppPreferencesViewModel
 import com.example.immunify.ui.splash.SplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.immunify.data.local.UserSample
-import com.example.immunify.ui.auth.LoginScreen
-import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
@@ -152,6 +149,7 @@ fun RootNavGraph(
                 userLatitude = userLatitude,
                 userLongitude = userLongitude,
                 clinics = ClinicSamples,
+                navController = navController,
                 onBackClick = { navController.popBackStack() })
         }
 

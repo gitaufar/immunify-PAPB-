@@ -2,6 +2,7 @@ package com.example.immunify.ui.clinics
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
@@ -13,11 +14,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.example.immunify.data.model.ClinicData
 import com.example.immunify.ui.component.ClinicMarker
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
 import com.example.immunify.ui.component.UserMarker
+import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.White10
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
@@ -28,6 +31,7 @@ import org.osmdroid.util.GeoPoint
 fun ClinicMapScreen(
     userLatitude: Double,
     userLongitude: Double,
+    navController: NavController,
     clinics: List<ClinicData>,
     onBackClick: () -> Unit = {}
 ) {
@@ -63,9 +67,7 @@ fun ClinicMapScreen(
                         // MARKER SEMUA KLINIK
                         clinics.forEach { clinic ->
                             ClinicMarker(
-                                map = this,
-                                context = context,
-                                clinic = clinic
+                                map = this, context = context, clinic = clinic
                             ) { clicked ->
                                 selectedClinic = clicked
                                 controller.animateTo(
@@ -74,8 +76,7 @@ fun ClinicMapScreen(
                             }
                         }
                     }
-                },
-                modifier = Modifier.fillMaxSize()
+                }, modifier = Modifier.fillMaxSize()
             )
 
             Column(
@@ -88,8 +89,7 @@ fun ClinicMapScreen(
                     showBackButton = true,
                     onBackClick = onBackClick,
                     showFilterIcon = true,
-                    onFilterClick = {}
-                )
+                    onFilterClick = {})
             }
 
             // Card Klinik di bawah
@@ -99,10 +99,10 @@ fun ClinicMapScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .padding(vertical = 40.dp, horizontal = 16.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    shadowElevation = 8.dp,
-                    color = White10
-                ) {
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = {
+                            navController.navigate(Routes.CLINIC_DETAIL.replace("{clinicId}", clinic.id))
+                        }), shadowElevation = 8.dp, color = White10) {
                     Box(
                         modifier = Modifier
                             .background(White10)
