@@ -1,7 +1,4 @@
-package com.example.immunify.ui.navigation
-
 object Routes {
-
     const val SPLASH = "splash"
     const val ONBOARDING1 = "onboarding1"
     const val ONBOARDING2 = "onboarding2"
@@ -19,7 +16,7 @@ object Routes {
 
     const val CLINIC_MAP = "main_clinic_map"
     const val CLINIC_DETAIL = "main_clinic_detail/{clinicId}"
-    const val SET_APPOINTMENT = "main_set_appointment/{clinicId}"
+    const val SET_APPOINTMENT = "main_set_appointment"
     const val APPOINTMENT_SUMMARY = "main_appointment_summary"
     const val APPOINTMENT_SUCCESS = "main_appointment_success"
 
@@ -29,5 +26,7 @@ object Routes {
     const val NOTIFICATION = "main_notification"
 
     fun clinicDetailRoute(clinicId: String): String = "main_clinic_detail/$clinicId"
-    fun setAppointmentRoute(clinicId: String): String = "main_set_appointment/$clinicId"
+    fun setAppointmentRoute(clinicId: String): String = "$SET_APPOINTMENT/$clinicId"
+    fun appointmentSummaryRoute(appointmentJson: String): String =
+        "$APPOINTMENT_SUMMARY/$appointmentJson"
 }

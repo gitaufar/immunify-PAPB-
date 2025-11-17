@@ -1,6 +1,5 @@
 package com.example.immunify.ui.clinics
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +19,6 @@ import com.example.immunify.ui.component.ClinicMarker
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
 import com.example.immunify.ui.component.UserMarker
-import com.example.immunify.ui.navigation.Routes
 import com.example.immunify.ui.theme.White10
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView

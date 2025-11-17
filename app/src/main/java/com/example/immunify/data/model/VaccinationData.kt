@@ -1,5 +1,8 @@
 package com.example.immunify.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class VaccinationData(
     val id: String,
     val vaccinant: String,

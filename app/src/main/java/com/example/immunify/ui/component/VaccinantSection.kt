@@ -28,7 +28,8 @@ import com.example.immunify.ui.theme.*
 @Composable
 fun VaccinantSection(
     children: List<ChildData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUpdate: (List<ChildData>) -> Unit
 ) {
     // Simpan urutan asli
     val childOrder = remember {
@@ -39,8 +40,12 @@ fun VaccinantSection(
     val selected = remember { mutableStateListOf<ChildData>().apply { addAll(children) } }
     val unselected = remember { mutableStateListOf<ChildData>() }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    // Update external state when selection changes
+    LaunchedEffect(selected.toList()) {
+        onUpdate(selected.toList())
+    }
 
+    Column(modifier = modifier.fillMaxWidth()) {
         // Card Anak Terpilih
         if (selected.isNotEmpty()) {
             Column(
@@ -61,6 +66,7 @@ fun VaccinantSection(
                             onToggle = {
                                 if (selected.remove(child)) {
                                     unselected.add(0, child)
+                                    onUpdate(selected)
                                 }
                             }
                         )
@@ -88,8 +94,8 @@ fun VaccinantSection(
                             isLast = index == unselected.sortedBy { childOrder[it.id] }.lastIndex,
                             onToggle = {
                                 if (unselected.remove(child)) {
-                                    // tambahkan kembali ke selected, tetap di akhir daftar selected
                                     selected.add(child)
+                                    onUpdate(selected)
                                 }
                             }
                         )
@@ -166,31 +172,5 @@ fun VaccinantItem(
                 color = Grey30
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun VaccinantSectionPreview() {
-    ImmunifyTheme {
-        val children = listOf(
-            ChildData(
-                id = "1",
-                name = "Ariana",
-                birthDate = "2019-03-12",
-                gender = "Female"
-            ),
-            ChildData(
-                id = "2",
-                name = "Davin",
-                birthDate = "2021-10-04",
-                gender = "Male"
-            )
-        )
-
-        VaccinantSection(
-            children = children,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }
