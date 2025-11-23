@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.immunify.R
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.VaccineSamples
@@ -26,9 +27,11 @@ import com.example.immunify.ui.theme.*
 fun HomeScreen(
     rootNav: NavController,
     bottomNav: NavController,
-    userLatitude: Double,
-    userLongitude: Double
 ) {
+    val appState = LocalAppState.current
+    val userLatitude = appState.userLatitude
+    val userLongitude = appState.userLongitude
+
     val scrollState = rememberScrollState()
 
     // mengurutkan berdasarkan jarak

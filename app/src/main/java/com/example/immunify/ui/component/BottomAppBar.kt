@@ -53,7 +53,6 @@ fun BottomAppBar(
                 }
             }
 
-
             MainButton(text = text, onClick = onMainClick)
         }
     }

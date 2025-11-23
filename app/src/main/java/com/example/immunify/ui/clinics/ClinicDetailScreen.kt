@@ -1,5 +1,7 @@
 package com.example.immunify.ui.clinics
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -12,19 +14,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
 import com.example.immunify.data.model.ClinicData
 import com.example.immunify.data.model.ClinicDetailCardType
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClinicDetailScreen(
     rootNav: NavController,
     clinic: ClinicData,
-    userLatitude: Double,
-    userLongitude: Double,
-    onBackClick: () -> Unit = {},
+    onBackClick: () -> Unit = {}
 ) {
+    val appState = LocalAppState.current
+    val userLatitude = appState.userLatitude
+    val userLongitude = appState.userLongitude
+
     var isBookmarked by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Information", "Reviews")
@@ -125,7 +131,6 @@ fun ClinicDetailScreen(
         }
     }
 }
-
 
 @Composable
 fun ClinicInformationTab(clinic: ClinicData) {

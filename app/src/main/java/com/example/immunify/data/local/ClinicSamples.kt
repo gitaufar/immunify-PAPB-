@@ -6,7 +6,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "rssa",
         name = "RSUD Dr. Saiful Anwar",
-        imageUrl = "https://rsusaifulanwar.jatimprov.go.id/wp-content/uploads/2020/03/rs-saiful-anwar.jpeg",
+        imageUrl = "https://www.rssoepraoen.co.id/_next/image?url=%2Fassets%2Fbg-banner.jpeg&w=3840&q=75",
         address = "Jl. Jaksa Agung Suprapto No.2",
         district = "Kec. Klojen",
         city = "Kota Malang",
@@ -21,7 +21,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "soepraoen",
         name = "Rumah Tk. II dr. Soepraoen",
-        imageUrl = "https://lh3.googleusercontent.com/p/AF1QipMHp_fXN9lB4_PMke4jJKf6X3ND46qrugKNZIOB=w408-h271-k-no",
+        imageUrl = "https://www.rssoepraoen.co.id/_next/image?url=%2Fassets%2Fbg-banner.jpeg&w=3840&q=75",
         address = "Jl. S. Supriadi No.22",
         district = "Kec. Sukun",
         city = "Kota Malang",
@@ -34,9 +34,9 @@ val ClinicSamples = listOf(
         availableVaccines = SOEPRAOEN_Vaccines
     ),
     ClinicData(
-        id = "rsud_kota_malang",
+        id = "rsud_malang",
         name = "RSUD Kota Malang",
-        imageUrl = "https://rsud.malangkota.go.id/assets/images/rsud.jpg",
+        imageUrl = "https://malangkota.go.id/wp-content/uploads/2019/12/RSUD-Kota-Malang.jpg",
         address = "Jl. Rajasa No.27",
         district = "Kec. Kedungkandang",
         city = "Kota Malang",
@@ -50,8 +50,8 @@ val ClinicSamples = listOf(
     ),
     ClinicData(
         id = "lavalette",
-        name = "IHC Rumah Sakit Lavalette",
-        imageUrl = "https://rslavalette.ihc.id/assets/images/rslavalette.jpg",
+        name = "Rumah Sakit Lavalette",
+        imageUrl = "https://awsimages.detik.net.id/community/media/visual/2023/09/14/rs-lavalette-malang-3_169.jpeg?w=620",
         address = "Jl. W.R. Supratman No.10",
         district = "Kec. Klojen",
         city = "Kota Malang",
@@ -66,7 +66,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "persada",
         name = "Persada Hospital",
-        imageUrl = "https://persadahospital.co.id/wp-content/uploads/2024/07/persada-exterior.jpg",
+        imageUrl = "https://scanmelabs.com/media/persada-hospital.jpg",
         address = "Jl. Raden Panji Suroso KAV.II-IV",
         district = "Kec. Blimbing",
         city = "Kota Malang",
@@ -81,7 +81,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "panti_nirmala",
         name = "Rumah Sakit Panti Nirmala",
-        imageUrl = "https://rspantinirmala.com/assets/images/header.jpg",
+        imageUrl = "https://rspantinirmala.com/storage/content/ZX2fplgjpoxW05s2x79sTNf7qp2uiGoA6cFIYoWt.jpeg",
         address = "Jl. Kebalen Wetan No.2-8",
         district = "Kec. Kedungkandang",
         city = "Kota Malang",
@@ -96,7 +96,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "panti_waluya",
         name = "Rumah Sakit Panti Waluya Sawahan",
-        imageUrl = "https://www.pantiwaluya.or.id/wp-content/uploads/2023/01/rs-panti-waluya.jpg",
+        imageUrl = "https://res.cloudinary.com/dk0z4ums3/image/upload/w_360,h_240,c_fill,f_auto/v1741587382/hospital_image/RS-Panti-Waluya-Sawahan-%285%29-2eead859-fe97-408e-956c-83df6cf6a5a8.jpg",
         address = "Jl. Nusakambangan No.56",
         district = "Kec. Klojen",
         city = "Kota Malang",
@@ -111,7 +111,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "rsi_aisyiyah",
         name = "RSI Aisyiyah Malang",
-        imageUrl = "https://rsiaisyiyah-malang.or.id/assets/images/header.jpg",
+        imageUrl = "https://d1ojs48v3n42tp.cloudfront.net/provider_location_banner/249869_22-1-2020_11-38-55.jpg",
         address = "Jl. Sulawesi No.16",
         district = "Kec. Klojen",
         city = "Kota Malang",
@@ -125,8 +125,8 @@ val ClinicSamples = listOf(
     ),
     ClinicData(
         id = "hermina_tangkuban",
-        name = "Rumah Sakit Hermina Tangkubanprahu",
-        imageUrl = "https://herminahospitals.com/id/wp-content/uploads/2022/05/hermina-tangkuban.jpg",
+        name = "Rumah Sakit Hermina Tangkuban Perahu",
+        imageUrl = "https://img-kd.kalbe.co.id/Uw3ZoiswCxXUFR5hlGwhxBR9g5o=/fit-in/615x480/filters:quality(90)/oneonco-prd/faskes/35071001_RS_Hermina_Tangkuban_Perahu_Malang.webp",
         address = "Jl. Tangkuban Perahu No.29-33",
         district = "Kec. Klojen",
         city = "Kota Malang",
@@ -139,9 +139,9 @@ val ClinicSamples = listOf(
         availableVaccines = HERMINA_Vaccines
     ),
     ClinicData(
-        id = "rs_unibraw",
+        id = "rsub",
         name = "Rumah Sakit Universitas Brawijaya",
-        imageUrl = "https://rumahsakit.ub.ac.id/wp-content/uploads/2023/01/rsub-building.jpg",
+        imageUrl = "https://prasetya.ub.ac.id/wp-content/uploads/2020/10/IMG-20201015-WA0015.jpg",
         address = "Jl. Soekarno Hatta",
         district = "Kec. Lowokwaru",
         city = "Kota Malang",

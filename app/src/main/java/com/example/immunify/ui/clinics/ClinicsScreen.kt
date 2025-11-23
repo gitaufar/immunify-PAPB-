@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.immunify.R
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
@@ -27,10 +28,12 @@ import com.example.immunify.ui.theme.Typography
 fun ClinicsScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    userLatitude: Double,
-    userLongitude: Double,
     onMapClick: () -> Unit = {}
 ) {
+    val appState = LocalAppState.current
+    val userLatitude = appState.userLatitude
+    val userLongitude = appState.userLongitude
+
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     // mengurutkan berdasarkan jarak
@@ -66,7 +69,7 @@ fun ClinicsScreen(
         ) {
             item {
                 Image(
-                    painter = painterResource(id = R.drawable.image_map),
+                    painter = painterResource(id = R.drawable.image_map_malang),
                     contentDescription = "Map",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

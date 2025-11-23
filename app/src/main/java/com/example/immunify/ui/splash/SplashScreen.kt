@@ -1,39 +1,30 @@
 package com.example.immunify.ui.splash
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import com.example.immunify.R
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.immunify.data.model.LocationState
+import com.example.immunify.ui.viewmodel.LocationViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(onFinished: () -> Unit) {
+fun SplashScreen(
+    locationViewModel: LocationViewModel = hiltViewModel(),
+    onFinished: () -> Unit
+) {
+    val locState by locationViewModel.locationState
+
     LaunchedEffect(Unit) {
-        delay(2000)
-        onFinished()
+        locationViewModel.loadUserLocation()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF008B8B)),
-        contentAlignment = Alignment.Center
-    ) {
-
-        // Logo Immunify
-        Image(
-            painter = painterResource(id = R.drawable.immunify_logo),
-            contentDescription = "Immunify Logo",
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-        )
+    LaunchedEffect(locState) {
+        if (locState is LocationState.Success) {
+            delay(1000)
+            onFinished()
+        }
     }
+
+    SplashContent()
 }

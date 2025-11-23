@@ -1,5 +1,7 @@
 package com.example.immunify.ui.clinics
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,7 @@ import com.example.immunify.ui.component.AppBar
  * Screen untuk menampilkan list appointments user
  * Contoh penggunaan GetUserAppointmentsUseCase
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UserAppointmentsScreen(
     userId: String,

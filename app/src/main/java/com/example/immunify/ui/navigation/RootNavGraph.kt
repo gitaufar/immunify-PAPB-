@@ -16,9 +16,9 @@ import com.example.immunify.ui.insight.InsightDetail
 import com.example.immunify.ui.insight.InsightScreen
 import com.example.immunify.ui.onboarding.*
 import com.example.immunify.ui.splash.SplashScreen
-import com.example.immunify.ui.splash.AppPreferencesViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.ui.auth.LoginScreen
@@ -26,6 +26,7 @@ import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
+import com.example.immunify.ui.viewmodel.LocationViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -34,32 +35,41 @@ import java.time.LocalDate
 @Composable
 fun RootNavGraph(
     navController: NavHostController = rememberNavController(),
-    userLatitude: Double,
-    userLongitude: Double
 ) {
+    val appState = LocalAppState.current
+
     NavHost(
         navController = navController,
-//        startDestination = Routes.SPLASH
-
-        // untuk testing bisa ubah ke Routes.MAIN_GRAPH
-        startDestination = Routes.MAIN_GRAPH
+        startDestination = Routes.SPLASH
     ) {
 
         // SPLASH
+        // jangan hapus, nanti versi akhir pakai ini
+//        composable(Routes.SPLASH) {
+//            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
+//            SplashScreen(
+//                onFinished = {
+//                    val firstTime = prefsViewModel.isFirstTime.value
+//                    if (firstTime) {
+//                        prefsViewModel.setNotFirstTime()
+//                        navController.navigate(Routes.ONBOARDING1) {
+//                            popUpTo(Routes.SPLASH) { inclusive = true }
+//                        }
+//                    } else {
+//                        navController.navigate(Routes.LOGIN) {
+//                            popUpTo(Routes.SPLASH) { inclusive = true }
+//                        }
+//                    }
+//                }
+//            )
+//        }
+
+        // ini buat testing supaya langsung ke home
         composable(Routes.SPLASH) {
-            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
             SplashScreen(
                 onFinished = {
-                    val firstTime = prefsViewModel.isFirstTime.value
-                    if (firstTime) {
-                        prefsViewModel.setNotFirstTime()
-                        navController.navigate(Routes.ONBOARDING1) {
-                            popUpTo(Routes.SPLASH) { inclusive = true }
-                        }
-                    } else {
-                        navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.SPLASH) { inclusive = true }
-                        }
+                    navController.navigate(Routes.MAIN_GRAPH) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
                     }
                 }
             )
@@ -104,40 +114,32 @@ fun RootNavGraph(
             )
         }
 
-        // MAIN GRAPH (with BottomNav)
+        // MAIN GRAPH SCREEN (BOTTOM NAV HOST)
         composable(Routes.MAIN_GRAPH) {
             MainScaffold(
                 rootNavController = navController,
                 onMapClick = { navController.navigate(Routes.CLINIC_MAP) },
-                userLatitude = userLatitude,
-                userLongitude = userLongitude
             )
         }
 
-        // PAGES di luar BottomNav tapi masih bagian dari MAIN_GRAPH
+        // CLINIC MAP SCREEN
         composable(Routes.CLINIC_MAP) {
             ClinicMapScreen(
-                userLatitude = userLatitude,
-                userLongitude = userLongitude,
                 clinics = ClinicSamples,
                 navController = navController,
                 onBackClick = { navController.popBackStack() }
             )
         }
 
-        composable(
-            route = Routes.CLINIC_DETAIL,
-            arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
-        ) { backStackEntry ->
+        // CLINIC DETAIL SCREEN
+        composable(Routes.CLINIC_DETAIL) { backStackEntry ->
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
             val clinic = ClinicSamples.find { it.id == clinicId }
 
             clinic?.let {
                 ClinicDetailScreen(
                     rootNav = navController,
-                    clinic = it,
-                    userLatitude = userLatitude,
-                    userLongitude = userLongitude,
+                    clinic = clinic,
                     onBackClick = { navController.popBackStack() }
                 )
             }

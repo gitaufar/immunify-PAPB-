@@ -1,38 +1,37 @@
 package com.example.immunify.ui.viewmodel
 
-import android.app.Application
-import android.location.Location
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.compose.runtime.State
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.immunify.data.model.LocationData
 import com.example.immunify.data.model.LocationState
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.immunify.data.repo.LocationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocationViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class LocationViewModel @Inject constructor(
+    private val repository: LocationRepository
+) : ViewModel() {
 
     private val _locationState = mutableStateOf<LocationState>(LocationState.Idle)
     val locationState: State<LocationState> = _locationState
 
-    fun fetchUserLocation(fusedLocationClient: FusedLocationProviderClient) {
+    fun loadUserLocation() {
+        if (_locationState.value is LocationState.Loading) return
         _locationState.value = LocationState.Loading
-        viewModelScope.launch { getLastKnownLocation(fusedLocationClient) }
-    }
 
-    @Suppress("MissingPermission")
-    private fun getLastKnownLocation(fusedLocationClient: FusedLocationProviderClient) {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                _locationState.value = LocationState.Success(
-                    LocationData(location.latitude, location.longitude)
-                )
-            } else {
-                _locationState.value = LocationState.Error("Lokasi tidak ditemukan.")
+        viewModelScope.launch {
+            try {
+                val location = repository.getUserLocation()
+                _locationState.value = if (location != null) {
+                    LocationState.Success(LocationData(location.first, location.second))
+                } else LocationState.Error("Lokasi tidak ditemukan.")
+            } catch (e: Exception) {
+                _locationState.value = LocationState.Error("Error: ${e.message}")
             }
-        }.addOnFailureListener {
-            _locationState.value = LocationState.Error("Gagal mengambil lokasi: ${it.message}")
         }
     }
 }

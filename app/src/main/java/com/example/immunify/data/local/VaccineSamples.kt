@@ -1,82 +1,98 @@
 package com.example.immunify.data.local
 
 import com.example.immunify.data.model.VaccineData
+import kotlin.collections.listOf
 
 val VaccineSamples = listOf(
     VaccineData(
-        id = "v1",
-        name = "HPV",
-        scheduledDates = listOf("2025-11-10")
+        id = "v_1",
+        name = "HPV Vaccine",
+        description = listOf(
+            "Used to prevent infections caused by human papillomavirus (HPV).",
+            "Recommended for preteens aged 9 to 14 but can be given up to age 26.",
+            "Series involves 2–3 doses depending on age when starting vaccination.",
+            "Helps reduce risk of cervical, throat, and anal cancers.",
+            "Common mild side effects include fatigue, dizziness, and arm soreness."
+        ),
+        brand = listOf("Gardasil 9", "Cervarix"),
+        scheduledDates = listOf("2025-11-30"),
+        remainingDoses = 1
     ),
+
     VaccineData(
-        id = "v2",
+        id = "v_2",
         name = "Influenza",
-        scheduledDates = listOf("2025-11-12")
+        description = listOf(
+            "The influenza vaccine helps protect against seasonal flu viruses.",
+            "Recommended annually, especially for children, elderly, and high-risk groups.",
+            "Typically given as a single-dose intramuscular injection.",
+            "Prevents severe flu symptoms and reduces hospitalization risk.",
+            "Possible temporary side effects include fever, muscle pain, and mild fatigue."
+        ),
+        brand = listOf("Fluzone", "FluMist", "Fluad", "Flublok"),
+        scheduledDates = listOf("2025-11-30"),
+        remainingDoses = 1
     ),
+
     VaccineData(
-        id = "v3",
-        name = "Varicella (Chicken Pox)",
-        scheduledDates = listOf("2026-05-07")
+        id = "v_3",
+        name = "Varicella (Chickenpox)",
+        description = listOf(
+            "Prevents infection caused by the varicella-zoster virus.",
+            "Recommended for individuals without prior infection or immunity.",
+            "Usually administered in two doses spaced 4–8 weeks apart.",
+            "Helps reduce severe symptoms and lowers complications such as pneumonia.",
+            "Side effects are generally mild: redness, fever, or mild rash near injection site."
+        ),
+        brand = listOf("Varivax", "MMRV (ProQuad)"),
+        scheduledDates = listOf("2025-12-12"),
+        remainingDoses = 1
     )
 )
 
-val ClinicVaccineSamples = listOf(
+val VaccineRecordSamples = listOf(
     VaccineData(
-        id = "v1",
-        name = "HPV vaccine",
+        id = "v_4",
+        name = "HPV Vaccine",
         description = listOf(
             "HPV vaccine protects against the sexually transmitted human papillomavirus.",
             "Recommended for both genders, typically at ages 11–12 or as early as 9.",
-            "Administered in a series of 2–3 doses.",
-            "Highly effective in preventing certain cancers and genital warts.",
-            "Generally safe with mild side effects such as pain, redness, or swelling at the injection site."
+            "Administered in a series of 2–3 doses depending on age at first vaccination.",
+            "Highly effective in preventing cervical cancer, other HPV-related cancers, and genital warts.",
+            "Side effects are typically mild and include pain, redness, swelling at the injection site, or mild fever."
         ),
-        brand = listOf("Gardasil", "Cervarix")
+        brand = listOf("Gardasil", "Cervarix"),
+        scheduledDates = listOf("2025-10-08"),
+        remainingDoses = 2
     ),
+
     VaccineData(
-        id = "v2",
-        name = "Hepatitis B vaccine",
+        id = "v_5",
+        name = "Hepatitis B Vaccine",
         description = listOf(
-            "Protects against hepatitis B virus infection.",
-            "Recommended for all infants and unvaccinated adults at risk.",
-            "Typically given as a series of 3–4 doses over 6 months."
+            "Provides protection against hepatitis B virus infection, which can lead to chronic liver disease or liver cancer.",
+            "Recommended for infants at birth and for unvaccinated children or adults at risk.",
+            "Administered as a series of 3–4 doses over 6 months depending on the vaccine used.",
+            "Side effects are usually mild and may include low-grade fever or soreness."
         ),
-        brand = listOf("Engerix-B", "Recombivax HB")
+        brand = listOf("Engerix-B", "Recombivax HB"),
+        scheduledDates = listOf("2025-10-25"),
+        remainingDoses = 1
     ),
+
     VaccineData(
-        id = "v3",
-        name = "Varicella vaccine",
+        id = "v_6",
+        name = "Varicella (Chickenpox) Vaccine",
         description = listOf(
             "Protects against chickenpox caused by the varicella-zoster virus.",
-            "Usually given in 2 doses, starting from 12–15 months of age.",
-            "Helps prevent both mild and severe chickenpox infections."
+            "Recommended for children starting at 12–15 months of age and a booster dose at 4–6 years.",
+            "Helps prevent both mild cases and severe complications such as pneumonia and infections.",
+            "Common mild reactions include soreness at the injection site or mild rash."
         ),
-        brand = listOf("Varivax", "ProQuad")
+        brand = listOf("Varivax", "ProQuad"),
+        scheduledDates = listOf("2025-11-04"),
+        remainingDoses = 1
     )
-)
-
-val VaccineSample1 = VaccineData(
-    id = "vaccine_001",
-    name = "Varicella (Chickenpox)",
-    description = listOf(
-        "Helps protect against chickenpox.",
-        "Recommended for children aged 12–15 months."
-    ),
-    brand = listOf("Varilrix", "Varivax"),
-    scheduledDates = listOf("2025-12-01"),
-    remainingDoses = 1
-)
-
-val VaccineSample2 = VaccineData(
-    id = "vaccine_002",
-    name = "MMR (Measles, Mumps, Rubella)",
-    description = listOf(
-        "Protects against measles, mumps, and rubella.",
-        "Usually given at 12–15 months."
-    ),
-    brand = listOf("Priorix", "MMR II"),
-    scheduledDates = listOf("2025-12-15"),
-    remainingDoses = 0
 )
 
 val RSSA_Vaccines = listOf(

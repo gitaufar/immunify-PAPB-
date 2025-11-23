@@ -25,14 +25,18 @@ import org.osmdroid.views.MapView
 import org.osmdroid.util.GeoPoint
 
 
+import com.example.immunify.core.LocalAppState
+
 @Composable
 fun ClinicMapScreen(
-    userLatitude: Double,
-    userLongitude: Double,
     navController: NavController,
     clinics: List<ClinicData>,
     onBackClick: () -> Unit = {}
 ) {
+    val appState = LocalAppState.current
+    val userLatitude = appState.userLatitude
+    val userLongitude = appState.userLongitude
+
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var selectedClinic by remember { mutableStateOf<ClinicData?>(null) }
 

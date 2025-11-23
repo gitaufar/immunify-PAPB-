@@ -24,3 +24,9 @@ fun formatFullDate(date: LocalDate): String {
 
     return "$dayOfWeek, ${day}$suffix $month ${date.year}"
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatIsoToFullDate(iso: String): String {
+    val date = LocalDate.parse(iso, DateTimeFormatter.ISO_DATE)
+    return formatFullDate(date)
+}

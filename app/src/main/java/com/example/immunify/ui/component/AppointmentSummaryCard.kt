@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.immunify.R
 import com.example.immunify.data.model.AppointmentCardType
 import com.example.immunify.data.model.ChildData
+import com.example.immunify.data.model.Gender
 import com.example.immunify.ui.theme.*
 
 @Composable
@@ -170,13 +171,13 @@ fun PreviewAppointmentSummaryVaccinants() {
                 id = "1",
                 name = "Jane Doe",
                 birthDate = "2020-01-01",
-                gender = "Female"
+                    gender = Gender.FEMALE
             ),
             ChildData(
                 id = "2",
                 name = "John Doe",
                 birthDate = "2019-05-10",
-                gender = "Male"
+                gender = Gender.MALE
             )
         )
 

@@ -1,5 +1,7 @@
 package com.example.immunify.ui.clinics
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -7,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,7 +24,9 @@ import com.example.immunify.ui.component.AppointmentSummaryCard
 import com.example.immunify.ui.component.BottomAppBar
 import com.example.immunify.ui.component.ClinicDetailCard
 import com.example.immunify.ui.component.SectionHeader
+import com.example.immunify.util.formatIsoToFullDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppointmentSummaryScreen(
     appointment: AppointmentData,
@@ -30,6 +35,10 @@ fun AppointmentSummaryScreen(
     viewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val createState by viewModel.createAppointmentState.collectAsState()
+
+    val formattedDate = remember(key1 = appointment.date) {
+        formatIsoToFullDate(appointment.date)
+    }
     
     // Handle state changes
     LaunchedEffect(createState) {
@@ -104,7 +113,7 @@ fun AppointmentSummaryScreen(
                     Spacer(Modifier.height(12.dp))
                     AppointmentSummaryCard(
                         type = AppointmentCardType.DATE_TIME,
-                        date = appointment.date,
+                        date = formattedDate,
                         time = appointment.timeSlot
                     )
                     Spacer(Modifier.height(16.dp))

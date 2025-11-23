@@ -1,24 +1,29 @@
 package com.example.immunify.ui.component
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.immunify.ui.theme.Grey60
-import com.example.immunify.ui.theme.Grey70
-import com.example.immunify.ui.theme.ImmunifyTheme
+import com.example.immunify.R
+import com.example.immunify.ui.theme.*
 
 @Composable
 fun SectionHeader(
     title: String,
     subtitle: String? = null,
-    onClickViewAll: (() -> Unit)? = null
+    onClickViewAll: (() -> Unit)? = null,
+    onFilterClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -50,25 +55,61 @@ fun SectionHeader(
             }
         }
 
-        if (onClickViewAll != null) {
-            Text(
-                text = "View All",
-                style = MaterialTheme.typography.bodySmall.copy(color = Grey60),
-                modifier = Modifier.clickable { onClickViewAll() },
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            if (onClickViewAll != null) {
+                Text(
+                    text = "View All",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Grey60),
+                    modifier = Modifier
+                        .clickable { onClickViewAll() }
+                        .padding(end = if (onFilterClick != null) 12.dp else 0.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            if (onFilterClick != null) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .border(
+                            BorderStroke(1.dp, Grey30),
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .clickable { onFilterClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_filter),
+                        contentDescription = "Filter",
+                        tint = PrimaryMain,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun SectionHeaderPreview_NoViewAll() {
+fun SectionHeaderViewAllPreview() {
     ImmunifyTheme {
         SectionHeader(
-            title = "Parent/Guardian Information",
-            subtitle = "This information will be used to schedule and confirm the appointment."
+            title = "Upcoming Vaccine",
+            onClickViewAll = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SectionHeaderFilterPreview() {
+    ImmunifyTheme {
+        SectionHeader(
+            title = "Appointments",
+            onFilterClick = {}
         )
     }
 }
