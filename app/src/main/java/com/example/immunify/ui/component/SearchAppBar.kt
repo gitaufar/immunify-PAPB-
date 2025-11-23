@@ -62,7 +62,7 @@ fun SearchAppBar(
                 contentDescription = "Filter Icon",
                 tint = Grey70,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(28.dp)
                     .clickable { onFilterClick() }
             )
         }

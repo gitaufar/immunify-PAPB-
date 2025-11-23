@@ -3,6 +3,8 @@ package com.example.immunify.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -40,14 +42,18 @@ fun AuthTextField(
     var passwordVisible by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(8.dp)
 
+    // InteractionSource untuk mendeteksi fokus
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused = interactionSource.collectIsFocusedAsState().value
+    val borderColor = if (isFocused) PrimaryMain else Grey30
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(White20, shape)
-            .border(1.dp, Grey30, shape)
+            .border(1.dp, borderColor, shape)
             .drawWithContent {
                 drawContent()
-                // Inner shadow tipis di bagian atas
                 drawRoundRect(
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -94,6 +100,7 @@ fun AuthTextField(
                         PasswordVisualTransformation()
                     else
                         VisualTransformation.None,
+                    interactionSource = interactionSource,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

@@ -12,10 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.immunify.data.local.AppointmentSamples
+import com.example.immunify.data.local.ChildSamples
+import com.example.immunify.data.model.ChildData
+import com.example.immunify.ui.component.AddProfileSheet
+import com.example.immunify.ui.component.AddRecordSheet
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.AppointmentCalendar
 import com.example.immunify.ui.component.AppointmentDropdown
 import com.example.immunify.ui.component.SectionHeader
+import com.example.immunify.ui.component.SelectProfileSheet
 import com.example.immunify.ui.component.YearMonthSelectionSheet
 import com.example.immunify.ui.theme.ImmunifyTheme
 import com.example.immunify.ui.theme.PrimaryMain
@@ -32,8 +37,13 @@ fun TrackerScreen(
     yearMonth: YearMonth,
     onNextMonthClick: (YearMonth) -> Unit = {}
 ) {
-    var showSheet by remember { mutableStateOf(false) }
+    var showDateSheet by remember { mutableStateOf(false) }
+    var showAddRecordSheet by remember { mutableStateOf(false) }
+    var showAddProfileSheet by remember { mutableStateOf(false) }
+    var showSelectProfileSheet by remember { mutableStateOf(false) }
+
     var selectedYM by remember { mutableStateOf(yearMonth) }
+    var selectedVaccinant by remember { mutableStateOf<ChildData?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
 
@@ -43,9 +53,9 @@ fun TrackerScreen(
             currentYM = selectedYM,
             onBackClick = {},
             isOnTracker = true,
-            onNextClick = { showSheet = true },
-            onCalendarClick = {},
-            onAddClick = {},
+            onNextClick = { showDateSheet = true },
+            onCalendarClick = { showAddProfileSheet = true },
+            onAddClick = { showAddRecordSheet = true },
         )
 
         // Konten Scrollable
@@ -98,13 +108,48 @@ fun TrackerScreen(
     }
 
     // Bottom Sheet Year-Month Selection
-    if (showSheet) {
+    if (showDateSheet) {
         YearMonthSelectionSheet(
             onSelect = { ym ->
                 selectedYM = ym
                 onNextMonthClick(ym)
             },
-            onDismiss = { showSheet = false }
+            onDismiss = { showDateSheet = false }
+        )
+    }
+
+    // Tes, ganti lagi
+    if (showAddProfileSheet) {
+        AddProfileSheet(
+            onDismiss = { showAddProfileSheet = false },
+            onAdd = { showAddProfileSheet = false }
+        )
+    }
+
+    // Add Record Sheet
+    if (showAddRecordSheet) {
+        AddRecordSheet(
+            selectedVaccinant = selectedVaccinant,
+            onSelectVaccinant = { child -> selectedVaccinant = child },
+            onDismiss = { showAddRecordSheet = false },
+            onDone = { showAddRecordSheet = false }
+        )
+    }
+
+    // Select Profile Sheet (Vaccinant)
+    if (showSelectProfileSheet) {
+        SelectProfileSheet(
+            children = ChildSamples,
+            selectedChild = selectedVaccinant,
+            onDismiss = { showSelectProfileSheet = false },
+            onSelect = { child ->
+                selectedVaccinant = child
+                showSelectProfileSheet = false
+            },
+            onAddNewProfile = {
+                showSelectProfileSheet = false
+                showAddProfileSheet = true
+            }
         )
     }
 }

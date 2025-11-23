@@ -75,7 +75,7 @@ fun AppBar(
                         painter = painterResource(id = R.drawable.ic_next),
                         contentDescription = "Next",
                         tint = Grey60,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }

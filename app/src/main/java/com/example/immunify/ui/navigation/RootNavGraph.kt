@@ -16,7 +16,6 @@ import com.example.immunify.ui.insight.InsightDetail
 import com.example.immunify.ui.insight.InsightScreen
 import com.example.immunify.ui.onboarding.*
 import com.example.immunify.ui.splash.SplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.UserSample
@@ -26,7 +25,6 @@ import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
-import com.example.immunify.ui.viewmodel.LocationViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate

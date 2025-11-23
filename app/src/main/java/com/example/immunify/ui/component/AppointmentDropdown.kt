@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -160,7 +159,7 @@ private fun AppointmentDropdownItem(
                 )
                 Text(
                     text = appointment.clinic.name,
-                    style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                    style = MaterialTheme.typography.labelSmall.copy(color = Black100)
                 )
 
                 Text(
@@ -169,7 +168,7 @@ private fun AppointmentDropdownItem(
                 )
                 Text(
                     text = "${appointment.vaccine.remainingDoses} left",
-                    style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                    style = MaterialTheme.typography.labelSmall.copy(color = Black100)
                 )
             }
         }

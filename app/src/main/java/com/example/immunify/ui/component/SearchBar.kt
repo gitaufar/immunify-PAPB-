@@ -40,9 +40,9 @@ fun SearchBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(36.dp)
+            .height(40.dp)
             .border(width = 1.5.dp, color = borderColor, shape = shape)
-            .padding(horizontal = 10.dp)
+            .padding(horizontal = 12.dp)
             // memungkinkan disablekan fokus ketika klik area luar
             .clickable(
                 indication = null,
@@ -67,7 +67,7 @@ fun SearchBar(
                 Text(
                     text = placeholder,
                     color = Grey70,
-                    style = Typography.bodySmall,
+                    style = Typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -79,8 +79,8 @@ fun SearchBar(
                 singleLine = true,
                 textStyle = TextStyle(
                     color = Black100,
-                    fontFamily = Typography.bodySmall.fontFamily,
-                    fontSize = Typography.bodySmall.fontSize
+                    fontFamily = Typography.bodyMedium.fontFamily,
+                    fontSize = Typography.bodyMedium.fontSize
                 ),
                 cursorBrush = SolidColor(PrimaryMain),
                 modifier = Modifier

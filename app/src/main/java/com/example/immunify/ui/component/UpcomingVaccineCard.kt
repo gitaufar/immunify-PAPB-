@@ -20,6 +20,7 @@ import com.example.immunify.R
 import com.example.immunify.data.model.VaccineData
 import com.example.immunify.ui.theme.*
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -29,21 +30,20 @@ import kotlin.math.ceil
 fun UpcomingVaccineCard(
     modifier: Modifier = Modifier,
     vaccine: VaccineData,
+    isCompleted: Boolean = false
 ) {
     val shape = RoundedCornerShape(8.dp)
 
-    // Ambil tanggal terdekat
     val nearestDate = vaccine.scheduledDates.firstOrNull()
 
-    // Hitung sisa hari
     val dueDays = nearestDate?.let { dateString ->
         calculateDaysLeft(dateString)
     }
 
-    val dueIn = when {
+    val dueIn = if (isCompleted && nearestDate != null) {
+        formatDateReadable(nearestDate)
+    } else when {
         dueDays == null -> "-"
-
-        // Sudah lewat
         dueDays < 0 -> {
             val lateDays = abs(dueDays)
             when {
@@ -54,7 +54,6 @@ fun UpcomingVaccineCard(
             }
         }
 
-        // Masih upcoming
         dueDays < 1 -> "Today"
         dueDays == 1 -> "1 day"
         dueDays in 2..7 -> "$dueDays days"
@@ -62,7 +61,7 @@ fun UpcomingVaccineCard(
         else -> "${dueDays / 30} months"
     }
 
-    val isWarning = dueDays != null && dueDays < 7
+    val isWarning = !isCompleted && dueDays != null && dueDays < 7
 
     Row(
         modifier = modifier
@@ -73,7 +72,9 @@ fun UpcomingVaccineCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_vaccine_color),
+            painter = painterResource(
+                id = if (isCompleted) R.drawable.ic_certificate else R.drawable.ic_vaccine_color
+            ),
             contentDescription = null,
             modifier = Modifier
                 .size(45.dp)
@@ -81,7 +82,6 @@ fun UpcomingVaccineCard(
         )
 
         Column(modifier = Modifier.weight(1f)) {
-
             Text(
                 text = vaccine.name,
                 style = MaterialTheme.typography.labelMedium,
@@ -92,7 +92,7 @@ fun UpcomingVaccineCard(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Next dose due in",
+                    text = if (isCompleted) "Completed in" else "Next dose due in",
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey70
                 )
@@ -101,7 +101,9 @@ fun UpcomingVaccineCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(if (isWarning) WarningSurface else PrimarySurface)
+                        .background(
+                            if (isWarning) WarningSurface else PrimarySurface
+                        )
                         .border(
                             width = 1.dp,
                             color = if (isWarning) WarningBorder else PrimaryBorder,
@@ -122,7 +124,7 @@ fun UpcomingVaccineCard(
             painter = painterResource(id = R.drawable.ic_next),
             contentDescription = null,
             modifier = Modifier
-                .size(40.dp)
+                .size(32.dp)
                 .padding(start = 8.dp),
             alignment = Alignment.CenterEnd
         )
@@ -141,6 +143,17 @@ fun calculateDaysLeft(dateString: String): Int {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+fun formatDateReadable(dateString: String): String {
+    return try {
+        val date = LocalDate.parse(dateString)
+        val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
+        date.format(formatter)
+    } catch (e: Exception) {
+        "-"
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun UpcomingVaccineCardPreview() {
@@ -151,22 +164,20 @@ fun UpcomingVaccineCardPreview() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
-            val sampleVaccineSoon = VaccineData(
+            val sampleUpcoming = VaccineData(
                 id = "1",
                 name = "HPV",
-                scheduledDates = listOf("2025-11-07")
+                scheduledDates = listOf("2025-12-07")
             )
 
-            val sampleVaccineNormal = VaccineData(
+            val sampleCompleted = VaccineData(
                 id = "2",
-                name = "Varicella",
-                scheduledDates = listOf("2026-02-10")
+                name = "MMR",
+                scheduledDates = listOf("2025-05-10")
             )
 
-            UpcomingVaccineCard(vaccine = sampleVaccineSoon)
-            UpcomingVaccineCard(vaccine = sampleVaccineNormal)
+            UpcomingVaccineCard(vaccine = sampleUpcoming, isCompleted = false)
+            UpcomingVaccineCard(vaccine = sampleCompleted, isCompleted = true)
         }
     }
 }
-
