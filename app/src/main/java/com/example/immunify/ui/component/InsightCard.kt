@@ -1,73 +1,94 @@
 package com.example.immunify.ui.component
 
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.immunify.R
+import com.example.immunify.data.local.InsightSamples
+import com.example.immunify.data.model.InsightData
+import com.example.immunify.ui.theme.*
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun InsightCard(
-    imageUrl: String,
-    title: String,
-    description: String,
-    date: String,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    insight: InsightData,
+    onClick: () -> Unit = {}
 ) {
+    val shape = RoundedCornerShape(10.dp)
+
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        onClick = { onClick?.invoke() }
+            .width(260.dp)
+            .border(BorderStroke(1.dp, Grey30), shape)
+            .clickable(onClick = onClick),
+        shape = shape,
+        colors = CardDefaults.cardColors(containerColor = White10),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = title,
+        Column {
+
+            // Image
+            AsyncImage(
+                model = insight.imageUrl,
+                contentDescription = insight.title,
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.image_the_first_ever),
+                error = painterResource(R.drawable.image_the_first_ever),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .height(140.dp)
+                    .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             )
+
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
+                // Title
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
+                    text = insight.title,
+                    style = MaterialTheme.typography.labelMedium.copy(color = Black100),
+                    maxLines = 2,
+                    minLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+
+                // Description
                 Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    maxLines = 2
+                    text = insight.description,
+                    style = MaterialTheme.typography.bodySmall.copy(color = Grey90),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
-                    text = date,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    text = insight.date,
+                    style = MaterialTheme.typography.bodySmall.copy(color = Grey70, fontSize = 13.sp)
                 )
             }
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewInsightCard() {
+    InsightCard(insight = InsightSamples[0])
+}
+

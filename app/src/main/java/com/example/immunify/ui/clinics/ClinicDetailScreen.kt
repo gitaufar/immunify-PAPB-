@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.immunify.core.LocalAppState
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
 import com.example.immunify.data.model.ClinicData
@@ -27,10 +26,6 @@ fun ClinicDetailScreen(
     clinic: ClinicData,
     onBackClick: () -> Unit = {}
 ) {
-    val appState = LocalAppState.current
-    val userLatitude = appState.userLatitude
-    val userLongitude = appState.userLongitude
-
     var isBookmarked by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Information", "Reviews")
@@ -66,11 +61,7 @@ fun ClinicDetailScreen(
                 contentPadding = PaddingValues(bottom = 4.dp)
             ) {
                 item {
-                    ClinicDetailHeader(
-                        clinic = clinic,
-                        userLatitude = userLatitude,
-                        userLongitude = userLongitude
-                    )
+                    ClinicDetailHeader(clinic = clinic)
                 }
 
                 // TabRow
@@ -181,49 +172,3 @@ fun ClinicReviewsTab() {
         )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewClinicDetailScreen() {
-//    val sampleClinic = ClinicData(
-//        id = "1",
-//        name = "RS EMC Pulomas",
-//        imageUrl = "https://example.com/hospital.jpg",
-//        address = "Jl. Pulo Mas Bar. VI No.20",
-//        district = "Kec. Pulo Gadung",
-//        city = "DKI Jakarta",
-//        latitude = -6.188,
-//        longitude = 106.88,
-//        rating = 4.9,
-//        website = "www.emc.id",
-//        openingHours = "24 Hours",
-//        availableVaccines = listOf(
-//            VaccineData(
-//                id = "v1",
-//                name = "HPV vaccine",
-//                description = listOf(
-//                    "HPV vaccine protects against the sexually transmitted human papillomavirus.",
-//                    "Recommended for both genders, typically at ages 11–12 or as early as 9.",
-//                    "Administered in a series of 2–3 doses.",
-//                    "Highly effective in preventing certain cancers and genital warts.",
-//                    "Generally safe with mild side effects such as pain, redness, or swelling at the injection site."
-//                ),
-//                brand = listOf("Gardasil", "Cervarix")
-//            ),
-//            VaccineData(
-//                id = "v2",
-//                name = "Hepatitis B vaccine",
-//                description = listOf("Protects against hepatitis B virus infection."),
-//                brand = listOf("Engerix-B")
-//            )
-//        )
-//    )
-//
-//    ImmunifyTheme {
-//        ClinicDetailScreen(
-//            clinic = sampleClinic,
-//            userLatitude = -6.2,
-//            userLongitude = 106.8
-//        )
-//    }
-//}

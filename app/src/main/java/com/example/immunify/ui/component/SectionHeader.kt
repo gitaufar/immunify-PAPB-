@@ -26,7 +26,14 @@ fun SectionHeader(
     onFilterClick: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (onClickViewAll != null) {
+                    Modifier.clickable { onClickViewAll() }
+                } else Modifier
+            )
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -38,14 +45,13 @@ fun SectionHeader(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
             if (subtitle != null) {
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall.copy(color = Grey70),
@@ -61,9 +67,6 @@ fun SectionHeader(
                 Text(
                     text = "View All",
                     style = MaterialTheme.typography.bodySmall.copy(color = Grey60),
-                    modifier = Modifier
-                        .clickable { onClickViewAll() }
-                        .padding(end = if (onFilterClick != null) 12.dp else 0.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -91,6 +94,7 @@ fun SectionHeader(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

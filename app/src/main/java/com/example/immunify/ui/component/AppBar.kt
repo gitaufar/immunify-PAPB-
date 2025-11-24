@@ -46,10 +46,6 @@ fun AppBar(
     onCalendarClick: (() -> Unit)? = null,
     onAddClick: (() -> Unit)? = null
 ) {
-    val currentDate = remember {
-        LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy"))
-    }
-
     TopAppBar(
         title = {
             if (!isOnTracker) {

@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -20,16 +21,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.immunify.R
+import com.example.immunify.core.AppState
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.model.ClinicData
 import com.example.immunify.ui.theme.*
 
 @SuppressLint("DefaultLocale")
 @Composable
 fun ClinicDetailHeader(
-    clinic: ClinicData,
-    userLatitude: Double,
-    userLongitude: Double
+    clinic: ClinicData
 ) {
+    val appState = LocalAppState.current
+    val userLatitude = appState.userLatitude
+    val userLongitude = appState.userLongitude
+
     val distanceKm = calculateDistanceKm(
         userLatitude,
         userLongitude,
@@ -125,24 +130,25 @@ fun ClinicDetailHeader(
 @Composable
 fun ClinicDetailHeaderPreview() {
     ImmunifyTheme {
-        ClinicDetailHeader(
-            clinic = ClinicData(
-                id = "emc_pulomas",
-                name = "RS EMC Pulomas",
-                imageUrl = "https://emc.id/storage/files/shares/foto%20rs/emc-pulomas.jpg",
-                address = "Jl. Pulomas Barat VI No.20, Kayu Putih, Jakarta Timur",
-                district = "Kayu Putih",
-                city = "Jakarta Timur",
-                latitude = -6.1849,
-                longitude = 106.8821,
-                rating = 4.9,
-                website = "https://emc.id",
-                openingHours = "24 Hours",
-                availableVaccines = emptyList(),
-                contact = "08123456890"
-            ),
-            userLatitude = -6.2,
-            userLongitude = 106.8
-        )
+        CompositionLocalProvider(LocalAppState provides AppState(-6.2, 106.8)) {
+            ClinicDetailHeader(
+                clinic = ClinicData(
+                    id = "emc_pulomas",
+                    name = "RS EMC Pulomas",
+                    imageUrl = "https://example.com",
+                    address = "Jakarta",
+                    district = "Kayu Putih",
+                    city = "Jakarta Timur",
+                    latitude = -6.1849,
+                    longitude = 106.8821,
+                    rating = 4.9,
+                    website = "https://emc.id",
+                    openingHours = "24 Hours",
+                    availableVaccines = emptyList(),
+                    contact = "08123456890"
+                )
+            )
+        }
     }
 }
+

@@ -2,6 +2,7 @@ package com.example.immunify.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -24,7 +25,8 @@ import com.example.immunify.ui.theme.*
 @Composable
 fun DiseaseCard(
     disease: DiseaseData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     val shape = RoundedCornerShape(6.dp)
 
@@ -32,7 +34,8 @@ fun DiseaseCard(
         modifier = modifier
             .width(170.dp)
             .height(230.dp)
-            .clip(shape),
+            .clip(shape)
+            .clickable { onClick() },
         shape = shape,
         elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(containerColor = White10)

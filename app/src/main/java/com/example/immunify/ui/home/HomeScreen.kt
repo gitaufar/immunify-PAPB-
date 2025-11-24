@@ -72,7 +72,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_next),
                             contentDescription = null,
                             tint = Grey60,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -85,7 +85,7 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Upcoming Vaccine Section
             SectionHeader(
@@ -102,7 +102,7 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Clinics Nearby Section
             SectionHeader(
@@ -128,8 +128,6 @@ fun HomeScreen(
             items(sortedClinics) { clinic ->
                 ClinicHomeCard(
                     clinic = clinic,
-                    userLatitude = userLatitude,
-                    userLongitude = userLongitude,
                     onClick = {
                         rootNav.navigate(Routes.clinicDetailRoute(clinic.id))
                     }
@@ -137,7 +135,7 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Disease Knowledge Section
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
@@ -155,7 +153,12 @@ fun HomeScreen(
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
             items(DiseaseSamples) { disease ->
-                DiseaseCard(disease = disease)
+                DiseaseCard(
+                    disease = disease,
+                    onClick = {
+                        rootNav.navigate(Routes.diseaseDetailRoute(disease.id))
+                    }
+                )
             }
         }
     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.immunify.R
+import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.model.ClinicData
 import com.example.immunify.ui.theme.*
 
@@ -24,20 +25,19 @@ import com.example.immunify.ui.theme.*
 fun ClinicNearbyCard(
     modifier: Modifier = Modifier,
     clinic: ClinicData,
-    userLatitude: Double,
-    userLongitude: Double,
     onClick: () -> Unit = {}
 ) {
-    val shape = RoundedCornerShape(10.dp)
+    val appState = LocalAppState.current
 
-    // Hitung jarak
     val distanceKm = calculateDistanceKm(
-        userLatitude,
-        userLongitude,
+        appState.userLatitude,
+        appState.userLongitude,
         clinic.latitude,
         clinic.longitude
     )
     val formattedDistance = String.format("%.1f km", distanceKm)
+
+    val shape = RoundedCornerShape(8.dp)
 
     Card(
         modifier = modifier

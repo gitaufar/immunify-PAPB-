@@ -12,12 +12,12 @@ import androidx.navigation.navArgument
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.clinics.ClinicDetailScreen
 import com.example.immunify.ui.clinics.ClinicMapScreen
-import com.example.immunify.ui.insight.InsightDetail
-import com.example.immunify.ui.insight.InsightScreen
 import com.example.immunify.ui.onboarding.*
 import com.example.immunify.ui.splash.SplashScreen
 import androidx.navigation.NavHostController
 import com.example.immunify.core.LocalAppState
+import com.example.immunify.data.local.DiseaseSamples
+import com.example.immunify.data.local.InsightSamples
 import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.ui.auth.LoginScreen
@@ -25,6 +25,9 @@ import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
+import com.example.immunify.ui.insight.DiseaseDetailScreen
+import com.example.immunify.ui.insight.InsightDetailScreen
+import com.example.immunify.ui.insight.InsightScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -40,7 +43,6 @@ fun RootNavGraph(
         navController = navController,
         startDestination = Routes.SPLASH
     ) {
-
         // SPLASH
         // jangan hapus, nanti versi akhir pakai ini
 //        composable(Routes.SPLASH) {
@@ -189,9 +191,8 @@ fun RootNavGraph(
             )
         }
 
-        // INSIGHT
         composable(Routes.INSIGHTS) {
-            InsightScreen()
+            InsightScreen(navController)
         }
 
         composable(
@@ -199,7 +200,30 @@ fun RootNavGraph(
             arguments = listOf(navArgument("insightId") { type = NavType.StringType })
         ) { backStackEntry ->
             val insightId = backStackEntry.arguments?.getString("insightId") ?: ""
-            InsightDetail(navController = navController, insightId = insightId)
+            val insight = InsightSamples.find { it.id == insightId }
+            if (insight != null) {
+                InsightDetailScreen(
+                    rootNav = navController,
+                    insight = insight,
+                    onBackClick = { navController.navigateUp() }
+                )
+            }
+        }
+
+        composable(
+            route = Routes.DISEASE_DETAIL,
+            arguments = listOf(navArgument("diseaseId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val diseaseId = backStackEntry.arguments?.getString("diseaseId") ?: ""
+            val disease = DiseaseSamples.find { it.id == diseaseId }
+
+            if (disease != null) {
+                DiseaseDetailScreen(
+                    rootNav = navController,
+                    disease = disease,
+                    onBackClick = { navController.navigateUp() }
+                )
+            }
         }
     }
 }

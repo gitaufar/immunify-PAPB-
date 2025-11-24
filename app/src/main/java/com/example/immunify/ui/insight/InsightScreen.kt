@@ -1,132 +1,147 @@
 package com.example.immunify.ui.insight
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.immunify.R
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.immunify.data.local.DiseaseSamples
+import com.example.immunify.data.local.InsightSamples
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.DiseaseCard
 import com.example.immunify.ui.component.InsightCard
+import com.example.immunify.ui.component.SearchBar
+import com.example.immunify.ui.component.SectionHeader
 
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun InsightScreen(
+    rootNav: NavController,
     onBackClick: () -> Unit = {}
 ) {
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    var searchQuery by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = { AppBar(title = "Insights", onBackClick = onBackClick) }
-    ) { innerPadding ->
-        LazyColumn(
+    Scaffold { innerPadding ->
+
+        Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(innerPadding)
         ) {
-            // Search Bar
-            item {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Search") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
-                )
-            }
 
-            // Latest Updates
-            item {
-                SectionTitle("Latest Updates")
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item {
-                        InsightCard(
-                            imageUrl = "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/RSV_vaccine_news.max-1300x1300.jpg",
-                            title = "The first ever vaccine against RSV could be approved in 2023",
-                            description = "Although usually mild, RSV can be severe for infants and older adults.",
-                            date = "24 January 2023"
-                        )
-                    }
-                    item {
-                        InsightCard(
-                            imageUrl = "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Child_vaccine_news.max-1300x1300.jpg",
-                            title = "Catching Up on Child Vaccines in Indonesia",
-                            description = "Efforts are being made to improve childhood immunization coverage across the country.",
-                            date = "26 January 2023"
+            // AppBar fixed, tidak ikut scroll
+            AppBar(
+                title = "Insights",
+                onBackClick = onBackClick
+            )
+
+            // Konten Scrollable
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 40.dp)
+            ) {
+
+                // Search Bar
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        SearchBar(
+                            value = TextFieldValue(searchQuery),
+                            onValueChange = { searchQuery = it.text },
+                            placeholder = "Search"
                         )
                     }
                 }
-            }
 
-            // Know the Disease!
-            item {
-                SectionTitle("Know the Disease!")
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // ganti fetch data dari Supabase
-                    items(DiseaseSamples) { disease ->
-                        DiseaseCard(
-                            disease = disease
-                        )
+                // Latest Updates
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        SectionHeader(title = "Latest Updates")
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp)
+                    ) {
+                        items(InsightSamples.subList(3, 6)) { insight ->
+                            InsightCard(
+                                insight = insight,
+                                onClick = {
+                                    rootNav.navigate(Routes.insightDetailRoute(insight.id))
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Know The Disease
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        SectionHeader(title = "Know the Disease!")
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp)
+                    ) {
+                        items(DiseaseSamples) { disease ->
+                            DiseaseCard(
+                                disease = disease,
+                                onClick = {
+                                    rootNav.navigate(Routes.diseaseDetailRoute(disease.id))
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Live Healthy
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        SectionHeader(title = "Live Healthy")
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp)
+                    ) {
+                        items(InsightSamples.subList(0, 3)) { insight ->
+                            InsightCard(
+                                insight = insight,
+                                onClick = {
+                                    rootNav.navigate(Routes.insightDetailRoute(insight.id))
+                                }
+                            )
+                        }
                     }
                 }
             }
-
-            // Live Healthy
-            item {
-                SectionTitle("Live Healthy")
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item {
-                        InsightCard(
-                            imageUrl = "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Healthy_breakfast.max-1300x1300.jpg",
-                            title = "5 Easy Healthy Breakfast Recipes for Busy Mornings",
-                            description = "Healthy and delicious options for the perfect morning routine.",
-                            date = "24 February 2023"
-                        )
-                    }
-                    item {
-                        InsightCard(
-                            imageUrl = "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Running_health.max-1300x1300.jpg",
-                            title = "7 Health Benefits of Casual Running",
-                            description = "A simple yet powerful way to boost your physical and mental well-being.",
-                            date = "27 February 2023"
-                        )
-                    }
-                }
-            }
-
-            item { Spacer(modifier = Modifier.height(24.dp)) }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
 @Composable
-fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-        color = MaterialTheme.colorScheme.onSurface
-    )
+fun InsightScreenPreview() {
+    val nav = rememberNavController()
+    InsightScreen(rootNav = nav)
 }

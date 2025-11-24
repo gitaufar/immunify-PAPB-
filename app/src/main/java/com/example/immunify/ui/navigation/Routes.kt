@@ -22,11 +22,15 @@ object Routes {
 
     const val INSIGHTS = "main_insights"
     const val INSIGHT_DETAIL = "main_insight_detail/{insightId}"
+    const val DISEASE_DETAIL = "main_disease_detail/{diseaseId}"
 
     const val NOTIFICATION = "main_notification"
 
     fun clinicDetailRoute(clinicId: String): String = "main_clinic_detail/$clinicId"
-    fun setAppointmentRoute(clinicId: String): String = "$SET_APPOINTMENT/$clinicId"
+    fun setAppointmentRoute(clinicId: String): String = "main_set_appointment/$clinicId"
     fun appointmentSummaryRoute(appointmentJson: String): String =
         "$APPOINTMENT_SUMMARY/$appointmentJson"
+
+    fun insightDetailRoute(id: String) = "main_insight_detail/$id"
+    fun diseaseDetailRoute(id: String) = "main_disease_detail/$id"
 }

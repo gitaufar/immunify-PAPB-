@@ -13,15 +13,15 @@ fun SplashScreen(
     locationViewModel: LocationViewModel = hiltViewModel(),
     onFinished: () -> Unit
 ) {
-    val locState by locationViewModel.locationState
+    val locState = locationViewModel.locationState
 
     LaunchedEffect(Unit) {
         locationViewModel.loadUserLocation()
     }
 
-    LaunchedEffect(locState) {
-        if (locState is LocationState.Success) {
-            delay(1000)
+    LaunchedEffect(locState.value) {
+        if (locState.value is LocationState.Success) {
+            delay(1200)
             onFinished()
         }
     }

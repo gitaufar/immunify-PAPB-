@@ -25,33 +25,31 @@ class MainActivity : ComponentActivity() {
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) locationViewModel.loadUserLocation()
+            if (granted) {
+                locationViewModel.loadUserLocation()
+            }
         }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-
         permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
         setContent {
             ImmunifyTheme {
 
-                val appState = AppState()
+                val appState = LocalAppState.current
+                val loc = locationViewModel.locationState.value
 
-                LaunchedEffect(locationViewModel.locationState.value) {
-                    val loc = locationViewModel.locationState.value
+                LaunchedEffect(loc) {
                     if (loc is LocationState.Success) {
                         appState.userLatitude = loc.location.latitude
                         appState.userLongitude = loc.location.longitude
                     }
                 }
 
-                CompositionLocalProvider(LocalAppState provides appState) {
-                    RootNavGraph()
-                }
+                RootNavGraph()
             }
         }
     }

@@ -80,15 +80,6 @@ private fun SelectProfileSheetContent(
             .padding(bottom = 24.dp)
     ) {
 
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-            text = "Select Profile",
-            style = MaterialTheme.typography.titleMedium.copy(color = Black100)
-        )
-
-        Spacer(Modifier.height(24.dp))
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {

@@ -92,8 +92,6 @@ fun ClinicsScreen(
             items(sortedClinics) { clinic ->
                 ClinicNearbyCard(
                     clinic = clinic,
-                    userLatitude = userLatitude,
-                    userLongitude = userLongitude,
                     onClick = {
                         navController.navigate(Routes.clinicDetailRoute(clinic.id))
                     }

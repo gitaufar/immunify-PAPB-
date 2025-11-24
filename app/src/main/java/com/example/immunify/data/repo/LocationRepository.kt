@@ -10,7 +10,20 @@ class LocationRepository @Inject constructor(
 ) {
     @SuppressLint("MissingPermission")
     suspend fun getUserLocation(): Pair<Double, Double>? {
-        val location = fusedLocationClient.lastLocation.await() ?: return null
-        return Pair(location.latitude, location.longitude)
+        // Coba ambil cached lokasi
+        val lastLocation = fusedLocationClient.lastLocation.await()
+        if (lastLocation != null) {
+            return Pair(lastLocation.latitude, lastLocation.longitude)
+        }
+
+        // Kalau null, pakai request realtime
+        val currentLocation = fusedLocationClient.getCurrentLocation(
+            com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+            null
+        ).await()
+
+        return currentLocation?.let {
+            Pair(it.latitude, it.longitude)
+        }
     }
 }
