@@ -19,6 +19,7 @@ import com.example.immunify.data.local.RSSA_Vaccines
 import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.data.model.AppointmentStatus
+import com.example.immunify.data.model.Gender
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Grey80
 import com.example.immunify.ui.theme.PrimaryMain
@@ -29,7 +30,7 @@ import java.time.YearMonth
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppointmentCalendar(
-    appointments: List<AppointmentData>,
+    appointments: List<com.example.immunify.domain.model.Appointment>,
     yearMonth: YearMonth
 ) {
     val today = LocalDate.now()
@@ -111,12 +112,13 @@ fun AppointmentCalendar(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     dailyAppointments.forEach { app ->
-                                        app.vaccinants.forEachIndexed { i, child ->
+                                        app.vaccinantNames.forEachIndexed { i, _ ->
                                             Box(
                                                 modifier = Modifier
                                                     .size(8.dp)
                                                     .background(
-                                                        getChildColor(child.gender, i),
+                                                        // Gunakan warna default jika tidak ada gender info
+                                                        getChildColor(Gender.MALE, i),
                                                         CircleShape
                                                     )
                                             )
@@ -139,65 +141,56 @@ fun AppointmentCalendar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAppointmentCalendar() {
-    val parent = UserSample
-    val clinic = ClinicSamples.first()
-    val child1 = ChildSamples[0]
-    val child2 = ChildSamples[1]
-    val child3 = ChildSamples[2]
-    val vaccine = RSSA_Vaccines.first()
-
     val today = LocalDate.now()
     val ym = YearMonth.now()
 
     val exampleAppointments = listOf(
-        AppointmentData(
+        com.example.immunify.domain.model.Appointment(
             id = "APT001",
-            parent = parent,
-            clinic = clinic,
+            userId = "user001",
+            userName = "John Doe",
+            userPhone = "08123456789",
+            clinicId = "clinic001",
+            clinicName = "RS EMC Pulomas",
+            clinicAddress = "Jl. Pulo Mas",
             date = today.toString(),
             timeSlot = "09:00",
-            vaccine = vaccine,
-            vaccinants = listOf(child1),
+            vaccineId = "v001",
+            vaccineName = "HPV Vaccine",
+            vaccinantIds = listOf("child001"),
+            vaccinantNames = listOf("Alice"),
             status = AppointmentStatus.PENDING
         ),
-        AppointmentData(
+        com.example.immunify.domain.model.Appointment(
             id = "APT002",
-            parent = parent,
-            clinic = clinic,
+            userId = "user001",
+            userName = "John Doe",
+            userPhone = "08123456789",
+            clinicId = "clinic001",
+            clinicName = "RS EMC Pulomas",
+            clinicAddress = "Jl. Pulo Mas",
             date = ym.atDay(5).toString(),
             timeSlot = "10:00",
-            vaccine = vaccine,
-            vaccinants = listOf(child2),
+            vaccineId = "v001",
+            vaccineName = "HPV Vaccine",
+            vaccinantIds = listOf("child002"),
+            vaccinantNames = listOf("Bob"),
             status = AppointmentStatus.PENDING
         ),
-        AppointmentData(
+        com.example.immunify.domain.model.Appointment(
             id = "APT003",
-            parent = parent,
-            clinic = clinic,
-            date = ym.atDay(5).toString(),
-            timeSlot = "14:00",
-            vaccine = vaccine,
-            vaccinants = listOf(child3),
-            status = AppointmentStatus.PENDING
-        ),
-        AppointmentData(
-            id = "APT004",
-            parent = parent,
-            clinic = clinic,
+            userId = "user001",
+            userName = "John Doe",
+            userPhone = "08123456789",
+            clinicId = "clinic001",
+            clinicName = "RS EMC Pulomas",
+            clinicAddress = "Jl. Pulo Mas",
             date = ym.atDay(12).toString(),
-            timeSlot = "08:30",
-            vaccine = vaccine,
-            vaccinants = listOf(child1, child2),
-            status = AppointmentStatus.PENDING
-        ),
-        AppointmentData(
-            id = "APT005",
-            parent = parent,
-            clinic = clinic,
-            date = ym.atDay(20).toString(),
-            timeSlot = "11:00",
-            vaccine = vaccine,
-            vaccinants = listOf(child3),
+            timeSlot = "14:00",
+            vaccineId = "v002",
+            vaccineName = "Hepatitis B",
+            vaccinantIds = listOf("child001", "child002"),
+            vaccinantNames = listOf("Alice", "Bob"),
             status = AppointmentStatus.PENDING
         )
     )

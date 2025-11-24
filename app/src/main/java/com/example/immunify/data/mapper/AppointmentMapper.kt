@@ -33,6 +33,13 @@ object AppointmentMapper {
             updatedAt = System.currentTimeMillis()
         )
     }
+    
+    /**
+     * Convert list of AppointmentData to list of Appointment (Domain)
+     */
+    fun List<AppointmentData>.toDomainList(): List<Appointment> {
+        return this.map { it.toDomain() }
+    }
 
     /**
      * Convert dari Domain model ke Firestore DTO

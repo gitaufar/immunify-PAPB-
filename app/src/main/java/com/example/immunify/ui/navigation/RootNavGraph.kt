@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +29,7 @@ import com.example.immunify.ui.clinics.SetAppointmentScreen
 import com.example.immunify.ui.insight.DiseaseDetailScreen
 import com.example.immunify.ui.insight.InsightDetailScreen
 import com.example.immunify.ui.insight.InsightScreen
+import com.example.immunify.ui.splash.AppPreferencesViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -45,35 +47,35 @@ fun RootNavGraph(
     ) {
         // SPLASH
         // jangan hapus, nanti versi akhir pakai ini
-//        composable(Routes.SPLASH) {
-//            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
-//            SplashScreen(
-//                onFinished = {
-//                    val firstTime = prefsViewModel.isFirstTime.value
-//                    if (firstTime) {
-//                        prefsViewModel.setNotFirstTime()
-//                        navController.navigate(Routes.ONBOARDING1) {
-//                            popUpTo(Routes.SPLASH) { inclusive = true }
-//                        }
-//                    } else {
-//                        navController.navigate(Routes.LOGIN) {
-//                            popUpTo(Routes.SPLASH) { inclusive = true }
-//                        }
-//                    }
-//                }
-//            )
-//        }
-
-        // ini buat testing supaya langsung ke home
         composable(Routes.SPLASH) {
+            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
             SplashScreen(
                 onFinished = {
-                    navController.navigate(Routes.MAIN_GRAPH) {
-                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    val firstTime = prefsViewModel.isFirstTime.value
+                    if (firstTime) {
+                        prefsViewModel.setNotFirstTime()
+                        navController.navigate(Routes.ONBOARDING1) {
+                            popUpTo(Routes.SPLASH) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.SPLASH) { inclusive = true }
+                        }
                     }
                 }
             )
         }
+
+        // ini buat testing supaya langsung ke home
+//        composable(Routes.SPLASH) {
+//            SplashScreen(
+//                onFinished = {
+//                    navController.navigate(Routes.MAIN_GRAPH) {
+//                        popUpTo(Routes.SPLASH) { inclusive = true }
+//                    }
+//                }
+//            )
+//        }
 
         // ONBOARDING
         composable(Routes.ONBOARDING1) {
@@ -149,11 +151,27 @@ fun RootNavGraph(
             route = "${Routes.SET_APPOINTMENT}/{clinicId}",
             arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
         ) { backStackEntry ->
+            val authViewModel: com.example.immunify.ui.auth.AuthViewModel = hiltViewModel()
+            val currentUser = authViewModel.getUser()
+            
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
             val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
 
+            // Create UserData dengan Firebase UID
+            // Children will be loaded inside SetAppointmentScreen via ChildViewModel
+            val user = currentUser?.let {
+                com.example.immunify.data.model.UserData(
+                    id = it.uid, // Use Firebase Auth UID
+                    name = it.displayName ?: "User",
+                    email = it.email ?: "",
+                    password = "", // Not needed for logged-in user
+                    phoneNumber = it.phoneNumber ?: "",
+                    children = emptyList() // Loaded dynamically in SetAppointmentScreen
+                )
+            } ?: return@composable
+
             SetAppointmentScreen(
-                user = UserSample,
+                user = user,
                 clinic = clinic,
                 selectedDate = LocalDate.now(),
                 onBackClick = { navController.popBackStack() },

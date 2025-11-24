@@ -105,14 +105,17 @@ class AppointmentViewModel @Inject constructor(
 
     /**
      * Cancel appointment
+     * Requires userId untuk nested collection structure
      */
-    fun cancelAppointment(appointmentId: String) {
+    fun cancelAppointment(userId: String, appointmentId: String) {
         viewModelScope.launch {
-            when (val result = cancelAppointmentUseCase(appointmentId)) {
+            when (val result = cancelAppointmentUseCase(userId, appointmentId)) {
                 is Result.Success -> {
                     _createAppointmentState.value = AppointmentUiState.Success(
                         message = "Appointment cancelled successfully"
                     )
+                    // Refresh appointments after cancel
+                    getUserAppointments(userId)
                 }
 
                 is Result.Error -> {

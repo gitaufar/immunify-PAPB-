@@ -1,6 +1,7 @@
 package com.example.immunify.ui.component
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,22 +26,59 @@ import com.example.immunify.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.immunify.domain.model.Child
+import com.example.immunify.ui.profile.viewmodel.ChildUiState
+import com.example.immunify.ui.profile.viewmodel.ChildViewModel
 import com.example.immunify.ui.theme.*
 import androidx.compose.ui.text.input.TextFieldValue
+import com.example.immunify.ui.auth.AuthViewModel
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProfileSheet(
+    childViewModel: ChildViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     onDismiss: () -> Unit = {},
-    onAdd: () -> Unit = {}
+    onSuccess: () -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+    
+    val context = LocalContext.current
+    val createChildState by childViewModel.createChildState.collectAsState()
+    val currentUser = authViewModel.getUser()
+    val userId = currentUser?.uid
+
+    // Handle state changes
+    LaunchedEffect(createChildState) {
+        when (createChildState) {
+            is ChildUiState.Success -> {
+                Toast.makeText(
+                    context, 
+                    (createChildState as ChildUiState.Success).message, 
+                    Toast.LENGTH_SHORT
+                ).show()
+                childViewModel.resetCreateState()
+                onSuccess()
+                onDismiss()
+            }
+            is ChildUiState.Error -> {
+                Toast.makeText(
+                    context, 
+                    (createChildState as ChildUiState.Error).message, 
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else -> {}
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -48,14 +87,32 @@ fun AddProfileSheet(
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         modifier = Modifier.imePadding()
     ) {
-        AddProfileSheetContent(onAdd = onAdd, onDismiss = onDismiss)
+        if (userId == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Please login to add child profile")
+            }
+        } else {
+            AddProfileSheetContent(
+                userId = userId,
+                childViewModel = childViewModel,
+                isLoading = createChildState is ChildUiState.Loading,
+                onDismiss = onDismiss
+            )
+        }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun AddProfileSheetContent(
-    onAdd: () -> Unit,
+    userId: String,
+    childViewModel: ChildViewModel,
+    isLoading: Boolean,
     onDismiss: () -> Unit
 ) {
     var fullName by remember { mutableStateOf(TextFieldValue("")) }
@@ -66,6 +123,23 @@ private fun AddProfileSheetContent(
     var showDatePicker by remember { mutableStateOf(false) }
 
     var gender by remember { mutableStateOf("") }
+    
+    val onAddChild = {
+        // Format date to yyyy-MM-dd
+        val dayStr = day.text.padStart(2, '0')
+        val monthStr = month.text.padStart(2, '0')
+        val yearStr = year.text
+        val birthDate = "$yearStr-$monthStr-$dayStr"
+        
+        val child = Child(
+            userId = userId,
+            name = fullName.text,
+            birthDate = birthDate,
+            gender = gender
+        )
+        
+        childViewModel.createChild(child)
+    }
 
     Column(
         modifier = Modifier
@@ -232,22 +306,35 @@ private fun AddProfileSheetContent(
                 text = "Cancel",
                 onClick = { onDismiss() },
                 modifier = Modifier.weight(1f),
-                isOutline = true
+                isOutline = true,
+//                enabled = !isLoading
             )
 
             // Add
             MainButton(
-                text = "Add",
-                onClick = { onAdd() },
+                text = if (isLoading) "Adding..." else "Add",
+                onClick = { onAddChild() },
                 modifier = Modifier.weight(1f),
+//                enabled = !isLoading && fullName.text.isNotEmpty() &&
+//                         day.text.isNotEmpty() && month.text.isNotEmpty() &&
+//                         year.text.isNotEmpty() && gender.isNotEmpty()
             )
+        }
+        
+        if (isLoading) {
+            Spacer(Modifier.height(16.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = PrimaryMain
+                )
+            }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddProfileSheet() {
-    AddProfileSheet()
-}
+// Preview removed - requires Hilt ViewModel injection
+// To test, run the app and use AddProfileSheet in a screen

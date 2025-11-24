@@ -29,10 +29,34 @@ import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.data.model.ChildData
 import com.example.immunify.data.model.Gender
+import com.example.immunify.domain.model.Appointment
 import com.example.immunify.ui.theme.*
 
+/**
+ * Wrapper untuk Domain Model Appointment
+ */
 @Composable
-fun AppointmentDropdown(appointment: AppointmentData) {
+fun AppointmentDropdown(appointment: Appointment) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        appointment.vaccinantNames.forEachIndexed { index, name ->
+            AppointmentDropdownItemDomain(
+                appointment = appointment,
+                vaccinantName = name,
+                color = getChildColor(Gender.MALE, index),
+                isLast = index == appointment.vaccinantNames.lastIndex
+            )
+        }
+    }
+}
+
+/**
+ * Original untuk AppointmentData
+ */
+@Composable
+fun AppointmentDropdownData(appointment: AppointmentData) {
 
     var maleIndex = 0
     var femaleIndex = 0
@@ -63,6 +87,125 @@ fun AppointmentDropdown(appointment: AppointmentData) {
                 color = color,
                 isLast = globalIndex == appointment.vaccinants.lastIndex
             )
+        }
+    }
+}
+
+/**
+ * Dropdown item untuk Domain Model
+ */
+@Composable
+private fun AppointmentDropdownItemDomain(
+    appointment: Appointment,
+    vaccinantName: String,
+    color: Color,
+    isLast: Boolean
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "")
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White10, RoundedCornerShape(8.dp))
+            .border(1.dp, Grey30, RoundedCornerShape(8.dp))
+    ) {
+        // Header bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = appointment.vaccineName,
+                    style = MaterialTheme.typography.labelLarge.copy(color = Black100),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(color, CircleShape)
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Text(
+                        text = vaccinantName,
+                        style = MaterialTheme.typography.bodySmall.copy(color = Grey90),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = appointment.timeSlot,
+                    style = MaterialTheme.typography.bodySmall.copy(color = Black100)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_down),
+                    contentDescription = null,
+                    tint = Grey80,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .rotate(rotation)
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
+            Divider(
+                color = Grey30,
+                thickness = 1.dp,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Location",
+                    style = MaterialTheme.typography.labelSmall.copy(color = Grey70)
+                )
+                Text(
+                    text = appointment.clinicName,
+                    style = MaterialTheme.typography.labelSmall.copy(color = Black100)
+                )
+
+                Text(
+                    text = "Status",
+                    style = MaterialTheme.typography.labelSmall.copy(color = Grey70)
+                )
+                Text(
+                    text = appointment.status.name,
+                    style = MaterialTheme.typography.labelSmall.copy(color = when(appointment.status.name) {
+                        "PENDING" -> PrimaryMain
+                        "COMPLETED" -> Color(0xFF4CAF50)
+                        "CANCELED" -> Color(0xFFE53935)
+                        else -> Black100
+                    })
+                )
+            }
+        }
+
+        if (!isLast) {
+            Spacer(modifier = Modifier.height(1.dp))
         }
     }
 }
@@ -198,7 +341,7 @@ fun PreviewAppointmentDropdown() {
 
     ImmunifyTheme {
         Column(modifier = Modifier.padding(16.dp)) {
-            AppointmentDropdown(appointment = appointment)
+            AppointmentDropdownData(appointment = appointment)
         }
     }
 }
