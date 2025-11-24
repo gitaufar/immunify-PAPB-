@@ -192,7 +192,10 @@ fun RootNavGraph(
         }
 
         composable(Routes.INSIGHTS) {
-            InsightScreen(navController)
+            InsightScreen(
+                rootNav = navController,
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -205,7 +208,7 @@ fun RootNavGraph(
                 InsightDetailScreen(
                     rootNav = navController,
                     insight = insight,
-                    onBackClick = { navController.navigateUp() }
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }
@@ -221,7 +224,7 @@ fun RootNavGraph(
                 DiseaseDetailScreen(
                     rootNav = navController,
                     disease = disease,
-                    onBackClick = { navController.navigateUp() }
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }
