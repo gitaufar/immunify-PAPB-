@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -26,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
 import com.example.immunify.ui.theme.*
-import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -36,7 +34,7 @@ import java.time.format.DateTimeFormatter
 fun AppBar(
     title: String,
     currentYM: YearMonth? = null,
-    onBackClick: () -> Unit,
+    onBackClick: (() -> Unit)? = null,
     showIcon: Boolean = false,
     isBookmarked: Boolean = false,
     onBookmarkClick: (() -> Unit)? = null,
@@ -44,7 +42,8 @@ fun AppBar(
     isOnTracker: Boolean = false,
     onNextClick: (() -> Unit)? = null,
     onCalendarClick: (() -> Unit)? = null,
-    onAddClick: (() -> Unit)? = null
+    onAddClick: (() -> Unit)? = null,
+    onSettingsClick: (() -> Unit)? = null
 ) {
     TopAppBar(
         title = {
@@ -76,8 +75,9 @@ fun AppBar(
                 }
             }
         },
+
         navigationIcon = {
-            if (!isOnTracker) {
+            if (onBackClick != null) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_back),
@@ -87,6 +87,7 @@ fun AppBar(
                 }
             }
         },
+
         actions = {
             Row(
                 modifier = Modifier.padding(end = 16.dp),
@@ -98,11 +99,7 @@ fun AppBar(
                     Box(
                         modifier = Modifier
                             .size(36.dp)
-                            .border(
-                                width = 1.dp,
-                                color = Grey30,
-                                shape = RoundedCornerShape(8.dp)
-                            )
+                            .border(1.dp, Grey30, RoundedCornerShape(8.dp))
                             .clickable { onCalendarClick() },
                         contentAlignment = Alignment.Center
                     ) {
@@ -119,10 +116,7 @@ fun AppBar(
                     Box(
                         modifier = Modifier
                             .size(34.dp)
-                            .background(
-                                color = PrimaryMain,
-                                shape = RoundedCornerShape(8.dp)
-                            )
+                            .background(PrimaryMain, RoundedCornerShape(8.dp))
                             .clickable { onAddClick() },
                         contentAlignment = Alignment.Center
                     ) {
@@ -140,7 +134,8 @@ fun AppBar(
                 if (!isOnTracker && showIcon) {
                     Icon(
                         painter = painterResource(
-                            id = if (isBookmarked) R.drawable.ic_bookmark_fill else R.drawable.ic_bookmark_blank
+                            id = if (isBookmarked) R.drawable.ic_bookmark_fill
+                            else R.drawable.ic_bookmark_blank
                         ),
                         contentDescription = "Bookmark",
                         tint = MaterialTheme.colorScheme.primary,
@@ -156,6 +151,17 @@ fun AppBar(
                         modifier = Modifier
                             .size(26.dp)
                             .clickable { onShareClick?.invoke() }
+                    )
+                }
+
+                if (onSettingsClick != null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_settings),
+                        contentDescription = "Settings",
+                        tint = Grey80,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clickable { onSettingsClick() }
                     )
                 }
             }

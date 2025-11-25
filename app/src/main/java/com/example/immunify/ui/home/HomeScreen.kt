@@ -2,6 +2,7 @@ package com.example.immunify.ui.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.VaccineSamples
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -50,7 +52,7 @@ fun HomeScreen(
             .verticalScroll(scrollState)
             .padding(vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -81,7 +83,11 @@ fun HomeScreen(
                     painter = painterResource(id = R.drawable.ic_notification),
                     contentDescription = "Notification",
                     tint = Grey70,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            rootNav.navigate(Routes.NOTIFICATION)
+                        }
                 )
             }
 
@@ -91,13 +97,29 @@ fun HomeScreen(
             SectionHeader(
                 title = "Upcoming Vaccine",
                 subtitle = "Don't forget to schedule your upcoming vaccine",
-                onClickViewAll = {}
+                onClickViewAll = {
+                    bottomNav.navigate(Routes.TRACKER) {
+                        popUpTo(Routes.HOME) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // hanya vaksin upcoming, maksimal 3
+            val upcomingVaccines = VaccineSamples
+                .filter { it.remainingDoses > 0 }
+                .sortedBy { vaccine ->
+                    vaccine.scheduledDates.firstOrNull()?.let { date ->
+                        LocalDate.parse(date)
+                    } ?: LocalDate.MAX
+                }
+                .take(3)
+
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                VaccineSamples.forEach { vaccine ->
+                upcomingVaccines.forEach { vaccine ->
                     UpcomingVaccineCard(vaccine = vaccine)
                 }
             }

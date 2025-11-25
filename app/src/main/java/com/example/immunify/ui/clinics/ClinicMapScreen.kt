@@ -20,12 +20,11 @@ import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
 import com.example.immunify.ui.component.UserMarker
 import com.example.immunify.ui.theme.White10
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.views.MapView
-import org.osmdroid.util.GeoPoint
-
-
 import com.example.immunify.core.LocalAppState
+import kotlinx.coroutines.delay
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 
 @Composable
 fun ClinicMapScreen(
@@ -40,6 +39,9 @@ fun ClinicMapScreen(
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var selectedClinic by remember { mutableStateOf<ClinicData?>(null) }
 
+    // reference ke map, supaya bisa dipakai di LaunchedEffect
+    var mapViewRef by remember { mutableStateOf<MapView?>(null) }
+
     Scaffold { innerPadding ->
         Box(
             modifier = Modifier
@@ -49,16 +51,18 @@ fun ClinicMapScreen(
             AndroidView(
                 factory = { context ->
                     MapView(context).apply {
+                        mapViewRef = this
+
                         setTileSource(TileSourceFactory.MAPNIK)
                         setMultiTouchControls(true)
                         zoomController.setVisibility(
                             org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER
                         )
 
+                        // initial wide zoom
                         controller.setZoom(13.0)
                         controller.setCenter(GeoPoint(userLatitude, userLongitude))
 
-                        // MARKER USER
                         UserMarker(
                             map = this,
                             context = context,
@@ -66,10 +70,11 @@ fun ClinicMapScreen(
                             longitude = userLongitude
                         )
 
-                        // MARKER SEMUA KLINIK
                         clinics.forEach { clinic ->
                             ClinicMarker(
-                                map = this, context = context, clinic = clinic
+                                map = this,
+                                context = context,
+                                clinic = clinic
                             ) { clicked ->
                                 selectedClinic = clicked
                                 controller.animateTo(
@@ -78,8 +83,16 @@ fun ClinicMapScreen(
                             }
                         }
                     }
-                }, modifier = Modifier.fillMaxSize()
+                },
+                modifier = Modifier.fillMaxSize()
             )
+
+            // smooth zoom animation when screen opened
+            LaunchedEffect(mapViewRef) {
+                mapViewRef?.let { map ->
+                    smoothZoomTo(mapView = map, targetZoom = 15.0, durationMs = 650L)
+                }
+            }
 
             Column(
                 modifier = Modifier.fillMaxWidth()
@@ -91,10 +104,10 @@ fun ClinicMapScreen(
                     showBackButton = true,
                     onBackClick = onBackClick,
                     showFilterIcon = true,
-                    onFilterClick = {})
+                    onFilterClick = {}
+                )
             }
 
-            // Card Klinik di bawah
             selectedClinic?.let { clinic ->
                 Surface(
                     modifier = Modifier
@@ -102,9 +115,11 @@ fun ClinicMapScreen(
                         .fillMaxWidth()
                         .padding(vertical = 40.dp, horizontal = 16.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .clickable(onClick = {
+                        .clickable {
                             navController.navigate(Routes.clinicDetailRoute(clinic.id))
-                        }), shadowElevation = 8.dp, color = White10
+                        },
+                    shadowElevation = 8.dp,
+                    color = White10
                 ) {
                     Box(
                         modifier = Modifier
@@ -113,7 +128,9 @@ fun ClinicMapScreen(
                     ) {
                         ClinicNearbyCard(
                             clinic = clinic,
-                            onClick = { navController.navigate(Routes.clinicDetailRoute(clinic.id)) }
+                            onClick = {
+                                navController.navigate(Routes.clinicDetailRoute(clinic.id))
+                            }
                         )
                     }
                 }
@@ -122,10 +139,20 @@ fun ClinicMapScreen(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewClinicMapScreen() {
-//    ImmunifyTheme {
-//        ClinicMapScreen()
-//    }
-//}
+// Smooth zoom animation for MapView
+suspend fun smoothZoomTo(
+    mapView: MapView,
+    targetZoom: Double,
+    durationMs: Long = 700L
+) {
+    val startZoom = mapView.zoomLevelDouble
+    val steps = 35
+    val zoomStep = (targetZoom - startZoom) / steps
+    val frameTime = durationMs / steps
+
+    for (i in 1..steps) {
+        val newZoom = startZoom + zoomStep * i
+        mapView.controller.setZoom(newZoom)
+        delay(frameTime)
+    }
+}

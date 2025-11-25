@@ -26,6 +26,7 @@ import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
+import com.example.immunify.ui.home.NotificationScreen
 import com.example.immunify.ui.insight.DiseaseDetailScreen
 import com.example.immunify.ui.insight.InsightDetailScreen
 import com.example.immunify.ui.insight.InsightScreen
@@ -47,35 +48,35 @@ fun RootNavGraph(
     ) {
         // SPLASH
         // jangan hapus, nanti versi akhir pakai ini
-        composable(Routes.SPLASH) {
-            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
-            SplashScreen(
-                onFinished = {
-                    val firstTime = prefsViewModel.isFirstTime.value
-                    if (firstTime) {
-                        prefsViewModel.setNotFirstTime()
-                        navController.navigate(Routes.ONBOARDING1) {
-                            popUpTo(Routes.SPLASH) { inclusive = true }
-                        }
-                    } else {
-                        navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.SPLASH) { inclusive = true }
-                        }
-                    }
-                }
-            )
-        }
-
-        // ini buat testing supaya langsung ke home
 //        composable(Routes.SPLASH) {
+//            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
 //            SplashScreen(
 //                onFinished = {
-//                    navController.navigate(Routes.MAIN_GRAPH) {
-//                        popUpTo(Routes.SPLASH) { inclusive = true }
+//                    val firstTime = prefsViewModel.isFirstTime.value
+//                    if (firstTime) {
+//                        prefsViewModel.setNotFirstTime()
+//                        navController.navigate(Routes.ONBOARDING1) {
+//                            popUpTo(Routes.SPLASH) { inclusive = true }
+//                        }
+//                    } else {
+//                        navController.navigate(Routes.LOGIN) {
+//                            popUpTo(Routes.SPLASH) { inclusive = true }
+//                        }
 //                    }
 //                }
 //            )
 //        }
+
+        // ini buat testing supaya langsung ke home
+        composable(Routes.SPLASH) {
+            SplashScreen(
+                onFinished = {
+                    navController.navigate(Routes.MAIN_GRAPH) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    }
+                }
+            )
+        }
 
         // ONBOARDING
         composable(Routes.ONBOARDING1) {
@@ -245,6 +246,12 @@ fun RootNavGraph(
                     onBackClick = { navController.popBackStack() }
                 )
             }
+        }
+
+        composable(Routes.NOTIFICATION) {
+            NotificationScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

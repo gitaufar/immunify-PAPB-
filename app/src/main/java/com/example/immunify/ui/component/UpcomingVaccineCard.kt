@@ -30,19 +30,24 @@ import kotlin.math.ceil
 fun UpcomingVaccineCard(
     modifier: Modifier = Modifier,
     vaccine: VaccineData,
+    displayDate: LocalDate? = null,
     isCompleted: Boolean = false
 ) {
     val shape = RoundedCornerShape(8.dp)
 
-    val nearestDate = vaccine.scheduledDates.firstOrNull()
+    // Gunakan displayDate jika diberikan, jika tidak pakai jadwal pertama
+    val effectiveDate: LocalDate? =
+        displayDate ?: vaccine.scheduledDates.firstOrNull()?.let { LocalDate.parse(it) }
 
-    val dueDays = nearestDate?.let { dateString ->
-        calculateDaysLeft(dateString)
+    val dueDays = effectiveDate?.let { date ->
+        ChronoUnit.DAYS.between(LocalDate.now(), date).toInt()
     }
 
-    val dueIn = if (isCompleted && nearestDate != null) {
-        formatDateReadable(nearestDate)
-    } else when {
+    val dueIn = when {
+        isCompleted && effectiveDate != null -> {
+            effectiveDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
+        }
+
         dueDays == null -> "-"
         dueDays < 0 -> {
             val lateDays = abs(dueDays)
@@ -96,14 +101,13 @@ fun UpcomingVaccineCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey70
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(
-                            if (isWarning) WarningSurface else PrimarySurface
-                        )
+                        .background(if (isWarning) WarningSurface else PrimarySurface)
                         .border(
                             width = 1.dp,
                             color = if (isWarning) WarningBorder else PrimaryBorder,
