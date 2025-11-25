@@ -24,6 +24,7 @@ import com.example.immunify.data.model.Gender
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Grey70
 import com.example.immunify.ui.theme.ImmunifyTheme
+import com.example.immunify.ui.theme.Pink1
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -132,7 +133,7 @@ fun PreviewProfileHeader() {
         gender = Gender.FEMALE
     )
 
-    val color = androidx.compose.ui.graphics.Color(0xFFFFC6C6)
+    val color = Pink1
 
     ImmunifyTheme {
         ProfileHeader(

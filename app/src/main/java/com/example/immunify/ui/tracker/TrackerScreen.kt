@@ -50,27 +50,27 @@ fun TrackerScreen(
 
     var selectedYM by remember { mutableStateOf(yearMonth) }
     var selectedVaccinant by remember { mutableStateOf<ChildData?>(null) }
-    
+
     // Get current user from Firebase Auth
     val currentUser = authViewModel.getUser()
     val userId = currentUser?.uid // Use Firebase Auth UID
-    
+
     // Collect appointments state
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
     val currentMonth by appointmentViewModel.currentMonth.collectAsState()
-    
+
     // Fetch appointments when user changes (only if logged in)
     LaunchedEffect(userId) {
         userId?.let {
             appointmentViewModel.getUserAppointments(it)
         }
     }
-    
+
     // Update selected year-month when currentMonth changes
     LaunchedEffect(currentMonth) {
         selectedYM = currentMonth
     }
-    
+
     // Extract appointments list dari state
     val appointments = when (val state = appointmentsState) {
         is AppointmentUiState.AppointmentsLoaded -> state.appointments
@@ -197,10 +197,6 @@ fun TrackerScreen(
             onSelect = { child ->
                 selectedVaccinant = child
                 showSelectProfileSheet = false
-            },
-            onAddNewProfile = {
-                showSelectProfileSheet = false
-                showDateSheet = true
             }
         )
     }

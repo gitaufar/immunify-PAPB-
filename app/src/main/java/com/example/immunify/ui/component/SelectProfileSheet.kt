@@ -42,7 +42,8 @@ fun SelectProfileSheet(
     selectedChild: ChildData?,
     onDismiss: () -> Unit = {},
     onSelect: (ChildData) -> Unit = {},
-    onAddNewProfile: () -> Unit = {}
+    showAddNewProfile: Boolean = false,
+    onAddNewProfile: (() -> Unit)? = null
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -59,6 +60,7 @@ fun SelectProfileSheet(
             children = children,
             selectedChild = selectedChild,
             onSelect = onSelect,
+            showAddNewProfile = showAddNewProfile,
             onAddNewProfile = onAddNewProfile
         )
     }
@@ -70,12 +72,14 @@ private fun SelectProfileSheetContent(
     children: List<ChildData>,
     selectedChild: ChildData?,
     onSelect: (ChildData) -> Unit,
-    onAddNewProfile: () -> Unit
+    showAddNewProfile: Boolean = false,
+    onAddNewProfile: (() -> Unit)? = null
 ) {
     var selectedId by remember { mutableStateOf(selectedChild?.id) }
 
     Column(
-        Modifier.fillMaxWidth()
+        Modifier
+            .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
 
@@ -121,7 +125,8 @@ private fun SelectProfileSheetContent(
                                 style = MaterialTheme.typography.labelLarge.copy(color = Black100)
                             )
                             Text(
-                                text = child.gender.name.lowercase().replaceFirstChar { it.uppercase() },
+                                text = child.gender.name.lowercase()
+                                    .replaceFirstChar { it.uppercase() },
                                 style = MaterialTheme.typography.bodySmall.copy(color = Grey70),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -147,27 +152,31 @@ private fun SelectProfileSheetContent(
                 }
             }
 
-            item {
-                Spacer(Modifier.height(24.dp))
+            if (showAddNewProfile && onAddNewProfile != null) {
+                item {
+                    Spacer(Modifier.height(24.dp))
 
-                Button(
-                    onClick = onAddNewProfile,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, PrimaryMain, RoundedCornerShape(8.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White10,
-                        contentColor = PrimaryMain
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = "Add",
-                        tint = PrimaryMain,
-                        modifier = Modifier.size(22.dp).rotate(45f)
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Text("Add New Profile")
+                    Button(
+                        onClick = onAddNewProfile,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, PrimaryMain, RoundedCornerShape(8.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = White10,
+                            contentColor = PrimaryMain
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Add",
+                            tint = PrimaryMain,
+                            modifier = Modifier
+                                .size(22.dp)
+                                .rotate(45f)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text("Add New Profile")
+                    }
                 }
             }
         }

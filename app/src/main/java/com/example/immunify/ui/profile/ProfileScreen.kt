@@ -177,9 +177,11 @@ fun ProfileScreen() {
                     selectedChild = it
                     showSelectProfileSheet = false
                 },
+                showAddNewProfile = true,
                 onAddNewProfile = {
-                    showSelectProfileSheet = false      // tutup sheet sebelumnya
-                    showAddProfileSheet = true          // buka AddProfileSheet
+
+                    showSelectProfileSheet = false
+                    showAddProfileSheet = true
                 }
             )
         }

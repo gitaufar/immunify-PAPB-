@@ -48,35 +48,35 @@ fun RootNavGraph(
     ) {
         // SPLASH
         // jangan hapus, nanti versi akhir pakai ini
-//        composable(Routes.SPLASH) {
-//            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
-//            SplashScreen(
-//                onFinished = {
-//                    val firstTime = prefsViewModel.isFirstTime.value
-//                    if (firstTime) {
-//                        prefsViewModel.setNotFirstTime()
-//                        navController.navigate(Routes.ONBOARDING1) {
-//                            popUpTo(Routes.SPLASH) { inclusive = true }
-//                        }
-//                    } else {
-//                        navController.navigate(Routes.LOGIN) {
-//                            popUpTo(Routes.SPLASH) { inclusive = true }
-//                        }
-//                    }
-//                }
-//            )
-//        }
-
-        // ini buat testing supaya langsung ke home
         composable(Routes.SPLASH) {
+            val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
             SplashScreen(
                 onFinished = {
-                    navController.navigate(Routes.MAIN_GRAPH) {
-                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    val firstTime = prefsViewModel.isFirstTime.value
+                    if (firstTime) {
+                        prefsViewModel.setNotFirstTime()
+                        navController.navigate(Routes.ONBOARDING1) {
+                            popUpTo(Routes.SPLASH) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.SPLASH) { inclusive = true }
+                        }
                     }
                 }
             )
         }
+
+        // ini buat testing supaya langsung ke home
+//        composable(Routes.SPLASH) {
+//            SplashScreen(
+//                onFinished = {
+//                    navController.navigate(Routes.MAIN_GRAPH) {
+//                        popUpTo(Routes.SPLASH) { inclusive = true }
+//                    }
+//                }
+//            )
+//        }
 
         // ONBOARDING
         composable(Routes.ONBOARDING1) {
@@ -154,7 +154,7 @@ fun RootNavGraph(
         ) { backStackEntry ->
             val authViewModel: com.example.immunify.ui.auth.AuthViewModel = hiltViewModel()
             val currentUser = authViewModel.getUser()
-            
+
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
             val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
 
