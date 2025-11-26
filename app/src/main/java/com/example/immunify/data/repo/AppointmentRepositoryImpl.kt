@@ -131,6 +131,44 @@ class AppointmentRepositoryImpl @Inject constructor(
             Result.Error(e)
         }
     }
+    
+    /**
+     * Update appointment status dengan userId
+     */
+    suspend fun updateAppointmentStatusByUser(
+        userId: String, 
+        appointmentId: String, 
+        status: AppointmentStatus,
+        lotNumber: String = "",
+        dose: String = "",
+        administrator: String = ""
+    ): Result<Unit> {
+        return try {
+            val updates = mutableMapOf<String, Any>(
+                "status" to status.name,
+                "updatedAt" to System.currentTimeMillis()
+            )
+            
+            // Add vaccination details if status is COMPLETED
+            if (status == AppointmentStatus.COMPLETED) {
+                if (lotNumber.isNotEmpty()) updates["lotNumber"] = lotNumber
+                if (dose.isNotEmpty()) updates["dose"] = dose
+                if (administrator.isNotEmpty()) updates["administrator"] = administrator
+            }
+            
+            firestoreDatasource.firestore
+                .collection(COLLECTION_USERS)
+                .document(userId)
+                .collection(SUBCOLLECTION_APPOINTMENTS)
+                .document(appointmentId)
+                .update(updates)
+                .await()
+            
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
 
     override suspend fun getAllAppointments(): Result<List<Appointment>> {
         return try {

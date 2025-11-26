@@ -46,7 +46,6 @@ fun TrackerScreen(
 ) {
     var showDateSheet by remember { mutableStateOf(false) }
     var showAddRecordSheet by remember { mutableStateOf(false) }
-    var showAddProfileSheet by remember { mutableStateOf(false) }
     var showSelectProfileSheet by remember { mutableStateOf(false) }
 
     var selectedYM by remember { mutableStateOf(yearMonth) }

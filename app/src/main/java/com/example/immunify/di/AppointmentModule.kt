@@ -35,4 +35,12 @@ object AppointmentModule {
     ): AppointmentRepository {
         return AppointmentRepositoryImpl(firestoreDatasource)
     }
+    
+    @Provides
+    @Singleton
+    fun provideAppointmentRepositoryImpl(
+        firestoreDatasource: FirebaseFirestoreDatasource
+    ): AppointmentRepositoryImpl {
+        return AppointmentRepositoryImpl(firestoreDatasource)
+    }
 }

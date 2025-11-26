@@ -21,6 +21,9 @@ data class AppointmentDto(
     val vaccinantIds: List<String> = emptyList(),
     val vaccinantNames: List<String> = emptyList(),
     val status: String = AppointmentStatus.PENDING.name,
+    val lotNumber: String = "",
+    val dose: String = "",
+    val administrator: String = "",
     val createdAt: Long = 0L,
     val updatedAt: Long = 0L
 ) {
@@ -40,6 +43,9 @@ data class AppointmentDto(
         vaccinantIds = emptyList(),
         vaccinantNames = emptyList(),
         status = AppointmentStatus.PENDING.name,
+        lotNumber = "",
+        dose = "",
+        administrator = "",
         createdAt = 0L,
         updatedAt = 0L
     )

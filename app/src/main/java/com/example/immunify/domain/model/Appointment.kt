@@ -21,6 +21,9 @@ data class Appointment(
     val vaccinantIds: List<String>,
     val vaccinantNames: List<String>,
     val status: AppointmentStatus = AppointmentStatus.PENDING,
+    val lotNumber: String = "",
+    val dose: String = "",
+    val administrator: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 )

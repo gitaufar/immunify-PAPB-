@@ -28,7 +28,8 @@ import javax.inject.Inject
 class AppointmentViewModel @Inject constructor(
     private val createAppointmentUseCase: CreateAppointmentUseCase,
     private val getUserAppointmentsUseCase: GetUserAppointmentsUseCase,
-    private val cancelAppointmentUseCase: CancelAppointmentUseCase
+    private val cancelAppointmentUseCase: CancelAppointmentUseCase,
+    private val completeAppointmentUseCase: com.example.immunify.domain.usecase.CompleteAppointmentUseCase
 ) : ViewModel() {
 
     // State untuk create appointment
@@ -121,6 +122,47 @@ class AppointmentViewModel @Inject constructor(
                 is Result.Error -> {
                     _createAppointmentState.value = AppointmentUiState.Error(
                         message = result.exception.message ?: "Failed to cancel appointment"
+                    )
+                }
+
+                is Result.Loading -> {
+                    _createAppointmentState.value = AppointmentUiState.Loading
+                }
+            }
+        }
+    }
+    
+    /**
+     * Complete appointment (mark as COMPLETED with vaccination details)
+     */
+    fun completeAppointment(
+        userId: String,
+        appointmentId: String,
+        lotNumber: String = "",
+        dose: String = "",
+        administrator: String = ""
+    ) {
+        viewModelScope.launch {
+            _createAppointmentState.value = AppointmentUiState.Loading
+            
+            when (val result = completeAppointmentUseCase(
+                userId = userId,
+                appointmentId = appointmentId,
+                lotNumber = lotNumber,
+                dose = dose,
+                administrator = administrator
+            )) {
+                is Result.Success -> {
+                    _createAppointmentState.value = AppointmentUiState.Success(
+                        message = "Appointment completed successfully"
+                    )
+                    // Refresh appointments after complete
+                    getUserAppointments(userId)
+                }
+
+                is Result.Error -> {
+                    _createAppointmentState.value = AppointmentUiState.Error(
+                        message = result.exception.message ?: "Failed to complete appointment"
                     )
                 }
 

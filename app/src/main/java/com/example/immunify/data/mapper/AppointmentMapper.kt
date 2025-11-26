@@ -60,6 +60,9 @@ object AppointmentMapper {
             vaccinantIds = this.vaccinantIds,
             vaccinantNames = this.vaccinantNames,
             status = this.status.name,
+            lotNumber = this.lotNumber,
+            dose = this.dose,
+            administrator = this.administrator,
             createdAt = this.createdAt,
             updatedAt = this.updatedAt
         )
@@ -88,6 +91,9 @@ object AppointmentMapper {
             } catch (e: Exception) {
                 AppointmentStatus.PENDING
             },
+            lotNumber = this.lotNumber,
+            dose = this.dose,
+            administrator = this.administrator,
             createdAt = this.createdAt,
             updatedAt = this.updatedAt
         )
