@@ -16,6 +16,7 @@ val VaccineSamples = listOf(
         ),
         brand = listOf("Gardasil 9", "Cervarix"),
         scheduledDates = listOf("2025-11-30"),
+        completedDates = emptyList(),
         remainingDoses = 1
     ),
 
@@ -30,8 +31,9 @@ val VaccineSamples = listOf(
             "Possible temporary side effects include fever, muscle pain, and mild fatigue."
         ),
         brand = listOf("Fluzone", "FluMist", "Fluad", "Flublok"),
-        scheduledDates = listOf("2025-11-30"),
-        remainingDoses = 1
+        scheduledDates = listOf("2025-11-30", "2026-01-25"),
+        completedDates = emptyList(),
+        remainingDoses = 2
     ),
 
     VaccineData(
@@ -46,11 +48,10 @@ val VaccineSamples = listOf(
         ),
         brand = listOf("Varivax", "MMRV (ProQuad)"),
         scheduledDates = listOf("2025-12-12"),
+        completedDates = emptyList(),
         remainingDoses = 1
-    )
-)
+    ),
 
-val VaccineRecordSamples = listOf(
     VaccineData(
         id = "v_4",
         name = "HPV Vaccine",
@@ -63,7 +64,8 @@ val VaccineRecordSamples = listOf(
         ),
         brand = listOf("Gardasil", "Cervarix"),
         scheduledDates = listOf("2025-10-08"),
-        remainingDoses = 2
+        completedDates = listOf("2025-10-08"),
+        remainingDoses = 0
     ),
 
     VaccineData(
@@ -77,12 +79,13 @@ val VaccineRecordSamples = listOf(
         ),
         brand = listOf("Engerix-B", "Recombivax HB"),
         scheduledDates = listOf("2025-10-25"),
-        remainingDoses = 1
+        completedDates = listOf("2025-10-25"),
+        remainingDoses = 0
     ),
 
     VaccineData(
         id = "v_6",
-        name = "Varicella (Chickenpox) Vaccine",
+        name = "Varicella (Chickenpox)",
         description = listOf(
             "Protects against chickenpox caused by the varicella-zoster virus.",
             "Recommended for children starting at 12–15 months of age and a booster dose at 4–6 years.",
@@ -90,8 +93,9 @@ val VaccineRecordSamples = listOf(
             "Common mild reactions include soreness at the injection site or mild rash."
         ),
         brand = listOf("Varivax", "ProQuad"),
-        scheduledDates = listOf("2025-11-04"),
-        remainingDoses = 1
+        scheduledDates = listOf("2025-09-09", "2025-11-04"),
+        completedDates = listOf("2025-09-09", "2025-11-04"),
+        remainingDoses = 0
     )
 )
 

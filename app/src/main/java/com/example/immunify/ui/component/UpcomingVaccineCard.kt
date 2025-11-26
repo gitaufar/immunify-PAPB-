@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
 import com.example.immunify.data.model.VaccineData
+import com.example.immunify.domain.model.Appointment
 import com.example.immunify.ui.theme.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,19 +31,24 @@ import kotlin.math.ceil
 fun UpcomingVaccineCard(
     modifier: Modifier = Modifier,
     vaccine: VaccineData,
+    displayDate: LocalDate? = null,
     isCompleted: Boolean = false
 ) {
     val shape = RoundedCornerShape(8.dp)
 
-    val nearestDate = vaccine.scheduledDates.firstOrNull()
+    // Gunakan displayDate jika diberikan, jika tidak pakai jadwal pertama
+    val effectiveDate: LocalDate? =
+        displayDate ?: vaccine.scheduledDates.firstOrNull()?.let { LocalDate.parse(it) }
 
-    val dueDays = nearestDate?.let { dateString ->
-        calculateDaysLeft(dateString)
+    val dueDays = effectiveDate?.let { date ->
+        ChronoUnit.DAYS.between(LocalDate.now(), date).toInt()
     }
 
-    val dueIn = if (isCompleted && nearestDate != null) {
-        formatDateReadable(nearestDate)
-    } else when {
+    val dueIn = when {
+        isCompleted && effectiveDate != null -> {
+            effectiveDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
+        }
+
         dueDays == null -> "-"
         dueDays < 0 -> {
             val lateDays = abs(dueDays)
@@ -96,14 +102,13 @@ fun UpcomingVaccineCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey70
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(
-                            if (isWarning) WarningSurface else PrimarySurface
-                        )
+                        .background(if (isWarning) WarningSurface else PrimarySurface)
                         .border(
                             width = 1.dp,
                             color = if (isWarning) WarningBorder else PrimaryBorder,
@@ -150,6 +155,116 @@ fun formatDateReadable(dateString: String): String {
         date.format(formatter)
     } catch (e: Exception) {
         "-"
+    }
+}
+
+/**
+ * Overload untuk UpcomingVaccineCard yang menerima Appointment dari Firestore
+ */
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun UpcomingVaccineCardFromAppointment(
+    modifier: Modifier = Modifier,
+    appointment: Appointment
+) {
+    val shape = RoundedCornerShape(8.dp)
+    val appointmentDate = try {
+        LocalDate.parse(appointment.date)
+    } catch (e: Exception) {
+        LocalDate.now()
+    }
+    
+    val dueDays = ChronoUnit.DAYS.between(LocalDate.now(), appointmentDate).toInt()
+    
+    val dueIn = when {
+        dueDays < 0 -> {
+            val lateDays = abs(dueDays)
+            when {
+                lateDays == 1 -> "Overdue by 1 day"
+                lateDays < 7 -> "Overdue by $lateDays days"
+                lateDays in 7..30 -> "Overdue by ${ceil(lateDays / 7.0).toInt()} weeks"
+                else -> "Overdue by ${lateDays / 30} months"
+            }
+        }
+        dueDays < 1 -> "Today"
+        dueDays == 1 -> "1 day"
+        dueDays in 2..7 -> "$dueDays days"
+        dueDays in 8..31 -> "${ceil(dueDays / 7.0).toInt()} weeks"
+        else -> "${dueDays / 30} months"
+    }
+    
+    val isWarning = dueDays < 7
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .border(width = 1.dp, color = Grey30, shape = shape)
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_vaccine_color),
+            contentDescription = null,
+            modifier = Modifier
+                .size(45.dp)
+                .padding(end = 12.dp)
+        )
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = appointment.vaccineName,
+                style = MaterialTheme.typography.labelMedium,
+                color = Black100
+            )
+            
+            if (appointment.vaccinantNames.isNotEmpty()) {
+                Text(
+                    text = "For: ${appointment.vaccinantNames.joinToString(", \"")}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Grey60
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Due in",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Grey70
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(if (isWarning) WarningSurface else PrimarySurface)
+                        .border(
+                            width = 1.dp,
+                            color = if (isWarning) WarningBorder else PrimaryBorder,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = dueIn,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (isWarning) WarningMain else PrimaryMain
+                    )
+                }
+            }
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_next),
+            contentDescription = null,
+            modifier = Modifier
+                .size(32.dp)
+                .padding(start = 8.dp),
+            alignment = Alignment.CenterEnd
+        )
     }
 }
 

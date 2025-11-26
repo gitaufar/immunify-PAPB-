@@ -15,14 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.immunify.data.local.AppointmentSamples
 import com.example.immunify.data.local.ChildSamples
 import com.example.immunify.data.model.ChildData
-import com.example.immunify.domain.model.Appointment
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
 import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
-import com.example.immunify.ui.component.AddProfileSheet
 import com.example.immunify.ui.component.AddRecordSheet
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.AppointmentCalendar
@@ -87,10 +84,9 @@ fun TrackerScreen(
         AppBar(
             title = "",
             currentYM = selectedYM,
-            onBackClick = {},
             isOnTracker = true,
             onNextClick = { showDateSheet = true },
-            onCalendarClick = { showAddProfileSheet = true },
+            onCalendarClick = { showDateSheet = true },
             onAddClick = { showAddRecordSheet = true },
         )
 
@@ -109,7 +105,7 @@ fun TrackerScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
+                contentPadding = PaddingValues(vertical = 12.dp)
             ) {
 
                 // Calendar
@@ -183,14 +179,6 @@ fun TrackerScreen(
         )
     }
 
-    // Tes, ganti lagi
-    if (showAddProfileSheet) {
-        AddProfileSheet(
-            onDismiss = { showAddProfileSheet = false },
-            onSuccess = { showAddProfileSheet = false }
-        )
-    }
-
     // Add Record Sheet
     if (showAddRecordSheet) {
         AddRecordSheet(
@@ -210,10 +198,6 @@ fun TrackerScreen(
             onSelect = { child ->
                 selectedVaccinant = child
                 showSelectProfileSheet = false
-            },
-            onAddNewProfile = {
-                showSelectProfileSheet = false
-                showAddProfileSheet = true
             }
         )
     }

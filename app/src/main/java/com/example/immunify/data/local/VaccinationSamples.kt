@@ -9,7 +9,7 @@ val VaccinationSample1 = VaccinationData(
     lotNumber = "LOT-12345",
     dose = "1st Dose",
     administrator = "Sarah Smith",
-    vaccine = VaccineRecordSamples[0]
+    vaccine = VaccineSamples[3]
 )
 
 val VaccinationSample2 = VaccinationData(
@@ -19,7 +19,7 @@ val VaccinationSample2 = VaccinationData(
     lotNumber = "LOT-98765",
     dose = "2nd Dose",
     administrator = "Olivia Johnson",
-    vaccine = VaccineRecordSamples[1]
+    vaccine = VaccineSamples[4]
 )
 
 val VaccinationSample3 = VaccinationData(
@@ -29,5 +29,5 @@ val VaccinationSample3 = VaccinationData(
     lotNumber = "LOT-34567",
     dose = "1st Dose",
     administrator = "Marry Smith",
-    vaccine = VaccineRecordSamples[2]
+    vaccine = VaccineSamples[5]
 )

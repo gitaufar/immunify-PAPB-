@@ -2,6 +2,7 @@ package com.example.immunify.ui.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -23,11 +24,19 @@ import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.VaccineSamples
+import com.example.immunify.data.model.ClinicData
+import com.example.immunify.data.model.LocationState
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
 import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
+import com.example.immunify.ui.viewmodel.LocationViewModel
+import java.time.LocalDate
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -35,18 +44,21 @@ fun HomeScreen(
     rootNav: NavController,
     bottomNav: NavController,
     authViewModel: AuthViewModel = hiltViewModel(),
-    appointmentViewModel: AppointmentViewModel = hiltViewModel()
+    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
+    locationViewModel: LocationViewModel = hiltViewModel()
 ) {
     val currentUser by authViewModel.user.collectAsState()
     val scrollState = rememberScrollState()
     val userId = currentUser?.id // Use Firebase Auth UID
     // Collect appointments state
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
+    val locationState by locationViewModel.locationState
 
     LaunchedEffect(Unit) {
         userId?.let {
             appointmentViewModel.getUserAppointments(it)
         }
+        locationViewModel.loadUserLocation()
     }
 
     val appointment = when (val state = appointmentsState) {
@@ -54,10 +66,34 @@ fun HomeScreen(
         else -> emptyList()
     }
 
-    val appointmentClinicIds = appointment.map { it.clinicId }
+    // Function to calculate distance between two coordinates using Haversine formula
+    fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val earthRadiusKm = 6371.0
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return earthRadiusKm * c
+    }
 
-    val sortedClinics = ClinicSamples.filter { clinic ->
-        appointmentClinicIds.contains(clinic.id)
+    // Filter clinics within 5 km from user's location
+    val nearbyClinics = when (val locState = locationState) {
+        is LocationState.Success -> {
+            val userLat = locState.location.latitude
+            val userLon = locState.location.longitude
+            
+            ClinicSamples
+                .map { clinic ->
+                    val distance = calculateDistance(userLat, userLon, clinic.latitude, clinic.longitude)
+                    clinic to distance
+                }
+                .filter { (_, distance) -> distance <= 5.0 }
+                .sortedBy { (_, distance) -> distance }
+                .map { (clinic, _) -> clinic }
+        }
+        else -> emptyList()
     }
 
     Column(
@@ -66,7 +102,7 @@ fun HomeScreen(
             .verticalScroll(scrollState)
             .padding(vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
             // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -97,7 +133,11 @@ fun HomeScreen(
                     painter = painterResource(id = R.drawable.ic_notification),
                     contentDescription = "Notification",
                     tint = Grey70,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            rootNav.navigate(Routes.NOTIFICATION)
+                        }
                 )
             }
 
@@ -107,14 +147,63 @@ fun HomeScreen(
             SectionHeader(
                 title = "Upcoming Vaccine",
                 subtitle = "Don't forget to schedule your upcoming vaccine",
-                onClickViewAll = {}
+                onClickViewAll = {
+                    bottomNav.navigate(Routes.TRACKER) {
+                        popUpTo(Routes.HOME) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                VaccineSamples.forEach { vaccine ->
-                    UpcomingVaccineCard(vaccine = vaccine)
+            // Filter upcoming appointments: PENDING/CONFIRMED dan tanggal >= today
+            val today = LocalDate.now()
+            val upcomingAppointments = appointment
+                .filter { appt ->
+                    val appointmentDate = try {
+                        LocalDate.parse(appt.date)
+                    } catch (e: Exception) {
+                        null
+                    }
+                    appointmentDate != null && 
+                    !appointmentDate.isBefore(today) &&
+                    (appt.status == com.example.immunify.data.model.AppointmentStatus.PENDING ||
+                     appt.status == com.example.immunify.data.model.AppointmentStatus.COMPLETED)
+                }
+                .sortedBy { appt -> LocalDate.parse(appt.date) }
+                .take(3)
+
+            when {
+                appointmentsState is AppointmentUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    }
+                }
+                upcomingAppointments.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No upcoming appointments",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Grey60
+                        )
+                    }
+                }
+                else -> {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        upcomingAppointments.forEach { appt ->
+                            UpcomingVaccineCardFromAppointment(appointment = appt)
+                        }
+                    }
                 }
             }
 
@@ -137,17 +226,59 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 20.dp)
-        ) {
-            items(sortedClinics) { clinic ->
-                ClinicHomeCard(
-                    clinic = clinic,
-                    onClick = {
-                        rootNav.navigate(Routes.clinicDetailRoute(clinic.id))
+        when {
+            locationState is LocationState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+            }
+            locationState is LocationState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = (locationState as LocationState.Error).message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Grey60
+                    )
+                }
+            }
+            nearbyClinics.isEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No clinics found within 5 km",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Grey60
+                    )
+                }
+            }
+            else -> {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(horizontal = 20.dp)
+                ) {
+                    items(nearbyClinics) { clinic ->
+                        ClinicHomeCard(
+                            clinic = clinic,
+                            onClick = {
+                                rootNav.navigate(Routes.clinicDetailRoute(clinic.id))
+                            }
+                        )
                     }
-                )
+                }
             }
         }
 

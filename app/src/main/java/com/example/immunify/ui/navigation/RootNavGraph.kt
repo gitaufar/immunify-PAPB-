@@ -31,6 +31,7 @@ import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
 import com.example.immunify.ui.clinics.AppointmentSummaryScreen
 import com.example.immunify.ui.clinics.SetAppointmentScreen
+import com.example.immunify.ui.home.NotificationScreen
 import com.example.immunify.ui.insight.DiseaseDetailScreen
 import com.example.immunify.ui.insight.InsightDetailScreen
 import com.example.immunify.ui.insight.InsightScreen
@@ -70,7 +71,7 @@ fun RootNavGraph(
             LaunchedEffect(isLoading) {
                 if (!isLoading) {
                     android.util.Log.d("SplashScreen", "User: $user, isFirstTime: $isFirstTime")
-                    
+
                     if (user != null) {
                         // User sudah login → ke main graph (home with bottom nav)
                         android.util.Log.d("SplashScreen", "User logged in, navigating to MAIN_GRAPH")
@@ -279,6 +280,12 @@ fun RootNavGraph(
                     onBackClick = { navController.popBackStack() }
                 )
             }
+        }
+
+        composable(Routes.NOTIFICATION) {
+            NotificationScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

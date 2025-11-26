@@ -11,8 +11,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.immunify.core.LocalAppState
+import com.example.immunify.data.local.ChildSamples
+import com.example.immunify.data.local.VaccineSamples
 import com.example.immunify.ui.clinics.ClinicsScreen
 import com.example.immunify.ui.home.HomeScreen
+import com.example.immunify.ui.profile.ProfileScreen
 import com.example.immunify.ui.tracker.TrackerScreen
 import java.time.YearMonth
 
@@ -22,9 +25,6 @@ fun MainScaffold(
     rootNavController: NavHostController,
     onMapClick: () -> Unit = {}
 ) {
-    // Ambil langsung dari AppState
-    val appState = LocalAppState.current
-
     val bottomNavController = rememberNavController()
 
     Scaffold(
@@ -60,8 +60,9 @@ fun MainScaffold(
             }
 
 
+            // PROFILE
             composable(Routes.PROFILE) {
-                // ProfileScreen()
+                ProfileScreen()
             }
         }
     }
