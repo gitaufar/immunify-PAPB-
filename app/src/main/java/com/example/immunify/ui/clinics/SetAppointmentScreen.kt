@@ -31,6 +31,7 @@ fun SetAppointmentScreen(
     user: UserData,
     clinic: ClinicData,
     selectedDate: LocalDate,
+    preselectedVaccine: VaccineData? = null,
     childViewModel: ChildViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onContinueClick: (AppointmentData) -> Unit
@@ -38,17 +39,17 @@ fun SetAppointmentScreen(
     val appState = LocalAppState.current
     val userLatitude = appState.userLatitude
     val userLongitude = appState.userLongitude
-    
+
     // Fetch children from Firestore
     val userChildrenState by childViewModel.userChildrenState.collectAsState()
     var childrenList by remember { mutableStateOf<List<ChildData>>(emptyList()) }
-    
+
     LaunchedEffect(user.id) {
         if (user.id.isNotEmpty()) {
             childViewModel.getUserChildren(user.id)
         }
     }
-    
+
     // Convert Child domain model to ChildData for UI
     LaunchedEffect(userChildrenState) {
         when (val state = userChildrenState) {
@@ -62,6 +63,7 @@ fun SetAppointmentScreen(
                     )
                 }
             }
+
             else -> {}
         }
     }
@@ -76,7 +78,9 @@ fun SetAppointmentScreen(
     }
 
     var currentClinic by remember { mutableStateOf(clinic) }
-    var selectedVaccine by remember { mutableStateOf(clinic.availableVaccines.firstOrNull()) }
+    var selectedVaccine by remember {
+        mutableStateOf(preselectedVaccine ?: clinic.availableVaccines.firstOrNull())
+    }
 
     var showClinicSheet by remember { mutableStateOf(false) }
     var showVaccineSheet by remember { mutableStateOf(false) }
@@ -213,24 +217,29 @@ fun SetAppointmentScreen(
                     when (userChildrenState) {
                         is ChildUiState.Loading -> {
                             Box(
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator()
                             }
                         }
+
                         is ChildUiState.Error -> {
                             Text(
                                 text = "Failed to load children: ${(userChildrenState as ChildUiState.Error).message}",
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
+
                         is ChildUiState.ChildrenLoaded, ChildUiState.Idle -> {
                             VaccinantSection(
                                 children = childrenList,
                                 onUpdate = { selectedVaccinants = it }
                             )
                         }
+
                         else -> {
                             VaccinantSection(
                                 children = childrenList,

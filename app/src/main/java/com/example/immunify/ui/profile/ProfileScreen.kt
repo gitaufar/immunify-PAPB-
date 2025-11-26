@@ -33,6 +33,7 @@ import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
 import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
 import com.example.immunify.ui.component.AddProfileSheet
 import com.example.immunify.ui.component.AppBar
+import com.example.immunify.ui.component.EmptyState
 import com.example.immunify.ui.component.ProfileHeader
 import com.example.immunify.ui.component.SelectProfileSheet
 import com.example.immunify.ui.component.UpcomingVaccineCard
@@ -63,9 +64,14 @@ fun ProfileScreen(
                 id = child.id,
                 name = child.name,
                 birthDate = child.birthDate,
-                gender = if (child.gender.equals("Male", ignoreCase = true)) Gender.MALE else Gender.FEMALE
+                gender = if (child.gender.equals(
+                        "Male",
+                        ignoreCase = true
+                    )
+                ) Gender.MALE else Gender.FEMALE
             )
         }
+
         else -> emptyList()
     }
 
@@ -118,9 +124,9 @@ fun ProfileScreen(
                 null
             }
             appointmentDate != null &&
-            !appointmentDate.isBefore(today) &&
-            (appt.status == AppointmentStatus.PENDING ||
-             appt.status == AppointmentStatus.COMPLETED)
+                    !appointmentDate.isBefore(today) &&
+                    (appt.status == AppointmentStatus.PENDING ||
+                            appt.status == AppointmentStatus.COMPLETED)
         }
         .sortedBy { appt -> LocalDate.parse(appt.date) }
 
@@ -154,6 +160,7 @@ fun ProfileScreen(
                     CircularProgressIndicator(modifier = Modifier.size(32.dp))
                 }
             }
+
             selectedChild != null -> {
                 ProfileHeader(
                     child = selectedChild!!,
@@ -161,20 +168,9 @@ fun ProfileScreen(
                     onClick = { showSelectProfileSheet = true }
                 )
             }
+
             children.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No child profiles yet. Add a new profile to get started.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Grey60,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                EmptyState("No child profiles yet. Add a new profile to get started.")
             }
         }
 
@@ -230,7 +226,9 @@ fun ProfileScreen(
                     if (appointmentsState is AppointmentUiState.Loading) {
                         item {
                             Box(
-                                modifier = Modifier.fillMaxWidth().padding(40.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(40.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
@@ -251,7 +249,9 @@ fun ProfileScreen(
                     if (appointmentsState is AppointmentUiState.Loading) {
                         item {
                             Box(
-                                modifier = Modifier.fillMaxWidth().padding(40.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(40.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
@@ -301,18 +301,6 @@ fun ProfileScreen(
             )
         }
     }
-}
-
-@Composable
-private fun EmptyState(text: String) {
-    Text(
-        text = text,
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.bodyMedium.copy(color = Grey70),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 80.dp)
-    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

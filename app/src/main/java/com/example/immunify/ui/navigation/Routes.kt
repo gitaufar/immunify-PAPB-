@@ -27,7 +27,9 @@ object Routes {
     const val NOTIFICATION = "main_notification"
 
     fun clinicDetailRoute(clinicId: String): String = "main_clinic_detail/$clinicId"
-    fun setAppointmentRoute(clinicId: String): String = "main_set_appointment/$clinicId"
+    fun setAppointmentRoute(clinicId: String, vaccineId: String) =
+        "setAppointment/$clinicId/$vaccineId"
+
     fun appointmentSummaryRoute(appointmentJson: String): String =
         "$APPOINTMENT_SUMMARY/$appointmentJson"
 

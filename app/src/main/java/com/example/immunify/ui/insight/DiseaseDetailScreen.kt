@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
+import com.example.immunify.data.local.allClinics
 import com.example.immunify.data.model.DiseaseData
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.BottomAppBar
@@ -42,7 +44,31 @@ fun DiseaseDetailScreen(
         bottomBar = {
             BottomAppBar(
                 text = "Set Appointment",
-                onMainClick = { }
+                onMainClick = {
+                    val keyword = disease.name.lowercase()
+
+                    val matchedClinic = allClinics.firstOrNull { (_, vaccines) ->
+                        vaccines.any { vax -> vax.name.lowercase().contains(keyword) }
+                    }
+
+                    if (matchedClinic != null) {
+                        val (clinicName, vaccines) = matchedClinic
+                        val matchedVaccine = vaccines.first { vax ->
+                            vax.name.lowercase().contains(keyword)
+                        }
+
+                        val matchedClinicData = ClinicSamples.find {
+                            it.name.contains(clinicName, ignoreCase = true)
+                        } ?: ClinicSamples.first()
+
+                        // Navigasi ke SetAppointmentScreen dengan vaccineId
+                        rootNav.navigate(
+                            "${Routes.SET_APPOINTMENT}/${matchedClinicData.id}?vaccineId=${matchedVaccine.id}"
+                        )
+                    } else {
+                        println("Tidak ada vaksin yang cocok untuk penyakit ${disease.name}")
+                    }
+                }
             )
         }
     ) { innerPadding ->

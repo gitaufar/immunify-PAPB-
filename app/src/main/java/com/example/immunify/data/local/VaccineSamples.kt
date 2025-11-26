@@ -492,3 +492,17 @@ val RS_UB_Vaccines = listOf(
         brand = listOf("Menveo", "Menactra")
     )
 )
+
+// Import semua vaksin sample di sini
+val allClinics = listOf(
+    "RSSA" to RSSA_Vaccines,
+    "SOEPRAOEN" to SOEPRAOEN_Vaccines,
+    "RSUD Malang" to RSUD_MALANG_Vaccines,
+    "Lavalette" to LAVALETTE_Vaccines,
+    "Persada" to PERSADA_Vaccines,
+    "Panti Nirmala" to PANTI_NIRMALA_Vaccines,
+    "Panti Waluya" to PANTI_WALUYA_Vaccines,
+    "RSI Aisyiyah" to RSI_AISYIYAH_Vaccines,
+    "Hermina" to HERMINA_Vaccines,
+    "RS UB" to RS_UB_Vaccines
+)

@@ -24,6 +24,7 @@ import com.example.immunify.ui.component.AddRecordSheet
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.AppointmentCalendar
 import com.example.immunify.ui.component.AppointmentDropdown
+import com.example.immunify.ui.component.EmptyState
 import com.example.immunify.ui.component.SectionHeader
 import com.example.immunify.ui.component.SelectProfileSheet
 import com.example.immunify.ui.component.YearMonthSelectionSheet
@@ -123,18 +124,7 @@ fun TrackerScreen(
                 // Show message if no appointments
                 if (appointments.isEmpty()) {
                     item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 32.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No appointments yet",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        EmptyState("No upcoming appointments yet. Set one to get started.")
                     }
                 }
 

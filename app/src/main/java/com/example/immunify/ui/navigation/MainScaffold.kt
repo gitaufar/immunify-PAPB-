@@ -59,7 +59,6 @@ fun MainScaffold(
                 )
             }
 
-
             // PROFILE
             composable(Routes.PROFILE) {
                 ProfileScreen()

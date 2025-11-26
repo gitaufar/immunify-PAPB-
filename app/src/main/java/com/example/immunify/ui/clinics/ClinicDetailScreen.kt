@@ -35,7 +35,7 @@ fun ClinicDetailScreen(
             BottomAppBar(
                 text = "Set Appointment",
                 onMainClick = {
-                    rootNav.navigate(Routes.setAppointmentRoute(clinic.id))
+                    rootNav.navigate(Routes.setAppointmentRoute(clinic.id, ""))
                 },
                 onCallClick = { }
             )

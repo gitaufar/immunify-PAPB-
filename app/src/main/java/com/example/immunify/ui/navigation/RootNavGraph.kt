@@ -23,7 +23,6 @@ import androidx.navigation.NavHostController
 import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.InsightSamples
-import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.auth.LoginScreen
@@ -52,7 +51,6 @@ fun RootNavGraph(
         startDestination = Routes.SPLASH
     ) {
         // SPLASH
-        // jangan hapus, nanti versi akhir pakai ini
         composable(Routes.SPLASH) {
 
             val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
@@ -74,20 +72,29 @@ fun RootNavGraph(
 
                     if (user != null) {
                         // User sudah login → ke main graph (home with bottom nav)
-                        android.util.Log.d("SplashScreen", "User logged in, navigating to MAIN_GRAPH")
+                        android.util.Log.d(
+                            "SplashScreen",
+                            "User logged in, navigating to MAIN_GRAPH"
+                        )
                         navController.navigate(Routes.MAIN_GRAPH) {
                             popUpTo(Routes.SPLASH) { inclusive = true }
                         }
                     } else {
                         // User belum login → cek onboarding
                         if (isFirstTime) {
-                            android.util.Log.d("SplashScreen", "First time user, navigating to ONBOARDING")
+                            android.util.Log.d(
+                                "SplashScreen",
+                                "First time user, navigating to ONBOARDING"
+                            )
                             prefsViewModel.setNotFirstTime()
                             navController.navigate(Routes.ONBOARDING1) {
                                 popUpTo(Routes.SPLASH) { inclusive = true }
                             }
                         } else {
-                            android.util.Log.d("SplashScreen", "Returning user not logged in, navigating to LOGIN")
+                            android.util.Log.d(
+                                "SplashScreen",
+                                "Returning user not logged in, navigating to LOGIN"
+                            )
                             navController.navigate(Routes.LOGIN) {
                                 popUpTo(Routes.SPLASH) { inclusive = true }
                             }
@@ -183,25 +190,34 @@ fun RootNavGraph(
         }
 
         composable(
-            route = "${Routes.SET_APPOINTMENT}/{clinicId}",
-            arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
+            route = "${Routes.SET_APPOINTMENT}/{clinicId}?vaccineId={vaccineId}",
+            arguments = listOf(
+                navArgument("clinicId") { type = NavType.StringType },
+                navArgument("vaccineId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
         ) { backStackEntry ->
             val authViewModel: com.example.immunify.ui.auth.AuthViewModel = hiltViewModel()
             val currentUser by authViewModel.user.collectAsState()
-            
+
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
+            val vaccineId = backStackEntry.arguments?.getString("vaccineId") ?: ""
+
             val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
+            val preselectedVaccine = clinic.availableVaccines.find { it.id == vaccineId }
 
             // Create UserData dengan Firebase UID
             // Children will be loaded inside SetAppointmentScreen via ChildViewModel
             val user = currentUser?.let {
                 com.example.immunify.data.model.UserData(
-                    id = it.id, // Use Firebase Auth UID
+                    id = it.id,
                     name = it.name,
                     email = it.email,
-                    password = "", // Not needed for logged-in user
+                    password = "",
                     phoneNumber = it.phoneNumber ?: "",
-                    children = emptyList() // Loaded dynamically in SetAppointmentScreen
+                    children = emptyList()
                 )
             } ?: return@composable
 
@@ -209,6 +225,7 @@ fun RootNavGraph(
                 user = user,
                 clinic = clinic,
                 selectedDate = LocalDate.now(),
+                preselectedVaccine = preselectedVaccine,
                 onBackClick = { navController.popBackStack() },
                 onContinueClick = { appointment ->
                     val appointmentJson = Uri.encode(Json.encodeToString(appointment))
