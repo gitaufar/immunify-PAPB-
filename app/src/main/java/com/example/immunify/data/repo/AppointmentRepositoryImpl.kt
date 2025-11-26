@@ -36,14 +36,12 @@ class AppointmentRepositoryImpl @Inject constructor(
             val appointmentDto = appointment.toDto()
             
             // Generate ID jika belum ada
-            val docId = if (appointmentDto.id.isEmpty()) {
+            val docId = appointmentDto.id.ifEmpty {
                 firestoreDatasource.firestore
                     .collection(COLLECTION_USERS)
                     .document(appointment.userId)
                     .collection(SUBCOLLECTION_APPOINTMENTS)
                     .document().id
-            } else {
-                appointmentDto.id
             }
 
             val finalDto = appointmentDto.copy(id = docId)

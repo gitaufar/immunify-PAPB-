@@ -56,8 +56,8 @@ fun TrackerScreen(
     var selectedVaccinant by remember { mutableStateOf<ChildData?>(null) }
     
     // Get current user from Firebase Auth
-    val currentUser = authViewModel.getUser()
-    val userId = currentUser?.uid // Use Firebase Auth UID
+    val currentUser by authViewModel.user.collectAsState()
+    val userId = currentUser?.id // Use Firebase Auth UID
     
     // Collect appointments state
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()

@@ -1,9 +1,13 @@
 package com.example.immunify.ui.navigation
 
+import Routes
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,6 +25,7 @@ import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.InsightSamples
 import com.example.immunify.data.local.UserSample
 import com.example.immunify.data.model.AppointmentData
+import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.auth.LoginScreen
 import com.example.immunify.ui.auth.RegisterScreen
 import com.example.immunify.ui.clinics.AppointmentSuccessScreen
@@ -48,21 +53,50 @@ fun RootNavGraph(
         // SPLASH
         // jangan hapus, nanti versi akhir pakai ini
         composable(Routes.SPLASH) {
+
             val prefsViewModel: AppPreferencesViewModel = hiltViewModel()
-            SplashScreen(
-                onFinished = {
-                    val firstTime = prefsViewModel.isFirstTime.value
-                    if (firstTime) {
-                        prefsViewModel.setNotFirstTime()
-                        navController.navigate(Routes.ONBOARDING1) {
+            val authViewModel: AuthViewModel = hiltViewModel()
+
+            val user by authViewModel.user.collectAsState()
+            val isFirstTime by prefsViewModel.isFirstTime.collectAsState()
+            val isLoading by authViewModel.isLoading.collectAsState()
+
+            LaunchedEffect(Unit) {
+                // Pastikan SplashScreen tampil dulu
+                kotlinx.coroutines.delay(1500)
+            }
+
+            // Wait until loading is done before routing
+            LaunchedEffect(isLoading) {
+                if (!isLoading) {
+                    android.util.Log.d("SplashScreen", "User: $user, isFirstTime: $isFirstTime")
+                    
+                    if (user != null) {
+                        // User sudah login → ke main graph (home with bottom nav)
+                        android.util.Log.d("SplashScreen", "User logged in, navigating to MAIN_GRAPH")
+                        navController.navigate(Routes.MAIN_GRAPH) {
                             popUpTo(Routes.SPLASH) { inclusive = true }
                         }
                     } else {
-                        navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.SPLASH) { inclusive = true }
+                        // User belum login → cek onboarding
+                        if (isFirstTime) {
+                            android.util.Log.d("SplashScreen", "First time user, navigating to ONBOARDING")
+                            prefsViewModel.setNotFirstTime()
+                            navController.navigate(Routes.ONBOARDING1) {
+                                popUpTo(Routes.SPLASH) { inclusive = true }
+                            }
+                        } else {
+                            android.util.Log.d("SplashScreen", "Returning user not logged in, navigating to LOGIN")
+                            navController.navigate(Routes.LOGIN) {
+                                popUpTo(Routes.SPLASH) { inclusive = true }
+                            }
                         }
                     }
                 }
+            }
+
+            SplashScreen(
+                onFinished = {}
             )
         }
 
@@ -152,7 +186,7 @@ fun RootNavGraph(
             arguments = listOf(navArgument("clinicId") { type = NavType.StringType })
         ) { backStackEntry ->
             val authViewModel: com.example.immunify.ui.auth.AuthViewModel = hiltViewModel()
-            val currentUser = authViewModel.getUser()
+            val currentUser by authViewModel.user.collectAsState()
             
             val clinicId = backStackEntry.arguments?.getString("clinicId") ?: ""
             val clinic = ClinicSamples.find { it.id == clinicId } ?: return@composable
@@ -161,9 +195,9 @@ fun RootNavGraph(
             // Children will be loaded inside SetAppointmentScreen via ChildViewModel
             val user = currentUser?.let {
                 com.example.immunify.data.model.UserData(
-                    id = it.uid, // Use Firebase Auth UID
-                    name = it.displayName ?: "User",
-                    email = it.email ?: "",
+                    id = it.id, // Use Firebase Auth UID
+                    name = it.name,
+                    email = it.email,
                     password = "", // Not needed for logged-in user
                     phoneNumber = it.phoneNumber ?: "",
                     children = emptyList() // Loaded dynamically in SetAppointmentScreen

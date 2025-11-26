@@ -202,6 +202,7 @@ fun RegisterScreen(
                     text = "Sign Up",
                     onClick = {
                         viewModel.register(
+                            name.text.trim(),
                             email.text.trim(),
                             password.text.trim()
                         )

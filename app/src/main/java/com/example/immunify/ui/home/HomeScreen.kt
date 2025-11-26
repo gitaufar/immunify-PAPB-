@@ -9,16 +9,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.immunify.R
 import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
 import com.example.immunify.data.local.VaccineSamples
+import com.example.immunify.ui.auth.AuthViewModel
+import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
+import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.theme.*
 
@@ -27,21 +34,30 @@ import com.example.immunify.ui.theme.*
 fun HomeScreen(
     rootNav: NavController,
     bottomNav: NavController,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
-    val appState = LocalAppState.current
-    val userLatitude = appState.userLatitude
-    val userLongitude = appState.userLongitude
-
+    val currentUser by authViewModel.user.collectAsState()
     val scrollState = rememberScrollState()
+    val userId = currentUser?.id // Use Firebase Auth UID
+    // Collect appointments state
+    val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
 
-    // mengurutkan berdasarkan jarak
-    val sortedClinics = ClinicSamples.sortedBy { clinic ->
-        calculateDistanceKm(
-            userLatitude,
-            userLongitude,
-            clinic.latitude,
-            clinic.longitude
-        )
+    LaunchedEffect(Unit) {
+        userId?.let {
+            appointmentViewModel.getUserAppointments(it)
+        }
+    }
+
+    val appointment = when (val state = appointmentsState) {
+        is AppointmentUiState.AppointmentsLoaded -> state.appointments
+        else -> emptyList()
+    }
+
+    val appointmentClinicIds = appointment.map { it.clinicId }
+
+    val sortedClinics = ClinicSamples.filter { clinic ->
+        appointmentClinicIds.contains(clinic.id)
     }
 
     Column(
@@ -64,7 +80,7 @@ fun HomeScreen(
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Jane Doe",
+                            text = currentUser?.name ?: "ini fallback",
                             style = MaterialTheme.typography.titleSmall.copy(color = PrimaryMain)
                         )
                         Spacer(modifier = Modifier.width(4.dp))

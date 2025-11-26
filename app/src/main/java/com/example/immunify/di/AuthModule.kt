@@ -2,8 +2,8 @@ package com.example.immunify.di
 
 import com.example.immunify.data.firebase.auth.AuthDatasource
 import com.example.immunify.data.firebase.auth.FirebaseAuthDatasource
-import com.example.immunify.data.repository.AuthRepositoryImpl
-import com.example.immunify.domain.repository.AuthRepository
+import com.example.immunify.data.repo.AuthRepositoryImpl
+import com.example.immunify.domain.repo.AuthRepository
 import com.example.immunify.domain.usecase.auth.*
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module

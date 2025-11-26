@@ -56,12 +56,26 @@ class FirebaseFirestoreDatasource(
         collection: String,
         documentId: String
     ): T? {
-        val snapshot = firestore.collection(collection)
-            .document(documentId)
-            .get()
-            .await()
+        return try {
+            android.util.Log.d("Firestore", "getDocument - collection: $collection, documentId: $documentId")
+            
+            val snapshot = firestore
+                .collection(collection)
+                .document(documentId)
+                .get()
+                .await()
 
-        return snapshot.toObject(T::class.java)
+            android.util.Log.d("Firestore", "Document exists: ${snapshot.exists()}")
+            android.util.Log.d("Firestore", "Document data: ${snapshot.data}")
+            
+            val result = snapshot.toObject(T::class.java)
+            android.util.Log.d("Firestore", "Parsed object: $result")
+            
+            result
+        } catch (e: Exception) {
+            android.util.Log.e("Firestore", "Error getting document from $collection/$documentId", e)
+            null
+        }
     }
 
     /**

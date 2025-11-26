@@ -53,8 +53,8 @@ fun AddProfileSheet(
     
     val context = LocalContext.current
     val createChildState by childViewModel.createChildState.collectAsState()
-    val currentUser = authViewModel.getUser()
-    val userId = currentUser?.uid
+    val currentUser by authViewModel.user.collectAsState()
+    val userId = currentUser?.id
 
     // Handle state changes
     LaunchedEffect(createChildState) {

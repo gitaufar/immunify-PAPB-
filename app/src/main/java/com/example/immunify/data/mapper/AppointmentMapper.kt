@@ -16,9 +16,9 @@ object AppointmentMapper {
     fun AppointmentData.toDomain(): Appointment {
         return Appointment(
             id = this.id,
-            userId = this.parent.id,
+            userId = this.parent.id ?: "id1",
             userName = this.parent.name,
-            userPhone = this.parent.phoneNumber,
+            userPhone = this.parent.phoneNumber ?: "12345678",
             clinicId = this.clinic.id,
             clinicName = this.clinic.name,
             clinicAddress = "${this.clinic.address}, ${this.clinic.district}, ${this.clinic.city}",

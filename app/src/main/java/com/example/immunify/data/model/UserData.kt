@@ -8,6 +8,6 @@ data class UserData(
     val name: String,
     val email: String,
     val password: String,
-    val phoneNumber: String,
+    val phoneNumber: String?,
     val children: List<ChildData> = emptyList()
 )
