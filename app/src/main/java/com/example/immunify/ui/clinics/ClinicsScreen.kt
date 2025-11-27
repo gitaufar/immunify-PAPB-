@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -20,6 +21,7 @@ import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.ui.component.ClinicNearbyCard
 import com.example.immunify.ui.component.SearchAppBar
+import com.example.immunify.ui.component.SearchSuggestionDropdown
 import com.example.immunify.ui.component.calculateDistanceKm
 import com.example.immunify.ui.theme.Black100
 import com.example.immunify.ui.theme.Typography
@@ -36,75 +38,77 @@ fun ClinicsScreen(
 
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    // mengurutkan berdasarkan jarak
+    // Urutkan berdasarkan jarak
     val sortedClinics = ClinicSamples.sortedBy { clinic ->
         calculateDistanceKm(
-            userLatitude,
-            userLongitude,
-            clinic.latitude,
-            clinic.longitude
+            userLatitude, userLongitude,
+            clinic.latitude, clinic.longitude
         )
     }
 
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Search App Bar
-        SearchAppBar(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            placeholder = "Find Nearby Clinics",
-            showBackButton = false,
-            showFilterIcon = true,
-            onFilterClick = { /* buka bottom sheet filter */ }
-        )
-
-        // Konten scrollable
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier.fillMaxSize()
         ) {
-            item {
-                Image(
-                    painter = painterResource(id = R.drawable.image_map_malang),
-                    contentDescription = "Map",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .clickable { onMapClick() }
-                )
+            // Search App Bar
+            SearchAppBar(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = "Find Nearby Clinics",
+                showFilterIcon = true,
+                onFilterClick = { }
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            // Konten utama
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                item {
+                    Image(
+                        painter = painterResource(id = R.drawable.image_map_malang),
+                        contentDescription = "Map",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable { onMapClick() }
+                    )
 
-                Text(
-                    text = "Clinics Nearby",
-                    style = Typography.titleSmall.copy(color = Black100),
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // ganti fetch data dari Supabase
-            items(sortedClinics) { clinic ->
-                ClinicNearbyCard(
-                    clinic = clinic,
-                    onClick = {
-                        navController.navigate(Routes.clinicDetailRoute(clinic.id))
-                    }
-                )
+                    Text(
+                        text = "Clinics Nearby",
+                        style = Typography.titleSmall.copy(color = Black100),
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                items(sortedClinics) { clinic ->
+                    ClinicNearbyCard(
+                        clinic = clinic,
+                        onClick = {
+                            navController.navigate(Routes.clinicDetailRoute(clinic.id))
+                        }
+                    )
+                }
             }
         }
+
+        // Dropdown Search Suggest muncul ketika user mengetik
+        SearchSuggestionDropdown(
+            query = searchQuery.text,
+            clinics = sortedClinics,
+            onSelectClinic = { clinic ->
+                navController.navigate(Routes.clinicDetailRoute(clinic.id))
+            },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 60.dp)
+        )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewClinicsScreen() {
-//    ImmunifyTheme {
-//        ClinicsScreen()
-//    }
-//}
