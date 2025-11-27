@@ -17,6 +17,7 @@ import com.example.immunify.ui.theme.*
 @Composable
 fun BottomAppBar(
     text: String,
+    enabled: Boolean = true,
     onMainClick: () -> Unit,
     onCallClick: (() -> Unit)? = null
 ) {
@@ -53,7 +54,7 @@ fun BottomAppBar(
                 }
             }
 
-            MainButton(text = text, onClick = onMainClick)
+            MainButton(text = text, onClick = onMainClick, enabled = enabled)
         }
     }
 }

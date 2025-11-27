@@ -63,7 +63,10 @@ fun DiseaseDetailScreen(
 
                         // Navigasi ke SetAppointmentScreen dengan vaccineId
                         rootNav.navigate(
-                            "${Routes.SET_APPOINTMENT}/${matchedClinicData.id}?vaccineId=${matchedVaccine.id}"
+                            Routes.setAppointmentRoute(
+                                clinicId = matchedClinicData.id,
+                                vaccineId = matchedVaccine.id
+                            )
                         )
                     } else {
                         println("Tidak ada vaksin yang cocok untuk penyakit ${disease.name}")

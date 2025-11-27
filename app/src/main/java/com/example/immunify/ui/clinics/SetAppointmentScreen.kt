@@ -2,6 +2,7 @@ package com.example.immunify.ui.clinics
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,12 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.model.*
-import com.example.immunify.domain.model.Child
 import com.example.immunify.ui.component.*
 import com.example.immunify.ui.profile.viewmodel.ChildUiState
 import com.example.immunify.ui.profile.viewmodel.ChildViewModel
@@ -93,10 +94,28 @@ fun SetAppointmentScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                text = "Continue", onMainClick = {
+                text = "Continue",
+                enabled = selectedTime.isNotBlank() && selectedVaccinants.isNotEmpty(),
+                onMainClick = {
+                    if (selectedTime.isBlank()) {
+                        Toast.makeText(
+                            context, "Please select a time slot first", Toast.LENGTH_SHORT
+                        ).show()
+                        return@BottomAppBar
+                    }
+
+                    if (selectedVaccinants.isEmpty()) {
+                        Toast.makeText(
+                            context, "Please select at least one vaccinant", Toast.LENGTH_SHORT
+                        ).show()
+                        return@BottomAppBar
+                    }
+
                     val appointment = AppointmentData(
                         id = System.currentTimeMillis().toString(),
                         parent = user,
@@ -209,13 +228,14 @@ fun SetAppointmentScreen(
                     Spacer(Modifier.height(16.dp))
                 }
 
-                // Child/vaccinant section
+                // Child / Vaccinant Section
                 item {
                     SectionHeader(title = "Vaccinant")
                     Spacer(Modifier.height(12.dp))
 
-                    when (userChildrenState) {
-                        is ChildUiState.Loading -> {
+                    when (val state = userChildrenState) {
+
+                        is ChildUiState.Idle, is ChildUiState.Loading -> {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -228,27 +248,30 @@ fun SetAppointmentScreen(
 
                         is ChildUiState.Error -> {
                             Text(
-                                text = "Failed to load children: ${(userChildrenState as ChildUiState.Error).message}",
+                                text = "Failed to load children: ${state.message}",
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
 
-                        is ChildUiState.ChildrenLoaded, ChildUiState.Idle -> {
+                        is ChildUiState.ChildrenLoaded -> {
+                            val childrenUi = state.children.map { child ->
+                                ChildData(
+                                    id = child.id,
+                                    name = child.name,
+                                    birthDate = child.birthDate,
+                                    gender = if (child.gender == "Male") Gender.MALE else Gender.FEMALE
+                                )
+                            }
+
                             VaccinantSection(
-                                children = childrenList,
-                                onUpdate = { selectedVaccinants = it }
-                            )
+                                children = childrenUi, onUpdate = { selectedVaccinants = it })
                         }
 
-                        else -> {
-                            VaccinantSection(
-                                children = childrenList,
-                                onUpdate = { selectedVaccinants = it }
-                            )
-                        }
+                        is ChildUiState.Success -> {}
                     }
                 }
             }
         }
     }
 }
+

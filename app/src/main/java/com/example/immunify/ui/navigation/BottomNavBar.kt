@@ -1,6 +1,7 @@
 package com.example.immunify.ui.navigation
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -48,7 +49,8 @@ fun BottomNavBar(navController: NavHostController) {
             tonalElevation = 0.dp,
             modifier = Modifier
                 .height(90.dp)
-                .padding(horizontal = 8.dp)
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp)
         ) {
             bottomItems.forEach { item ->
                 val selected = isSelected(currentDestination, item.route)
@@ -56,7 +58,6 @@ fun BottomNavBar(navController: NavHostController) {
                 NavigationBarItem(
                     selected = selected,
                     onClick = {
-                        // Hindari reload jika sedang di tab yang sama
                         if (!selected) {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

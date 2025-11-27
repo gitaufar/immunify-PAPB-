@@ -1,6 +1,5 @@
 package com.example.immunify.ui.component
 
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -35,7 +34,6 @@ import com.example.immunify.data.model.ChildData
 import com.example.immunify.data.model.Gender
 import com.example.immunify.ui.theme.*
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,10 +45,7 @@ fun SelectProfileSheet(
     showAddNewProfile: Boolean = false,
     onAddNewProfile: (() -> Unit)? = null
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -69,7 +64,6 @@ fun SelectProfileSheet(
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun SelectProfileSheetContent(
@@ -81,29 +75,29 @@ private fun SelectProfileSheetContent(
 ) {
     var selectedId by remember { mutableStateOf(selectedChild?.id) }
 
-
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
+
         if (children.isEmpty()) {
-            // Tampilkan pesan jika belum ada anak
+            // Empty state ditampilkan jika daftar kosong
             EmptyState("No child profiles yet. Add a new profile to get started.")
-        } else {
-            // Kalau ada data anak, tampilkan daftar seperti biasa
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
+            Spacer(Modifier.height(24.dp))
+        }
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            if (children.isNotEmpty()) {
                 var maleIndex = 0
                 var femaleIndex = 0
-
 
                 itemsIndexed(children) { index, child ->
                     val avatarColor =
                         if (child.gender == Gender.MALE) getChildColor(Gender.MALE, maleIndex++)
                         else getChildColor(Gender.FEMALE, femaleIndex++)
-
 
                     Row(
                         modifier = Modifier
@@ -138,48 +132,49 @@ private fun SelectProfileSheetContent(
                             }
                         }
 
-
                         RadioButton(
-                            selected = selectedId == child.id, onClick = {
+                            selected = selectedId == child.id,
+                            onClick = {
                                 selectedId = child.id
                                 onSelect(child)
-                            }, colors = RadioButtonDefaults.colors(
+                            },
+                            colors = RadioButtonDefaults.colors(
                                 selectedColor = PrimaryMain
                             )
                         )
                     }
-
 
                     if (index < children.lastIndex) {
                         Spacer(Modifier.height(16.dp))
                         Divider(color = Grey30, thickness = 1.dp)
                     }
                 }
+            }
 
-
-                if (showAddNewProfile && onAddNewProfile != null) {
-                    item {
-                        Spacer(Modifier.height(24.dp))
-                        Button(
-                            onClick = onAddNewProfile,
+            // Tombol Add New Profile selalu tampil jika diaktifkan
+            if (showAddNewProfile && onAddNewProfile != null) {
+                item {
+                    Spacer(Modifier.height(24.dp))
+                    Button(
+                        onClick = onAddNewProfile,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, PrimaryMain, RoundedCornerShape(8.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = White10,
+                            contentColor = PrimaryMain
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Add",
+                            tint = PrimaryMain,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, PrimaryMain, RoundedCornerShape(8.dp)),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = White10, contentColor = PrimaryMain
-                            )
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_delete),
-                                contentDescription = "Add",
-                                tint = PrimaryMain,
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .rotate(45f)
-                            )
-                            Spacer(Modifier.width(12.dp))
-                            Text("Add New Profile")
-                        }
+                                .size(22.dp)
+                                .rotate(45f)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text("Add New Profile")
                     }
                 }
             }

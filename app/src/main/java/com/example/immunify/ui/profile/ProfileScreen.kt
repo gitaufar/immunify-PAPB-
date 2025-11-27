@@ -282,7 +282,6 @@ fun ProfileScreen(
                 },
                 showAddNewProfile = true,
                 onAddNewProfile = {
-
                     showSelectProfileSheet = false
                     showAddProfileSheet = true
                 }

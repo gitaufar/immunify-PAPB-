@@ -167,10 +167,15 @@ fun RootNavGraph(
         }
 
         // CLINIC MAP SCREEN
-        composable(Routes.CLINIC_MAP) {
+        composable(
+            route = "${Routes.CLINIC_MAP}?focusId={focusId}",
+            arguments = listOf(navArgument("focusId") { nullable = true })
+        ) { backStackEntry ->
+            val focusId = backStackEntry.arguments?.getString("focusId")
             ClinicMapScreen(
-                clinics = ClinicSamples,
                 navController = navController,
+                clinics = ClinicSamples,
+                focusId = focusId,
                 onBackClick = { navController.popBackStack() }
             )
         }

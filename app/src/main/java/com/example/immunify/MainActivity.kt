@@ -1,6 +1,7 @@
 package com.example.immunify
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,8 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
+import androidx.core.content.ContextCompat
 import com.example.immunify.core.AppState
 import com.example.immunify.core.LocalAppState
 import com.example.immunify.ui.navigation.RootNavGraph
@@ -34,22 +35,35 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        // Cek permission dulu
+        val isGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!isGranted) {
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            locationViewModel.loadUserLocation()
+        }
 
         setContent {
             ImmunifyTheme {
+                val appState = remember { AppState() }
 
-                val appState = LocalAppState.current
-                val loc = locationViewModel.locationState.value
+                CompositionLocalProvider(LocalAppState provides appState) {
 
-                LaunchedEffect(loc) {
-                    if (loc is LocationState.Success) {
-                        appState.userLatitude = loc.location.latitude
-                        appState.userLongitude = loc.location.longitude
+                    val loc = locationViewModel.locationState.collectAsState().value
+
+                    LaunchedEffect(loc) {
+                        if (loc is LocationState.Success) {
+                            appState.userLatitude = loc.location.latitude
+                            appState.userLongitude = loc.location.longitude
+                        }
                     }
-                }
 
-                RootNavGraph()
+                    RootNavGraph()
+                }
             }
         }
     }

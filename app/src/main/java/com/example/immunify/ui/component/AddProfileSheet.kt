@@ -334,6 +334,3 @@ private fun AddProfileSheetContent(
         }
     }
 }
-
-// Preview removed - requires Hilt ViewModel injection
-// To test, run the app and use AddProfileSheet in a screen

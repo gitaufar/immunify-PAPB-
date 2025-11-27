@@ -19,6 +19,7 @@ fun MainButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     isOutline: Boolean = false,
 ) {
     if (isOutline) {

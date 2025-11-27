@@ -1,7 +1,9 @@
 package com.example.immunify.ui.home
 
 
+import android.annotation.SuppressLint
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,16 +18,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.immunify.R
-import com.example.immunify.core.LocalAppState
 import com.example.immunify.data.local.ClinicSamples
 import com.example.immunify.data.local.DiseaseSamples
-import com.example.immunify.data.local.VaccineSamples
-import com.example.immunify.data.model.ClinicData
+import com.example.immunify.data.model.AppointmentStatus
 import com.example.immunify.data.model.LocationState
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
@@ -39,7 +40,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-
+@SuppressLint("ContextCastToActivity")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
@@ -47,23 +48,34 @@ fun HomeScreen(
     bottomNav: NavController,
     authViewModel: AuthViewModel = hiltViewModel(),
     appointmentViewModel: AppointmentViewModel = hiltViewModel(),
-    locationViewModel: LocationViewModel = hiltViewModel()
 ) {
+    val activity = LocalContext.current as ComponentActivity
+    val locationViewModel: LocationViewModel = hiltViewModel(activity)
+
     val currentUser by authViewModel.user.collectAsState()
     val scrollState = rememberScrollState()
     val userId = currentUser?.id // Use Firebase Auth UID
     // Collect appointments state
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
-    val locationState by locationViewModel.locationState
+    val locationState by locationViewModel.locationState.collectAsState()
 
-
-    LaunchedEffect(Unit) {
+    // Panggilan saat userId berubah (awal)
+    LaunchedEffect(userId) {
         userId?.let {
             appointmentViewModel.getUserAppointments(it)
         }
-        locationViewModel.loadUserLocation()
     }
 
+    // Panggilan saat halaman Home kembali menjadi active
+    LaunchedEffect(rootNav.currentBackStackEntryFlow) {
+        rootNav.currentBackStackEntryFlow.collect { entry ->
+            if (entry.destination.route == Routes.HOME) {
+                userId?.let {
+                    appointmentViewModel.getUserAppointments(it)
+                }
+            }
+        }
+    }
 
     val appointment = when (val state = appointmentsState) {
         is AppointmentUiState.AppointmentsLoaded -> state.appointments
@@ -84,13 +96,11 @@ fun HomeScreen(
         return earthRadiusKm * c
     }
 
-
     // Filter clinics within 5 km from user's location
     val nearbyClinics = when (val locState = locationState) {
         is LocationState.Success -> {
             val userLat = locState.location.latitude
             val userLon = locState.location.longitude
-
 
             ClinicSamples.map { clinic ->
                 val distance =
@@ -178,7 +188,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
             // Filter upcoming appointments: PENDING/CONFIRMED dan tanggal >= today
             val today = LocalDate.now()
             val upcomingAppointments = appointment.filter { appt ->
@@ -187,7 +196,7 @@ fun HomeScreen(
                 } catch (e: Exception) {
                     null
                 }
-                appointmentDate != null && !appointmentDate.isBefore(today) && (appt.status == com.example.immunify.data.model.AppointmentStatus.PENDING || appt.status == com.example.immunify.data.model.AppointmentStatus.COMPLETED)
+                appointmentDate != null && !appointmentDate.isBefore(today) && (appt.status == AppointmentStatus.PENDING || appt.status == AppointmentStatus.COMPLETED)
             }.sortedBy { appt -> LocalDate.parse(appt.date) }.take(3)
 
 
@@ -272,18 +281,7 @@ fun HomeScreen(
 
 
             nearbyClinics.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No clinics found within 5 km",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Grey60
-                    )
-                }
+                EmptyState("No clinics found in your region.")
             }
 
 

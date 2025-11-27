@@ -217,10 +217,12 @@ fun UpcomingVaccineCardFromAppointment(
                 style = MaterialTheme.typography.labelMedium,
                 color = Black100
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
             
             if (appointment.vaccinantNames.isNotEmpty()) {
                 Text(
-                    text = "For: ${appointment.vaccinantNames.joinToString(", \"")}",
+                    text = appointment.vaccinantNames.joinToString(", "),
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey60
                 )

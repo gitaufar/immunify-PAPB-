@@ -27,8 +27,17 @@ object Routes {
     const val NOTIFICATION = "main_notification"
 
     fun clinicDetailRoute(clinicId: String): String = "main_clinic_detail/$clinicId"
-    fun setAppointmentRoute(clinicId: String, vaccineId: String) =
-        "setAppointment/$clinicId/$vaccineId"
+
+    fun clinicMapRouteWithFocus(clinicId: String): String =
+        "$CLINIC_MAP?focusId=$clinicId"
+
+    fun setAppointmentRoute(clinicId: String, vaccineId: String? = null): String {
+        return if (vaccineId.isNullOrEmpty()) {
+            "${SET_APPOINTMENT}/$clinicId"
+        } else {
+            "${SET_APPOINTMENT}/$clinicId?vaccineId=$vaccineId"
+        }
+    }
 
     fun appointmentSummaryRoute(appointmentJson: String): String =
         "$APPOINTMENT_SUMMARY/$appointmentJson"

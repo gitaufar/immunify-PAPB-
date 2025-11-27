@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import androidx.compose.material3.Divider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.immunify.ui.theme.*
 import androidx.compose.ui.text.input.TextFieldValue
@@ -50,14 +51,14 @@ fun AddRecordSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSelectProfile by remember { mutableStateOf(false) }
-    
+
     val currentUser by authViewModel.user.collectAsState()
     val userId = currentUser?.id
-    
+
     val childrenState by childViewModel.userChildrenState.collectAsState()
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
     val completeAppointmentState by appointmentViewModel.createAppointmentState.collectAsState()
-    
+
     // Convert Child domain to ChildData for UI
     val children = when (val state = childrenState) {
         is ChildUiState.ChildrenLoaded -> state.children.map { child ->
@@ -65,18 +66,23 @@ fun AddRecordSheet(
                 id = child.id,
                 name = child.name,
                 birthDate = child.birthDate,
-                gender = if (child.gender.equals("Male", ignoreCase = true)) Gender.MALE else Gender.FEMALE
+                gender = if (child.gender.equals(
+                        "Male",
+                        ignoreCase = true
+                    )
+                ) Gender.MALE else Gender.FEMALE
             )
         }
+
         else -> emptyList()
     }
-    
+
     // Get appointments for vaccine info
     val appointments = when (val state = appointmentsState) {
         is AppointmentUiState.AppointmentsLoaded -> state.appointments
         else -> emptyList()
     }
-    
+
     // Load data
     LaunchedEffect(userId) {
         userId?.let {
@@ -84,9 +90,9 @@ fun AddRecordSheet(
             appointmentViewModel.getUserAppointments(it)
         }
     }
-    
+
     val context = LocalContext.current
-    
+
     // Handle complete appointment state
     LaunchedEffect(completeAppointmentState) {
         when (val state = completeAppointmentState) {
@@ -95,10 +101,12 @@ fun AddRecordSheet(
                 appointmentViewModel.resetCreateState()
                 onDone()
             }
+
             is AppointmentUiState.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
                 appointmentViewModel.resetCreateState()
             }
+
             else -> {}
         }
     }
@@ -165,14 +173,22 @@ private fun AddRecordSheetContent(
     var dose by remember { mutableStateOf(TextFieldValue("")) }
     var admin by remember { mutableStateOf(TextFieldValue("")) }
     var showAppointmentDropdown by remember { mutableStateOf(false) }
-    
+
     // Filter pending appointments for selected vaccinant
     val pendingAppointments = remember(appointments, selectedVaccinant) {
         if (selectedVaccinant == null) emptyList()
-        else appointments.filter { appointment ->
-            appointment.vaccinantIds.contains(selectedVaccinant.id) &&
-            appointment.status == com.example.immunify.data.model.AppointmentStatus.PENDING
-        }
+        else appointments
+            .filter { appointment ->
+                appointment.vaccinantIds.contains(selectedVaccinant.id) &&
+                        appointment.status == com.example.immunify.data.model.AppointmentStatus.PENDING
+            }
+            .sortedBy { appointment ->
+                try {
+                    LocalDate.parse(appointment.date)
+                } catch (_: Exception) {
+                    LocalDate.MAX
+                }
+            }
     }
 
     Column(
@@ -212,11 +228,11 @@ private fun AddRecordSheetContent(
             style = MaterialTheme.typography.titleSmall.copy(color = Black100)
         )
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { 
+                .clickable {
                     if (selectedVaccinant != null && pendingAppointments.isNotEmpty()) {
                         showAppointmentDropdown = !showAppointmentDropdown
                     }
@@ -250,7 +266,7 @@ private fun AddRecordSheetContent(
                 )
             }
         }
-        
+
         if (showAppointmentDropdown && pendingAppointments.isNotEmpty()) {
             Column(
                 modifier = Modifier
@@ -258,25 +274,36 @@ private fun AddRecordSheetContent(
                     .background(White10, RoundedCornerShape(8.dp))
                     .border(1.dp, Grey30, RoundedCornerShape(8.dp))
             ) {
-                pendingAppointments.forEach { appointment ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                selectedAppointmentId = appointment.id
-                                selectedVaccineName = TextFieldValue("${appointment.vaccineName} - ${appointment.date}")
-                                showAppointmentDropdown = false
-                            }
-                            .padding(horizontal = 12.dp, vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = appointment.vaccineName,
-                            style = MaterialTheme.typography.labelMedium.copy(color = Black100)
-                        )
-                        Text(
-                            text = "${appointment.clinicName} - ${appointment.date}",
-                            style = MaterialTheme.typography.bodySmall.copy(color = Grey60)
-                        )
+                pendingAppointments.forEachIndexed { index, appointment ->
+                    Column {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedAppointmentId = appointment.id
+                                    selectedVaccineName =
+                                        TextFieldValue("${appointment.vaccineName} (${appointment.date})")
+                                    showAppointmentDropdown = false
+                                }
+                                .padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "${appointment.vaccineName} (${appointment.date})",
+                                style = MaterialTheme.typography.labelMedium.copy(color = Black100)
+                            )
+                            Text(
+                                text = appointment.clinicName,
+                                style = MaterialTheme.typography.bodySmall.copy(color = Grey80)
+                            )
+                        }
+
+                        if (index != pendingAppointments.lastIndex) {
+                            Divider(
+                                color = Grey30,
+                                thickness = 1.dp
+                            )
+                        }
                     }
                 }
             }

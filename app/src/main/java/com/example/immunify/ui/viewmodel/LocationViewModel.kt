@@ -1,36 +1,42 @@
 package com.example.immunify.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.State
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.immunify.data.model.LocationData
 import com.example.immunify.data.model.LocationState
-import com.example.immunify.data.repo.LocationRepository
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.tasks.Tasks
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocationViewModel @Inject constructor(
-    private val repository: LocationRepository
+    private val fusedLocationClient: FusedLocationProviderClient
 ) : ViewModel() {
 
-    private val _locationState = mutableStateOf<LocationState>(LocationState.Idle)
-    val locationState: State<LocationState> = _locationState
+    private val _locationState = MutableStateFlow<LocationState>(LocationState.Idle)
+    val locationState: StateFlow<LocationState> = _locationState
 
+    @SuppressLint("MissingPermission") // Permission handled in MainActivity
     fun loadUserLocation() {
-        if (_locationState.value is LocationState.Loading) return
         _locationState.value = LocationState.Loading
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val location = repository.getUserLocation()
-                _locationState.value = if (location != null) {
-                    LocationState.Success(LocationData(location.first, location.second))
-                } else LocationState.Error("Lokasi tidak ditemukan.")
+                val task = fusedLocationClient.lastLocation
+                val location = Tasks.await(task)
+
+                if (location != null) {
+                    _locationState.value = LocationState.Success(location)
+                } else {
+                    _locationState.value = LocationState.Error("Location unavailable.")
+                }
             } catch (e: Exception) {
-                _locationState.value = LocationState.Error("Error: ${e.message}")
+                _locationState.value = LocationState.Error(e.message ?: "Location error.")
             }
         }
     }
