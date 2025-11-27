@@ -1,5 +1,6 @@
 package com.example.immunify.ui.home
 
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
@@ -54,6 +56,7 @@ fun HomeScreen(
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
     val locationState by locationViewModel.locationState
 
+
     LaunchedEffect(Unit) {
         userId?.let {
             appointmentViewModel.getUserAppointments(it)
@@ -61,40 +64,46 @@ fun HomeScreen(
         locationViewModel.loadUserLocation()
     }
 
+
     val appointment = when (val state = appointmentsState) {
         is AppointmentUiState.AppointmentsLoaded -> state.appointments
         else -> emptyList()
     }
+
 
     // Function to calculate distance between two coordinates using Haversine formula
     fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val earthRadiusKm = 6371.0
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
-        val a = sin(dLat / 2) * sin(dLat / 2) +
-                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-                sin(dLon / 2) * sin(dLon / 2)
+        val a =
+            sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(
+                dLon / 2
+            ) * sin(dLon / 2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return earthRadiusKm * c
     }
+
 
     // Filter clinics within 5 km from user's location
     val nearbyClinics = when (val locState = locationState) {
         is LocationState.Success -> {
             val userLat = locState.location.latitude
             val userLon = locState.location.longitude
-            
-            ClinicSamples
-                .map { clinic ->
-                    val distance = calculateDistance(userLat, userLon, clinic.latitude, clinic.longitude)
-                    clinic to distance
-                }
-                .filter { (_, distance) -> distance <= 5.0 }
-                .sortedBy { (_, distance) -> distance }
+
+
+            ClinicSamples.map { clinic ->
+                val distance =
+                    calculateDistance(userLat, userLon, clinic.latitude, clinic.longitude)
+                clinic to distance
+            }.filter { (_, distance) -> distance <= 5.0 }.sortedBy { (_, distance) -> distance }
                 .map { (clinic, _) -> clinic }
         }
+
+
         else -> emptyList()
     }
+
 
     Column(
         modifier = Modifier
@@ -111,23 +120,33 @@ fun HomeScreen(
             ) {
                 Column {
                     Text(
-                        text = "Hello,",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "Hello,", style = MaterialTheme.typography.bodyMedium
                     )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            bottomNav.navigate(Routes.PROFILE) {
+                                popUpTo(Routes.HOME) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }) {
                         Text(
-                            text = currentUser?.name ?: "ini fallback",
+                            text = currentUser?.name ?: "User",
                             style = MaterialTheme.typography.titleSmall.copy(color = PrimaryMain)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.ic_next),
-                            contentDescription = null,
+                            contentDescription = "Go to profile",
                             tint = Grey60,
                             modifier = Modifier.size(20.dp)
                         )
                     }
                 }
+
 
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notification),
@@ -137,11 +156,12 @@ fun HomeScreen(
                         .size(32.dp)
                         .clickable {
                             rootNav.navigate(Routes.NOTIFICATION)
-                        }
-                )
+                        })
             }
 
+
             Spacer(modifier = Modifier.height(20.dp))
+
 
             // Upcoming Vaccine Section
             SectionHeader(
@@ -153,51 +173,42 @@ fun HomeScreen(
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
-            )
+                })
+
 
             Spacer(modifier = Modifier.height(12.dp))
 
+
             // Filter upcoming appointments: PENDING/CONFIRMED dan tanggal >= today
             val today = LocalDate.now()
-            val upcomingAppointments = appointment
-                .filter { appt ->
-                    val appointmentDate = try {
-                        LocalDate.parse(appt.date)
-                    } catch (e: Exception) {
-                        null
-                    }
-                    appointmentDate != null && 
-                    !appointmentDate.isBefore(today) &&
-                    (appt.status == com.example.immunify.data.model.AppointmentStatus.PENDING ||
-                     appt.status == com.example.immunify.data.model.AppointmentStatus.COMPLETED)
+            val upcomingAppointments = appointment.filter { appt ->
+                val appointmentDate = try {
+                    LocalDate.parse(appt.date)
+                } catch (e: Exception) {
+                    null
                 }
-                .sortedBy { appt -> LocalDate.parse(appt.date) }
-                .take(3)
+                appointmentDate != null && !appointmentDate.isBefore(today) && (appt.status == com.example.immunify.data.model.AppointmentStatus.PENDING || appt.status == com.example.immunify.data.model.AppointmentStatus.COMPLETED)
+            }.sortedBy { appt -> LocalDate.parse(appt.date) }.take(3)
+
 
             when {
                 appointmentsState is AppointmentUiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    }
-                }
-                upcomingAppointments.isEmpty() -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "No upcoming appointments",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Grey60
-                        )
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     }
                 }
+
+
+                upcomingAppointments.isEmpty() -> {
+                    EmptyState("No upcoming appointments yet. Set one to get started.")
+                }
+
+
                 else -> {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         upcomingAppointments.forEach { appt ->
@@ -207,7 +218,9 @@ fun HomeScreen(
                 }
             }
 
+
             Spacer(modifier = Modifier.height(20.dp))
+
 
             // Clinics Nearby Section
             SectionHeader(
@@ -221,10 +234,13 @@ fun HomeScreen(
                     }
                 }
 
+
             )
+
 
             Spacer(modifier = Modifier.height(12.dp))
         }
+
 
         when {
             locationState is LocationState.Loading -> {
@@ -237,6 +253,8 @@ fun HomeScreen(
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 }
             }
+
+
             locationState is LocationState.Error -> {
                 Box(
                     modifier = Modifier
@@ -251,6 +269,8 @@ fun HomeScreen(
                     )
                 }
             }
+
+
             nearbyClinics.isEmpty() -> {
                 Box(
                     modifier = Modifier
@@ -265,6 +285,8 @@ fun HomeScreen(
                     )
                 }
             }
+
+
             else -> {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -272,28 +294,29 @@ fun HomeScreen(
                 ) {
                     items(nearbyClinics) { clinic ->
                         ClinicHomeCard(
-                            clinic = clinic,
-                            onClick = {
+                            clinic = clinic, onClick = {
                                 rootNav.navigate(Routes.clinicDetailRoute(clinic.id))
-                            }
-                        )
+                            })
                     }
                 }
             }
         }
 
+
         Spacer(modifier = Modifier.height(20.dp))
+
 
         // Disease Knowledge Section
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             SectionHeader(
                 title = "Prevention Starts with Knowledge",
                 subtitle = "Get insights about vaccination",
-                onClickViewAll = { rootNav.navigate(Routes.INSIGHTS) }
-            )
+                onClickViewAll = { rootNav.navigate(Routes.INSIGHTS) })
+
 
             Spacer(modifier = Modifier.height(12.dp))
         }
+
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -301,11 +324,9 @@ fun HomeScreen(
         ) {
             items(DiseaseSamples) { disease ->
                 DiseaseCard(
-                    disease = disease,
-                    onClick = {
+                    disease = disease, onClick = {
                         rootNav.navigate(Routes.diseaseDetailRoute(disease.id))
-                    }
-                )
+                    })
             }
         }
     }
