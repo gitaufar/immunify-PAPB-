@@ -16,18 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.immunify.data.local.ChildSamples
-import com.example.immunify.data.local.VaccineSamples
 import com.example.immunify.data.model.AppointmentStatus
 import com.example.immunify.data.model.ChildData
-import com.example.immunify.data.model.CompletedEntry
 import com.example.immunify.data.model.Gender
-import com.example.immunify.data.model.UpcomingEntry
-import com.example.immunify.domain.model.Child
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
 import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
@@ -36,7 +30,6 @@ import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.EmptyState
 import com.example.immunify.ui.component.ProfileHeader
 import com.example.immunify.ui.component.SelectProfileSheet
-import com.example.immunify.ui.component.UpcomingVaccineCard
 import com.example.immunify.ui.component.UpcomingVaccineCardFromAppointment
 import com.example.immunify.ui.profile.viewmodel.ChildUiState
 import com.example.immunify.ui.profile.viewmodel.ChildViewModel
@@ -125,8 +118,7 @@ fun ProfileScreen(
             }
             appointmentDate != null &&
                     !appointmentDate.isBefore(today) &&
-                    (appt.status == AppointmentStatus.PENDING ||
-                            appt.status == AppointmentStatus.COMPLETED)
+                    appt.status != AppointmentStatus.COMPLETED
         }
         .sortedBy { appt -> LocalDate.parse(appt.date) }
 

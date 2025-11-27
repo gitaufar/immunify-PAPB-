@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.immunify.R
+import com.example.immunify.data.model.AppointmentStatus
 import com.example.immunify.data.model.VaccineData
 import com.example.immunify.domain.model.Appointment
 import com.example.immunify.ui.theme.*
@@ -168,15 +169,18 @@ fun UpcomingVaccineCardFromAppointment(
     appointment: Appointment
 ) {
     val shape = RoundedCornerShape(8.dp)
+
     val appointmentDate = try {
         LocalDate.parse(appointment.date)
     } catch (e: Exception) {
         LocalDate.now()
     }
-    
+
+    val isCompleted = appointment.status == AppointmentStatus.COMPLETED
     val dueDays = ChronoUnit.DAYS.between(LocalDate.now(), appointmentDate).toInt()
-    
+
     val dueIn = when {
+        isCompleted -> appointmentDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
         dueDays < 0 -> {
             val lateDays = abs(dueDays)
             when {
@@ -186,14 +190,15 @@ fun UpcomingVaccineCardFromAppointment(
                 else -> "Overdue by ${lateDays / 30} months"
             }
         }
+
         dueDays < 1 -> "Today"
         dueDays == 1 -> "1 day"
         dueDays in 2..7 -> "$dueDays days"
         dueDays in 8..31 -> "${ceil(dueDays / 7.0).toInt()} weeks"
         else -> "${dueDays / 30} months"
     }
-    
-    val isWarning = dueDays < 7
+
+    val isWarning = !isCompleted && dueDays < 7
 
     Row(
         modifier = modifier
@@ -203,14 +208,18 @@ fun UpcomingVaccineCardFromAppointment(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Icon kiri
         Image(
-            painter = painterResource(id = R.drawable.ic_vaccine_color),
+            painter = painterResource(
+                id = if (isCompleted) R.drawable.ic_certificate else R.drawable.ic_vaccine_color
+            ),
             contentDescription = null,
             modifier = Modifier
                 .size(45.dp)
                 .padding(end = 12.dp)
         )
 
+        // Konten teks
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = appointment.vaccineName,
@@ -219,20 +228,19 @@ fun UpcomingVaccineCardFromAppointment(
             )
 
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             if (appointment.vaccinantNames.isNotEmpty()) {
                 Text(
                     text = appointment.vaccinantNames.joinToString(", "),
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey60
                 )
+                Spacer(modifier = Modifier.height(4.dp))
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Due in",
+                    text = if (isCompleted) "Completed in" else "Next dose due in",
                     style = MaterialTheme.typography.bodySmall,
                     color = Grey70
                 )
@@ -242,10 +250,20 @@ fun UpcomingVaccineCardFromAppointment(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(if (isWarning) WarningSurface else PrimarySurface)
+                        .background(
+                            when {
+                                isCompleted -> PrimarySurface
+                                isWarning -> WarningSurface
+                                else -> PrimarySurface
+                            }
+                        )
                         .border(
                             width = 1.dp,
-                            color = if (isWarning) WarningBorder else PrimaryBorder,
+                            color = when {
+                                isCompleted -> PrimaryBorder
+                                isWarning -> WarningBorder
+                                else -> PrimaryBorder
+                            },
                             shape = RoundedCornerShape(50)
                         )
                         .padding(horizontal = 8.dp, vertical = 2.dp)
@@ -253,12 +271,17 @@ fun UpcomingVaccineCardFromAppointment(
                     Text(
                         text = dueIn,
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (isWarning) WarningMain else PrimaryMain
+                        color = when {
+                            isCompleted -> PrimaryMain
+                            isWarning -> WarningMain
+                            else -> PrimaryMain
+                        }
                     )
                 }
             }
         }
 
+        // Icon panah kanan
         Image(
             painter = painterResource(id = R.drawable.ic_next),
             contentDescription = null,

@@ -188,17 +188,17 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Filter upcoming appointments: PENDING/CONFIRMED dan tanggal >= today
+            // Filter upcoming appointments: hanya status PENDING/CONFIRMED
             val today = LocalDate.now()
             val upcomingAppointments = appointment.filter { appt ->
-                val appointmentDate = try {
+                appt.status == AppointmentStatus.PENDING
+            }.sortedBy { appt ->
+                try {
                     LocalDate.parse(appt.date)
                 } catch (e: Exception) {
-                    null
+                    today
                 }
-                appointmentDate != null && !appointmentDate.isBefore(today) && (appt.status == AppointmentStatus.PENDING || appt.status == AppointmentStatus.COMPLETED)
-            }.sortedBy { appt -> LocalDate.parse(appt.date) }.take(3)
-
+            }.take(3)
 
             when {
                 appointmentsState is AppointmentUiState.Loading -> {
