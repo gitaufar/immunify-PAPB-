@@ -25,9 +25,12 @@ import com.example.immunify.data.model.Gender
 import com.example.immunify.ui.auth.AuthViewModel
 import com.example.immunify.ui.clinics.viewmodel.AppointmentUiState
 import com.example.immunify.ui.clinics.viewmodel.AppointmentViewModel
+import androidx.navigation.NavController
+import com.example.immunify.ui.component.AddChildProfileButton
 import com.example.immunify.ui.component.AddProfileSheet
 import com.example.immunify.ui.component.AppBar
 import com.example.immunify.ui.component.EmptyState
+import com.example.immunify.ui.component.LogoutConfirmationDialog
 import com.example.immunify.ui.component.ProfileHeader
 import com.example.immunify.ui.component.SelectProfileSheet
 import com.example.immunify.ui.component.UpcomingVaccineCardFromAppointment
@@ -40,6 +43,7 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
+    rootNav: NavController,
     authViewModel: AuthViewModel = hiltViewModel(),
     childViewModel: ChildViewModel = hiltViewModel(),
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
@@ -49,6 +53,8 @@ fun ProfileScreen(
 
     val childrenState by childViewModel.userChildrenState.collectAsState()
     val appointmentsState by appointmentViewModel.userAppointmentsState.collectAsState()
+    
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     // Convert Child domain to ChildData for UI
     val children = when (val state = childrenState) {
@@ -137,7 +143,7 @@ fun ProfileScreen(
         AppBar(
             title = "Profile",
             onBackClick = null,
-            onSettingsClick = { }
+            onSettingsClick = { showLogoutDialog = true }
         )
 
         // Show loading or profile header
@@ -162,7 +168,15 @@ fun ProfileScreen(
             }
 
             children.isEmpty() -> {
-                EmptyState("No child profiles yet. Add a new profile to get started.")
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                ) {
+                    AddChildProfileButton(
+                        onClick = { showAddProfileSheet = true }
+                    )
+                }
             }
         }
 
@@ -291,14 +305,27 @@ fun ProfileScreen(
                 }
             )
         }
+        
+        // Logout confirmation dialog
+        if (showLogoutDialog) {
+            LogoutConfirmationDialog(
+                onDismiss = { showLogoutDialog = false },
+                onConfirm = {
+                    authViewModel.logout()
+                    rootNav.navigate(Routes.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewProfileScreen() {
-    ImmunifyTheme {
-        ProfileScreen()
-    }
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewProfileScreen() {
+//    ImmunifyTheme {
+//        ProfileScreen()
+//    }
+//}
