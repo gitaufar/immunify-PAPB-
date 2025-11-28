@@ -18,6 +18,6 @@ fun EmptyState(text: String) {
         style = MaterialTheme.typography.bodyMedium.copy(color = Grey70),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 60.dp)
+            .padding(horizontal = 20.dp, vertical = 40.dp)
     )
 }
