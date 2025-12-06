@@ -25,27 +25,26 @@ fun AddChildProfileButton(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .border(2.dp, PrimaryMain, RoundedCornerShape(12.dp))
+            .border(1.dp, Grey40, RoundedCornerShape(12.dp))
             .clickable { onClick() }
-            .padding(24.dp),
+            .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_delete),
                 contentDescription = "Add Child",
                 tint = PrimaryMain,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(24.dp)
                     .rotate(45f)
             )
-            
             Text(
                 text = "Add Child Profile",
-                style = MaterialTheme.typography.titleMedium.copy(color = PrimaryMain)
+                style = MaterialTheme.typography.titleSmall.copy(color = PrimaryMain)
             )
             
             Text(

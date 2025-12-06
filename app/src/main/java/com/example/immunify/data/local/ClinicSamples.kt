@@ -6,7 +6,7 @@ val ClinicSamples = listOf(
     ClinicData(
         id = "rssa",
         name = "RSUD Dr. Saiful Anwar",
-        imageUrl = "https://www.rssoepraoen.co.id/_next/image?url=%2Fassets%2Fbg-banner.jpeg&w=3840&q=75",
+        imageUrl = "https://cdn.antaranews.com/cache/1200x800/2022/11/19/Saiful-Anwar-copy.jpg",
         address = "Jl. Jaksa Agung Suprapto No.2",
         district = "Kec. Klojen",
         city = "Kota Malang",
